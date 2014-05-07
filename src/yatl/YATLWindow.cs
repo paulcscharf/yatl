@@ -4,13 +4,14 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using yatl.Utilities;
 
 namespace yatl
 {
     sealed class YATLWindow : amulware.Graphics.Program
     {
         public YATLWindow()
-            : base(Settings.General.DefaultWindowHeight,
+            : base(Settings.General.DefaultWindowWidth,
                 Settings.General.DefaultWindowHeight,
                 GraphicsMode.Default, "You are the light",
                 GameWindowFlags.Default, DisplayDevice.Default, 3, 2,
@@ -23,6 +24,8 @@ namespace yatl
         protected override void OnLoad(EventArgs e)
         {
             base.OnLoad(e);
+
+            InputManager.Initialize(this.Mouse);
 
 
         }
