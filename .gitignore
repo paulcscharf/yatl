@@ -2,9 +2,6 @@
 [Bb]in/
 [Oo]bj/
 
-# Library Folders
-libs/
-Libraries/
 
 # mstest test results
 TestResults
