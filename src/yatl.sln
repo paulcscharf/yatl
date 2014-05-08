@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "yatl", "yatl\yatl.csproj", 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "amulware.Graphics", "..\libs\awgraphics\src\amulware.Graphics\amulware.Graphics.csproj", "{59BEDA5C-D68A-4011-89BA-C09421D22974}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cireon.Audio", "..\libs\Cireon.Audio\src\Cireon.Audio\Cireon.Audio.csproj", "{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -35,6 +37,14 @@ Global
 		{59BEDA5C-D68A-4011-89BA-C09421D22974}.Release|x64.Build.0 = Release|x64
 		{59BEDA5C-D68A-4011-89BA-C09421D22974}.Release|x86.ActiveCfg = Release|x86
 		{59BEDA5C-D68A-4011-89BA-C09421D22974}.Release|x86.Build.0 = Release|x86
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Release|x64.ActiveCfg = Release|Any CPU
+		{C978FA42-AA1D-43F5-96F2-3DC0913FFA6F}.Release|x86.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

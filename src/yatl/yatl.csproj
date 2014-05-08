@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Environment\GameState.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
     <Compile Include="Input\DigitalAction.cs" />
     <Compile Include="Input\DummyAction.cs" />
