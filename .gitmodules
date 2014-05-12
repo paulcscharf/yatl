@@ -1,6 +1,3 @@
 [submodule "libs/awgraphics"]
 	path = libs/awgraphics
 	url = git@bitbucket.org:amulware/awgraphics.git
-[submodule "libs/Cireon.Audio"]
-	path = libs/Cireon.Audio
-	url = https://github.com/Cireon/Cireon.Audio.git
