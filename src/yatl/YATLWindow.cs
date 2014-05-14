@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using amulware.Graphics;
 using OpenTK;
 using OpenTK.Graphics;
@@ -35,6 +35,13 @@ namespace yatl
             this.renderer = new GameRenderer();
 
             this.gamestate = new GameState();
+        }
+
+        protected override void OnResize(EventArgs e)
+        {
+            this.renderer.Resize(this.Width, this.Height);
+
+            base.OnResize(e);
         }
 
         protected override void OnUpdate(UpdateEventArgs e)
