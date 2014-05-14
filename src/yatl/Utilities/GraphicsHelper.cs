@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.Linq;
@@ -11,7 +13,7 @@ using PixelFormat = OpenTK.Graphics.OpenGL.PixelFormat;
 
 namespace yatl.Utilities
 {
-    static class GraphicsHelpers
+    static class GraphicsHelper
     {
         public static VertexShader LoadVertexShader(string path)
         {
@@ -30,25 +32,155 @@ namespace yatl.Utilities
             }
         }
 
-        public static ShaderProgram LoadShaderProgram(string path)
+        public static ISurfaceShader LoadShaderProgram(string path)
         {
-            return GraphicsHelpers.LoadShaderProgram(
+            return GraphicsHelper.LoadShaderProgram(
                 path + Settings.Content.Shaders.VertexShaderExtension,
                 path + Settings.Content.Shaders.FragmentShaderExtension
                 );
         }
 
-        public static ShaderProgram LoadShaderProgram(string vspath, string fspath)
+        public static ISurfaceShader LoadShaderProgram(string vspath, string fspath)
+        {
+            var program = GraphicsHelper.loadShaderProgram(vspath, fspath);
+#if DEBUG
+            var refresher = new ShaderProgramRefresher(program);
+
+            GraphicsHelper.subscribeToShaderChanges(vspath, fspath, refresher);
+
+            return refresher;
+#endif
+            return program;
+        }
+
+        private static ShaderProgram loadShaderProgram(string vspath, string fspath)
         {
             using (var vsReader = new StreamReader(vspath))
             using (var fsReader = new StreamReader(fspath))
             {
-                return ShaderProgram.FromCode(
+                var program = ShaderProgram.FromCode(
                     Settings.Content.Shaders.ShaderCodePrefix + vsReader.ReadToEnd(),
                     Settings.Content.Shaders.ShaderCodePrefix + fsReader.ReadToEnd()
-                    );   
+                    );
+                return program;
             }
         }
+
+#if DEBUG
+        private static readonly List<ShaderRefreshContainer> refreshableShaders =
+            new List<ShaderRefreshContainer>();
+
+        private sealed class ShaderRefreshContainer
+        {
+            private readonly ShaderProgramRefresher refresher;
+            private readonly FileRefreshInfo vs;
+            private readonly FileRefreshInfo fs;
+
+            public ShaderRefreshContainer(string vspath, string fspath, ShaderProgramRefresher refresher)
+            {
+                this.vs = new FileRefreshInfo(Settings.Content.Shaders.ShaderRefreshPathPrefix + vspath);
+                this.fs = new FileRefreshInfo(Settings.Content.Shaders.ShaderRefreshPathPrefix + fspath);
+                this.refresher = refresher;
+            }
+
+            public void RefreshIfModified(out bool changed, out bool reloaded)
+            {
+                changed = false;
+                reloaded = false;
+
+                if (this.fs.FileName == "beard.fs")
+                {
+
+                }
+
+                bool vChanged = this.vs.WasModified();
+                bool fChanged = this.fs.WasModified();
+
+                if (!vChanged && !fChanged)
+                    return;
+
+                changed = true;
+
+                string changedName = (vChanged && fChanged)
+                    ? string.Format("{0} and {1}", this.vs.FileName, this.fs.FileName)
+                    : (vChanged ? this.vs.FileName : this.fs.FileName);
+
+                var argb = Console.ForegroundColor;
+
+                Console.WriteLine("\n+++++++++++++++++++++");
+                Console.WriteLine("{0} changed.", changedName);
+                Console.WriteLine("Reloading {0} and {1} ..", this.vs.FileName, this.fs.FileName);
+
+                var watch = Stopwatch.StartNew();
+
+                ShaderProgram program;
+
+                try
+                {
+                    program = GraphicsHelper.loadShaderProgram(this.vs.Path, this.fs.Path);
+                }
+                catch (Exception e)
+                {
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Could not compile shader! (took {0:0.00}ms)", watch.Elapsed.TotalMilliseconds);
+                    Console.ForegroundColor = ConsoleColor.Yellow;
+                    Console.WriteLine(e.Message);
+                    program = null;
+                }
+
+                if (program != null)
+                {
+                    this.refresher.SetShaderProgram(program);
+
+                    Console.ForegroundColor = ConsoleColor.DarkGreen;
+                    Console.WriteLine("Shader successfully reloaded! (took {0:0.00}ms)", watch.Elapsed.TotalMilliseconds);
+
+                    reloaded = true;
+                }
+                Console.WriteLine();
+
+                Console.ForegroundColor = argb;
+            }
+        }
+
+        private static void subscribeToShaderChanges(string vspath, string fspath, ShaderProgramRefresher refresher)
+        {
+            GraphicsHelper.refreshableShaders.Add(new ShaderRefreshContainer(vspath, fspath, refresher));
+        }
+
+        public static void CheckAndUpdateChangedShaders()
+        {
+            var watch = Stopwatch.StartNew();
+            int changeCounter = 0;
+            int reloadCounter = 0;
+            foreach (var refresher in GraphicsHelper.refreshableShaders)
+            {
+                bool changed;
+                bool reloaded;
+                refresher.RefreshIfModified(out changed, out reloaded);
+                if (changed)
+                    changeCounter++;
+                if (reloaded)
+                    reloadCounter++;
+            }
+            watch.Stop();
+
+            if (changeCounter != 0)
+            {
+                var argb = Console.ForegroundColor;
+
+                Console.WriteLine("Checked {0} shaders for changes (took {1:0.00}ms)",
+                    GraphicsHelper.refreshableShaders.Count, watch.Elapsed.TotalMilliseconds);
+                Console.WriteLine("{0} where modified", changeCounter);
+                Console.ForegroundColor = changeCounter == reloadCounter
+                    ? ConsoleColor.DarkGreen
+                    : (reloadCounter == 0 ? ConsoleColor.Red : ConsoleColor.Yellow);
+                Console.WriteLine("{0} where reloaded successfully", reloadCounter);
+
+                Console.ForegroundColor = argb;
+            }
+        }
+#endif
 
         // Returns a System.Drawing.Bitmap with the contents of the current framebuffer
         public static Bitmap GrabScreenshot(this amulware.Graphics.Program program)

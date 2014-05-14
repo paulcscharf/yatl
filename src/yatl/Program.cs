@@ -5,7 +5,9 @@ namespace yatl
     {
         static void Main(string[] args)
         {
-            new YATLWindow().Run(Settings.General.DefaultFPS);
+            int glMajor = OpenTK.Configuration.RunningOnLinux ? 1 : 3;
+            int glMinor = OpenTK.Configuration.RunningOnLinux ? 0 : 2;
+            new YATLWindow(glMajor, glMinor).Run(Settings.General.DefaultFPS);
         }
     }
 }

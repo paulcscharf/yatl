@@ -4,17 +4,22 @@ using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Input;
+using yatl.Environment;
+using yatl.Rendering;
 using yatl.Utilities;
 
 namespace yatl
 {
     sealed class YATLWindow : amulware.Graphics.Program
     {
-        public YATLWindow()
+        private GameRenderer renderer;
+        private GameState gamestate;
+
+        public YATLWindow(int glMajor, int glMinor)
             : base(Settings.General.DefaultWindowWidth,
                 Settings.General.DefaultWindowHeight,
                 GraphicsMode.Default, "You are the light",
-                GameWindowFlags.Default, DisplayDevice.Default, 3, 2,
+                GameWindowFlags.Default, DisplayDevice.Default, glMajor, glMinor,
                 GraphicsContextFlags.Default)
         {
             Console.WriteLine(GL.GetString(StringName.Version));
@@ -27,7 +32,9 @@ namespace yatl
 
             InputManager.Initialize(this.Mouse);
 
+            this.renderer = new GameRenderer();
 
+            this.gamestate = new GameState();
         }
 
         protected override void OnUpdate(UpdateEventArgs e)
@@ -38,7 +45,11 @@ namespace yatl
 
         protected override void OnRender(UpdateEventArgs e)
         {
+            this.renderer.Render(this.gamestate);
 
+            this.renderer.FinalizeFrame();
+            
+            this.SwapBuffers();
         }
     }
 }

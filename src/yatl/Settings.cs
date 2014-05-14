@@ -17,6 +17,8 @@ namespace yatl
             {
                 public const string VertexShaderExtension = ".vs";
                 public const string FragmentShaderExtension = ".fs";
+                
+                public const string ShaderRefreshPathPrefix = "../../";
 
                 public static string ShaderCodePrefix
                 {
