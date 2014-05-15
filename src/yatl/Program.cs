@@ -1,4 +1,5 @@
 using System;
+using TK = OpenTK.Configuration;
 using System.Globalization;
 using System.Threading;
 
@@ -8,7 +9,19 @@ namespace yatl
     {
         static void Main(string[] args)
         {
-            Console.WriteLine(OpenTK.Configuration.RunningOnLinux.ToString()); // Returns False!!
+            // Everything returns false on linux ??
+            foreach(bool config in new bool[]{
+                    TK.RunningOnAndroid,
+                    TK.RunningOnLinux,
+                    TK.RunningOnMacOS,
+                    TK.RunningOnMono,
+                    TK.RunningOnSdl2,
+                    TK.RunningOnUnix,
+                    TK.RunningOnWindows,
+                    TK.RunningOnX11,
+                    }){
+                Console.WriteLine(config.ToString());
+            }
 
             Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
             Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
