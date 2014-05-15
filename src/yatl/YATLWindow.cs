@@ -46,8 +46,13 @@ namespace yatl
 
         protected override void OnUpdate(UpdateEventArgs e)
         {
-            if(this.Keyboard[Key.Escape])
+            if (this.Keyboard[Key.Escape])
+            {
                 this.Close();
+                return;
+            }
+
+            this.gamestate.Update(e);
         }
 
         protected override void OnRender(UpdateEventArgs e)
