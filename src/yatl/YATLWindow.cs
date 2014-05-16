@@ -22,8 +22,8 @@ namespace yatl
                 GameWindowFlags.Default, DisplayDevice.Default, glMajor, glMinor,
                 GraphicsContextFlags.Default)
         {
-            Console.WriteLine(GL.GetString(StringName.Version));
-            Console.WriteLine(GL.GetString(StringName.ShadingLanguageVersion));
+            Console.WriteLine("GL Context Version: {0}", GL.GetString(StringName.Version));
+            Console.WriteLine("GL Shader Version: {0}", GL.GetString(StringName.ShadingLanguageVersion));
         }
 
         protected override void OnLoad(EventArgs e)
@@ -46,8 +46,15 @@ namespace yatl
 
         protected override void OnUpdate(UpdateEventArgs e)
         {
-            if(this.Keyboard[Key.Escape])
+            if (this.Keyboard[Key.Escape])
+            {
                 this.Close();
+                return;
+            }
+
+            InputManager.Update();
+
+            this.gamestate.Update(e);
         }
 
         protected override void OnRender(UpdateEventArgs e)

@@ -32,8 +32,12 @@ namespace yatl.Rendering
 
         public void FinalizeFrame()
         {
+            #region Global Settings
+
             GL.DepthMask(false);
             GL.CullFace(CullFaceMode.FrontAndBack);
+
+            #endregion
 
             GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
 
@@ -46,14 +50,23 @@ namespace yatl.Rendering
 
             GL.Viewport(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
             GL.Scissor(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
+
             GL.Enable(EnableCap.ScissorTest);
             GL.ClearColor(Color.CornflowerBlue);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Disable(EnableCap.ScissorTest);
 
+            #region Draw Game
+            
+            this.surfaces.Particles.Surface.Render();
+
+            #endregion
+
+            #region Draw Interface
+
             this.surfaces.ScreenFontSurface.Render();
 
-            
+            #endregion
         }
 
         public void Resize(int width, int height)

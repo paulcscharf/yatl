@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -57,8 +57,12 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Environment\ControlScheme.cs" />
     <Compile Include="Environment\GameState.cs" />
+    <Compile Include="Environment\GameUpdateEventArgs.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
+    <Compile Include="Environment\Unit.cs" />
+    <Compile Include="Environment\Wisp.cs" />
     <Compile Include="Input\DigitalAction.cs" />
     <Compile Include="Input\DummyAction.cs" />
     <Compile Include="Input\GamePadAction.cs" />
@@ -87,6 +91,9 @@
     <Compile Include="YATLWindow.cs" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="data\gfx\sprites\particles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\shaders\post\blurh.fs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -112,6 +119,9 @@
     <Content Include="data\gfx\fonts\calibri.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <None Include="data\gfx\sprites\particles.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="data\shaders\post.vs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -122,6 +132,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\shaders\uvcolor.vs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="OpenTK.dll.config">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
