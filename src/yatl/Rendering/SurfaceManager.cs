@@ -2,6 +2,7 @@
 using System;
 using amulware.Graphics;
 using OpenTK;
+using yatl.Environment;
 using yatl.Utilities;
 
 namespace yatl.Rendering
@@ -9,6 +10,8 @@ namespace yatl.Rendering
     sealed class SurfaceManager
     {
         private static Func<string, Texture> premultiplyTexture = file => new Texture(file, true);
+
+        private SurfaceSetting[] gameSpriteSettings;
 
         #region Matrices
 
@@ -23,12 +26,15 @@ namespace yatl.Rendering
         private TextureUniform fontTextureUniform;
         public Font Font { get; private set; }
         public IndexedSurface<UVColorVertexData> ScreenFontSurface { get; private set; }
+        public IndexedSurface<UVColorVertexData> GameFontSurface { get; private set; }
 
         #endregion
 
         #region Sprites
 
         public SpriteSet<UVColorVertexData> Particles { get; set; }
+
+        public SpriteSet<UVColorVertexData> Hexagons { get; set; } 
 
         #endregion
 
@@ -40,8 +46,17 @@ namespace yatl.Rendering
         private void initialise(ShaderManager shaders)
         {
             this.initMatrices();
+
+            this.gameSpriteSettings = new SurfaceSetting[]
+            {
+                this.gameModelview,
+                this.gameProjection,
+                SurfaceBlendSetting.PremultipliedAlpha
+            };
+
             this.initFonts(shaders);
             this.initParticles(shaders);
+            this.initHexagons(shaders);
         }
 
         private void initMatrices()
@@ -70,20 +85,32 @@ namespace yatl.Rendering
                 SurfaceBlendSetting.PremultipliedAlpha
                 );
             shaders.UVColor.UseOnSurface(this.ScreenFontSurface);
+
+            this.GameFontSurface = new IndexedSurface<UVColorVertexData>();
+            this.GameFontSurface.AddSettings(
+                this.gameModelview,
+                this.gameProjection,
+                this.fontTextureUniform,
+                SurfaceBlendSetting.PremultipliedAlpha
+                );
+            shaders.UVColor.UseOnSurface(this.GameFontSurface);
         }
 
         private void initParticles(ShaderManager shaders)
         {
-            var settings = new SurfaceSetting[]
-            {
-                this.gameModelview,
-                this.gameProjection,
-                SurfaceBlendSetting.PremultipliedAlpha
-            };
-            
-            this.Particles = SpriteSet<UVColorVertexData>.FromJsonFile(
-                "data/gfx/sprites/particles.json", s => new Sprite2DGeometry(s),
-                shaders.UVColor, settings, SurfaceManager.premultiplyTexture, true);
+            this.Particles = this.loadGameSpriteSet(shaders, "particles");
+        }
+
+        private void initHexagons(ShaderManager shaders)
+        {
+            this.Hexagons = this.loadGameSpriteSet(shaders, "hexagons");
+        }
+
+        private SpriteSet<UVColorVertexData> loadGameSpriteSet(ShaderManager shaders, string filename)
+        {
+            return SpriteSet<UVColorVertexData>.FromJsonFile(
+                "data/gfx/sprites/" + filename + ".json", s => new Sprite2DGeometry(s),
+                shaders.UVColor, this.gameSpriteSettings, SurfaceManager.premultiplyTexture, true);
         }
 
         private void makeGameProjectionMatrix()
@@ -113,6 +140,18 @@ namespace yatl.Rendering
             Vector3 topCenter = new Vector3(0, 9, 0);
             this.screenModelview.Matrix = Matrix4.LookAt(
                 new Vector3(0, 0, -22) + topCenter, new Vector3(0, 0, 0) + topCenter, -Vector3.UnitY);
+        }
+
+        public void SetGameCamera(Camera camera)
+        {
+            var projectedOnFloor = camera.Focus.Xy - camera.Position.Xy;
+
+            var upVector = Vector3.Cross(
+                new Vector3(projectedOnFloor),
+                new Vector3(projectedOnFloor.PerpendicularLeft)
+                );
+
+            this.gameModelview.Matrix = Matrix4.LookAt(camera.Position, camera.Focus, upVector);
         }
     }
 

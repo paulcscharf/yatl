@@ -28,6 +28,8 @@ namespace yatl.Rendering
         public void Render(GameState state)
         {
             state.Draw(this.sprites);
+
+            this.surfaces.SetGameCamera(state.Camera);
         }
 
         public void FinalizeFrame()
@@ -59,6 +61,11 @@ namespace yatl.Rendering
             #region Draw Game
             
             this.surfaces.Particles.Surface.Render();
+
+            this.surfaces.Hexagons.Surface.Render();
+
+
+            this.surfaces.GameFontSurface.Render();
 
             #endregion
 

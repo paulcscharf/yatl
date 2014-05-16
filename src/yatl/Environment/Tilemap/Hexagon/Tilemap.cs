@@ -1,3 +1,5 @@
+﻿using System.Collections.Generic;
+
 namespace yatl.Environment.Tilemap.Hexagon
 {
     sealed class Tilemap<TTileInfo>
@@ -41,8 +43,8 @@ namespace yatl.Environment.Tilemap.Hexagon
 
         public bool IsValidTile(int x, int y)
         {
-            return x > -this.radius && x <= this.radius
-                && y > -this.radius && y <= this.radius
+            return x >= -this.radius && x <= this.radius
+                && y >= -this.radius && y <= this.radius
                 && x + y >= -this.radius && x + y <= this.radius;
         }
 
@@ -50,6 +52,39 @@ namespace yatl.Environment.Tilemap.Hexagon
         {
             x += this.radius;
             y += this.radius;
+        }
+
+        public IEnumerable<Tile<TTileInfo>> TilesSpiralOutward
+        {
+            get
+            {
+                int x = 0;
+                int y = 0;
+
+                yield return new Tile<TTileInfo>(this, 0, 0);
+
+                // for each circle
+                for (int r = 0; r < this.radius; r++)
+                {
+                    y--;
+
+                    // for each edge
+                    for (int d = 1; d <= 6; d++)
+                    {
+                        var step = ((Direction)d).Step();
+
+                        // for each tile
+                        for (int t = 0; t <= r; t++)
+                        {
+                            yield return new Tile<TTileInfo>(this, x, y);
+
+                            x += step.X;
+                            y += step.Y;
+                        }
+                    }
+
+                }
+            }
         }
     }
 }

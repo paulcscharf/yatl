@@ -4,7 +4,7 @@ using amulware.Graphics;
 
 namespace yatl.Environment
 {
-    abstract class Unit : GameObject
+    abstract class Unit : GameObject, IPositionable
     {
         protected Vector2 position;
         public Vector2 Position { get { return this.position; } }

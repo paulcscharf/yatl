@@ -1,10 +1,12 @@
 using amulware.Graphics;
+using OpenTK;
 
 namespace yatl.Rendering
 {
     sealed class SpriteManager
     {
         public FontGeometry ScreenText { get; private set; }
+        public FontGeometry GameText { get; private set; }
 
         #region Particles
 
@@ -17,6 +19,9 @@ namespace yatl.Rendering
 
         #endregion
 
+        public Sprite2DGeometry FilledHexagon { get; private set; }
+        public Sprite2DGeometry EmptyHexagon { get; private set; }
+
         public SpriteManager(SurfaceManager surfaces)
         {
             this.initialise(surfaces);
@@ -25,6 +30,8 @@ namespace yatl.Rendering
         private void initialise(SurfaceManager surfaces)
         {
             this.ScreenText = new FontGeometry(surfaces.ScreenFontSurface, surfaces.Font);
+            this.GameText = new FontGeometry(surfaces.GameFontSurface, surfaces.Font)
+            {SizeCoefficient = new Vector2(1, -1)};
 
             this.Bloob = (Sprite2DGeometry) surfaces.Particles["bloob"].Geometry;
             this.Blink = (Sprite2DGeometry) surfaces.Particles["blink"].Geometry;
@@ -32,6 +39,9 @@ namespace yatl.Rendering
             this.Fadering = (Sprite2DGeometry) surfaces.Particles["fadering"].Geometry;
             this.Sparkly = (Sprite2DGeometry) surfaces.Particles["sparkly"].Geometry;
             this.Orb = (Sprite2DGeometry) surfaces.Particles["orb"].Geometry;
+
+            this.FilledHexagon = (Sprite2DGeometry)surfaces.Hexagons["filled"].Geometry;
+            this.EmptyHexagon = (Sprite2DGeometry)surfaces.Hexagons["empty"].Geometry;
         }
     }
 }

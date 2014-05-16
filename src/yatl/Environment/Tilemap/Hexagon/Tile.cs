@@ -7,8 +7,8 @@ namespace yatl.Environment.Tilemap.Hexagon
     internal struct Tile<TTileInfo>
     {
         private readonly Tilemap<TTileInfo> tilemap;
-        private readonly int x;
-        private readonly int y;
+        public readonly int X;
+        public readonly int Y;
 
         public Tile(Tilemap<TTileInfo> tilemap, int x, int y)
         {
@@ -16,18 +16,18 @@ namespace yatl.Environment.Tilemap.Hexagon
                 throw new ArgumentNullException("tilemap");
 
             this.tilemap = tilemap;
-            this.x = x;
-            this.y = y;
+            this.X = x;
+            this.Y = y;
         }
 
         public TTileInfo Info
         {
-            get { return this.tilemap[this.x, this.y]; }
+            get { return this.tilemap[this.X, this.Y]; }
         }
 
         public bool IsValid
         {
-            get { return this.tilemap.IsValidTile(this.x, this.y); }
+            get { return this.tilemap.IsValidTile(this.X, this.Y); }
         }
 
         public Tile<TTileInfo> Neighbour(Direction direction)
@@ -39,8 +39,8 @@ namespace yatl.Environment.Tilemap.Hexagon
         {
             return new Tile<TTileInfo>(
                 this.tilemap,
-                this.x + step.X,
-                this.y + step.Y
+                this.X + step.X,
+                this.Y + step.Y
                 );
         }
 

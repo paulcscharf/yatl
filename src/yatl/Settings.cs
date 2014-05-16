@@ -1,3 +1,4 @@
+using OpenTK;
 using OpenTK.Graphics.OpenGL;
 
 namespace yatl
@@ -17,6 +18,34 @@ namespace yatl
             {
                 public const float FrictionCoefficient = 7f;
                 public const float Acceleration = 60f;
+            }
+
+            public static class Camera
+            {
+                public readonly static Vector3 FocusOffset = new Vector3(0, 2, 0);
+                public readonly static Vector3 PositionOffset = new Vector3(0, -10, 25);
+
+                public const float DefaultZoom = 1;
+
+                public const float FocusForce = 5f;
+                public const float PositionForce = 3f;
+            }
+
+            public static class Level
+            {
+                public const int Radius = 5;
+
+                private const float sqrtOfThree = 1.73205080757f;
+
+                public const float HexagonSide = 8;
+                public const float HexagonDiameter = HexagonSide * 2;
+                public const float HexagonWidth = HexagonSide * sqrtOfThree;
+
+                public const float HexagonHeight = HexagonSide * 1.5f;
+
+                public readonly static Vector2 HexagonGridUnitX = new Vector2(HexagonWidth, 0);
+                public readonly static Vector2 HexagonGridUnitY = new Vector2(HexagonWidth * 0.5f, HexagonHeight);
+
             }
         }
 

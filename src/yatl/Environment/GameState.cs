@@ -13,11 +13,19 @@ namespace yatl.Environment
         private float timeF;
         public float Time { get { return this.timeF; } }
 
+        private readonly Level level;
+        private readonly Wisp player;
+
         private readonly List<GameObject> gameObjects = new List<GameObject>();
+
+        public Camera Camera { get; private set; }
 
         public GameState()
         {
-            new Wisp(this, Vector2.Zero);
+            this.level = new Level();
+            this.player = new Wisp(this, Vector2.Zero);
+
+            this.Camera = new Camera(this.player);
         }
 
         public void Update(UpdateEventArgs args)
@@ -49,17 +57,19 @@ namespace yatl.Environment
                 this.gameObjects.RemoveAll(obj => obj == null);
 
             #endregion
+
+            this.Camera.Update(newArgs);
         }
 
         public void Draw(SpriteManager sprites)
         {
+            this.level.Draw(sprites);
+
             foreach (var gameObject in this.gameObjects)
             {
                 gameObject.Draw(sprites);
             }
 
-            sprites.ScreenText.Height = 3;
-            sprites.ScreenText.DrawString(new Vector2(0, 9), "Hi! :)", 0.5f, 0.5f);
         }
 
         public void AddObject(GameObject gameObject)
