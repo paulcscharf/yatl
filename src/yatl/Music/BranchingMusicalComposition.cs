@@ -9,21 +9,29 @@ namespace yatl
     {
         Motif root;
 
-        public BranchingMusicalComposition FromFile(string filename)
+        public static BranchingMusicalComposition FromFile(string filename)
         {
             // Parse file and return a BranchingMusicalComposition
-            string line;
+            var parser = new BranchingMusicalCompositionParser();
+            var motifs = new List<Motif>();
 
-            using (StreamReader reader = new StreamReader(filename))
+            using (var reader = new StreamReader(filename))
             {
                 while (!reader.EndOfStream)
                 {
-                    string sMotif = BranchingMusicalCompositionParser.ReadMotif(reader);
-                    Motif motif = Motif.FromString(sMotif);
+                    string sMotif = parser.ReadMotif(reader);
+                    Motif motif = parser.ParseMotif(sMotif);
+                    motifs.Add(motif);
                 }
             }
 
-            throw new NotImplementedException();
+            Console.WriteLine("Succesfully parsed " + filename);
+            foreach (var motif in motifs)
+            {
+                Console.WriteLine(motif.ToString());
+            }
+
+            return null;
         }
     }
 
@@ -34,10 +42,25 @@ namespace yatl
             get;
             private set;
         }
-
-        public static Motif FromString(string s)
+        public string Name
         {
-            throw new NotImplementedException();
+            get;
+            private set;
+        }
+        string[] successorNames;
+        string musicContent;
+
+        public Motif(string name, string[] successorNames, string musicContent)
+        {
+            this.Name = name;
+            this.successorNames = successorNames;
+            this.musicContent = musicContent;
+        }
+
+        public string ToString()
+        {
+            return this.Name + " -> " + string.Join(", ", this.successorNames)
+                + ": " + this.musicContent;
         }
     }
 }
