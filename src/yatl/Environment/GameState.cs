@@ -13,8 +13,8 @@ namespace yatl.Environment
         private float timeF;
         public float Time { get { return this.timeF; } }
 
-        private readonly Level level;
-        private readonly Wisp player;
+        public Level Level { get; private set; }
+        public Wisp Player { get; private set; }
 
         private readonly List<GameObject> gameObjects = new List<GameObject>();
 
@@ -22,10 +22,10 @@ namespace yatl.Environment
 
         public GameState()
         {
-            this.level = new Level();
-            this.player = new Wisp(this, Vector2.Zero);
+            this.Level = new Level();
+            this.Player = new Wisp(this, Vector2.Zero);
 
-            this.Camera = new Camera(this.player);
+            this.Camera = new Camera(this.Player);
         }
 
         public void Update(UpdateEventArgs args)
@@ -63,7 +63,7 @@ namespace yatl.Environment
 
         public void Draw(SpriteManager sprites)
         {
-            this.level.Draw(sprites);
+            this.Level.Draw(sprites);
 
             foreach (var gameObject in this.gameObjects)
             {

@@ -25,7 +25,7 @@ namespace yatl
                 public readonly static Vector3 FocusOffset = new Vector3(0, -2, 0);
                 public readonly static Vector3 PositionOffset = new Vector3(0, -10, 25);
 
-                public const float DefaultZoom = 1;
+                public const float DefaultZoom = 2f;
 
                 public const float FocusForce = 5f;
                 public const float PositionForce = 3f;
@@ -46,6 +46,11 @@ namespace yatl
                 public readonly static Vector2 HexagonGridUnitX = new Vector2(HexagonWidth, 0);
                 public readonly static Vector2 HexagonGridUnitY = new Vector2(HexagonWidth * 0.5f, HexagonHeight);
 
+                public readonly static amulware.Graphics.Matrix2 TileToPosition =
+                    new amulware.Graphics.Matrix2(HexagonGridUnitX, HexagonGridUnitY);
+
+                public const float HexagonInnerRadiusSquared = (HexagonWidth * 0.5f) * (HexagonWidth * 0.5f);
+                public const float HexagonOuterRadiusSquared = HexagonSide * HexagonSide;
             }
         }
 

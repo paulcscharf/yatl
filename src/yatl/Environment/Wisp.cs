@@ -1,4 +1,9 @@
+using System;
+using amulware.Graphics;
 using OpenTK;
+using OpenTK.Graphics.OpenGL;
+using yatl.Environment.Tilemap.Hexagon;
+using yatl.Rendering;
 
 namespace yatl.Environment
 {
@@ -25,6 +30,17 @@ namespace yatl.Environment
             this.velocity += acceleration * Settings.Game.Wisp.Acceleration * e.ElapsedTimeF;
 
             base.Update(e);
+        }
+
+        public override void Draw(SpriteManager sprites)
+        {
+            var v = this.game.Level.GetPosition(this.Tile);
+
+            var geo = sprites.FilledHexagon;
+            geo.Color = new Color(Color.Green, 0);
+            geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
+
+            base.Draw(sprites);
         }
     }
 }

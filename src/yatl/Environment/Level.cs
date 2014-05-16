@@ -1,4 +1,4 @@
-﻿using System.Linq;
+﻿using System;
 using amulware.Graphics;
 using OpenTK;
 using yatl.Environment.Tilemap.Hexagon;
@@ -8,26 +8,54 @@ namespace yatl.Environment
 {
     sealed class Level
     {
-        private readonly Tilemap<object> tilemap;
+        private readonly Tilemap<TileInfo> tilemap;
 
         public Level()
         {
-            this.tilemap = new Tilemap<object>(Settings.Game.Level.Radius);
+            this.tilemap = new Tilemap<TileInfo>(Settings.Game.Level.Radius);
+        }
+
+        public Tile<TileInfo> GetTile(Vector2 position)
+        {
+            float yf = position.Y * (1 / Settings.Game.Level.HexagonHeight) + 1 / 1.5f;
+
+            int y = (int)Math.Floor(yf);
+
+            float xf = position.X * (1 / Settings.Game.Level.HexagonWidth) - y * 0.5f + 0.5f;
+
+            int x = (int)Math.Floor(xf);
+
+            float xRemainder = (xf - x) - 0.5f;
+            float yRemainder = (yf - y) * 1.5f;
+
+            if (xRemainder > yRemainder)
+            {
+                x++;
+                y--;
+            }
+            else if (-xRemainder > yRemainder)
+                y--;
+
+            return new Tile<TileInfo>(this.tilemap, x, y);
+        }
+
+        public Vector2 GetPosition(Tile<TileInfo> tile)
+        {
+            return Settings.Game.Level.TileToPosition * new Vector2(tile.X, tile.Y);
         }
 
         public void Draw(SpriteManager sprites)
         {
             var hex = sprites.EmptyHexagon;
             var font = sprites.GameText;
-            font.Height = 0.5f;
+            font.Height = 2;
 
             int i = 0;
             foreach (var tile in this.tilemap.TilesSpiralOutward)
             {
                 var argb = Color.Black;
 
-                var position = tile.X * Settings.Game.Level.HexagonGridUnitX
-                               + tile.Y * Settings.Game.Level.HexagonGridUnitY;
+                var position = this.GetPosition(tile);
 
                 hex.Color = argb;
                 hex.DrawSprite(position, 0, Settings.Game.Level.HexagonDiameter);

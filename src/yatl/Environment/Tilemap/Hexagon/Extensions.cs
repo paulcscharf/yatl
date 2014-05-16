@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 namespace yatl.Environment.Tilemap.Hexagon
@@ -20,6 +21,10 @@ namespace yatl.Environment.Tilemap.Hexagon
             return Extensions.directionDelta[(int)direction];
         }
 
+        public static Direction Hexagonal(this Utilities.Direction direction)
+        {
+            return (Direction)((int)Math.Floor(direction.Degrees * 1/60f + 0.5f) % 6 + 1);
+        }
 
         #region Tile<TTileInfo>
 
