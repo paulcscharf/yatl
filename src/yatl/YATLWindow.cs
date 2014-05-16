@@ -14,6 +14,7 @@ namespace yatl
     {
         private GameRenderer renderer;
         private GameState gamestate;
+        private MusicManager musicManager;
 
         public YATLWindow(int glMajor, int glMinor)
             : base(Settings.General.DefaultWindowWidth,
