@@ -1,0 +1,10 @@
+# Branching Musical Composition
+
+# Part A
+A -> B, C : 1c c g g a a 2g 1f f e e d d 2c,
+# Part B
+B -> A : {2c   e   f   e  d    c   G  c,
+          1c c g g a a 2g 1f f e e d d 2c},
+# Part C; Scary tune
+C -> A : d fis f cis e dis b d dis ais b,
+
