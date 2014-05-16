@@ -61,6 +61,11 @@
     <Compile Include="Environment\GameState.cs" />
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
+    <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
+    <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />
+    <Compile Include="Environment\Tilemap\Hexagon\Tilemap.cs" />
+    <Compile Include="Environment\Tilemap\Hexagon\Step.cs" />
+    <Compile Include="Environment\Tilemap\Hexagon\Tile.cs" />
     <Compile Include="Environment\Unit.cs" />
     <Compile Include="Environment\Wisp.cs" />
     <Compile Include="Input\DigitalAction.cs" />
