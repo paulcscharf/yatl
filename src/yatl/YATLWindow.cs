@@ -34,6 +34,8 @@ namespace yatl
 
             this.renderer = new GameRenderer();
 
+            this.musicManager = new MusicManager();
+
             this.gamestate = new GameState();
         }
 
