@@ -8,13 +8,29 @@ namespace yatl.Rendering
 {
     sealed class SurfaceManager
     {
+        private static Func<string, Texture> premultiplyTexture = file => new Texture(file, true);
+
+        #region Matrices
+
         private Matrix4Uniform gameProjection;
         private Matrix4Uniform gameModelview;
         private Matrix4Uniform screenModelview;
 
+        #endregion
+
+        #region Fonts
+
         private TextureUniform fontTextureUniform;
         public Font Font { get; private set; }
         public IndexedSurface<UVColorVertexData> ScreenFontSurface { get; private set; }
+
+        #endregion
+
+        #region Sprites
+
+        public SpriteSet<UVColorVertexData> Particles { get; set; }
+
+        #endregion
 
         public SurfaceManager(ShaderManager shaders)
         {
@@ -25,6 +41,7 @@ namespace yatl.Rendering
         {
             this.initMatrices();
             this.initFonts(shaders);
+            this.initParticles(shaders);
         }
 
         private void initMatrices()
@@ -35,6 +52,7 @@ namespace yatl.Rendering
             this.screenModelview = new Matrix4Uniform("modelviewMatrix");
 
             this.makeGameProjectionMatrix();
+            this.makeGameModelviewMatrix();
             this.makeScreenModelviewMatrix();
         }
 
@@ -54,6 +72,20 @@ namespace yatl.Rendering
             shaders.UVColor.UseOnSurface(this.ScreenFontSurface);
         }
 
+        private void initParticles(ShaderManager shaders)
+        {
+            var settings = new SurfaceSetting[]
+            {
+                this.gameModelview,
+                this.gameProjection,
+                SurfaceBlendSetting.PremultipliedAlpha
+            };
+            
+            this.Particles = SpriteSet<UVColorVertexData>.FromJsonFile(
+                "data/gfx/sprites/particles.json", s => new Sprite2DGeometry(s),
+                shaders.UVColor, settings, SurfaceManager.premultiplyTexture, true);
+        }
+
         private void makeGameProjectionMatrix()
         {
             const float zNear = 0.1f;
@@ -69,6 +101,11 @@ namespace yatl.Rendering
 
             this.gameProjection.Matrix = Matrix4.CreatePerspectiveOffCenter(xMin, xMax, yMin, yMax, zNear, zFar);
 
+        }
+
+        private void makeGameModelviewMatrix()
+        {
+            this.gameModelview.Matrix = Matrix4.LookAt(new Vector3(0, 0, 25), new Vector3(0, 0, 0), Vector3.UnitY);
         }
 
         private void makeScreenModelviewMatrix()

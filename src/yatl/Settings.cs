@@ -11,6 +11,15 @@ namespace yatl
             public const int DefaultFPS = 50;
         }
 
+        public static class Game
+        {
+            public static class Wisp
+            {
+                public const float FrictionCoefficient = 7f;
+                public const float Acceleration = 60f;
+            }
+        }
+
         public static class Content
         {
             public static class Shaders
