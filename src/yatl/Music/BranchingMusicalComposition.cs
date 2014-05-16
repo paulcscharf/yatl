@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 
 namespace yatl
 {
@@ -10,28 +11,32 @@ namespace yatl
 
         public BranchingMusicalComposition FromFile(string filename)
         {
-            // Parses file and returns a BranchingMusicalComposition
-            int counter = 0;
+            // Parse file and return a BranchingMusicalComposition
             string line;
 
-            using (StreamReader file = new StreamReader(filename))
+            using (StreamReader reader = new StreamReader(filename))
             {
-                while ((line = file.ReadLine()) != null)
+                while (!reader.EndOfStream)
                 {
-                    Motif motif = Motif.FromString(line);
-                    counter++;
+                    string sMotif = BranchingMusicalCompositionParser.ReadMotif(reader);
+                    Motif motif = Motif.FromString(sMotif);
                 }
             }
 
-            return null;
+            throw new NotImplementedException();
         }
     }
 
     class Motif
     {
-        public IEnumerable<Motif> Successors { get; private set; }
+        public IEnumerable<Motif> Successors
+        {
+            get;
+            private set;
+        }
 
-        public static Motif FromString(string s){
+        public static Motif FromString(string s)
+        {
             throw new NotImplementedException();
         }
     }
