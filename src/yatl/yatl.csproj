@@ -71,7 +71,7 @@
     <Compile Include="Input\KeyboardKeyAction.cs" />
     <Compile Include="Input\LambdaAction.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Music/MusicalCompositionGraph.cs" />
+    <Compile Include="Music/BranchingMusicalComposition.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\GameRenderer.cs" />
     <Compile Include="Rendering\SpriteManager.cs" />
