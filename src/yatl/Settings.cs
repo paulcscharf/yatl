@@ -22,7 +22,7 @@ namespace yatl
 
             public static class Camera
             {
-                public readonly static Vector3 FocusOffset = new Vector3(0, 2, 0);
+                public readonly static Vector3 FocusOffset = new Vector3(0, -2, 0);
                 public readonly static Vector3 PositionOffset = new Vector3(0, -10, 25);
 
                 public const float DefaultZoom = 1;
