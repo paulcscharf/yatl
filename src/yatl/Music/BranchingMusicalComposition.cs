@@ -44,7 +44,7 @@ namespace yatl
 
         public string ToString()
         {
-            var successorNames = (from motif in this.Successors select motif.Name);
+            var successorNames = this.Successors.Select(motif => motif.Name);
             return this.Name + " -> " + string.Join(",", successorNames)
                    + ": " + this.musicContent;
         }

@@ -19,21 +19,28 @@ namespace yatl
     {
         int currentLine = 0;
 
-        void debug(object o)
+        /// <summary>
+        /// Print given object
+        /// If instance of IEnumerable, do it recursively
+        /// </summary>
+        static void dump(object o)
         {
             try
             {
-                foreach (var item in (IEnumerable)o)
+                var list = (IEnumerable)o;
+                Console.Write("{");
+                foreach (var item in list)
                 {
-                    Console.Write(item.ToString());
+                    dump(item);
                     Console.Write(", ");
                 }
-                Console.WriteLine();
+                Console.Write("}");
             }
             catch (Exception e)
             {
-                Console.WriteLine(o.ToString());
+                Console.Write(o.ToString());
             }
+            Console.WriteLine();
         }
 
         /// <summary>
@@ -60,17 +67,11 @@ namespace yatl
             // Set successors right for all motifs
             foreach (Motif motif in motifs.Values)
             {
-                //debug(motif.successorNames);
-                var successors = new List<Motif>();
-                foreach (string successorName in motif.successorNames)
-                {
-                    successors.Add(motifs[successorName]);
-                }
-                //var successors = from m in motifs where motif.successorNames.Contains(m.Key) select m.Value;
-                motif.Successors = successors;
+                motif.Successors = motif.successorNames.Select(key => motifs[key]).ToList();
             }
 
             Console.WriteLine("Succesfully parsed " + filename);
+            dump(motifs.Values);
             foreach (Motif motif in motifs.Values)
             {
                 Console.WriteLine(motif.ToString());
