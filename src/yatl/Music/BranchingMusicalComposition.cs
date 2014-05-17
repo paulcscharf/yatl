@@ -19,8 +19,9 @@ namespace yatl
             {
                 while (!reader.EndOfStream)
                 {
-                    string sMotif = parser.ReadMotif(reader);
-                    Motif motif = parser.ParseMotif(sMotif);
+                    Motif motif = parser.ParseMotif(reader);
+                    if (motif == null)
+                        break;
                     motifs.Add(motif);
                 }
             }

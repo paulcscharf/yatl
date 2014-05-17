@@ -5,9 +5,9 @@ using System.Text;
 
 namespace yatl
 {
-    class ParseException : Exception
+    class ParseError : Exception
     {
-        public ParseException(string message, int lineNumber)
+        public ParseError(string message, int lineNumber)
         : base("At line " + lineNumber.ToString() + ": " + message)
         {
         }
@@ -17,64 +17,176 @@ namespace yatl
     {
         int currentLine = 0;
 
-        public string ReadMotif(StreamReader reader)
+        void debug(object o)
+        {
+            Console.WriteLine(o.ToString());
+        }
+
+        public Motif ParseMotif(StreamReader reader)
         {
             // Read and return string containing exactly one motif
-            StringBuilder sb = new StringBuilder();
-            int level = 0;
-            bool comment = false;
+
+            string name = this.ParseName(reader);
+            if (name == null)
+                return null;
+            string[] successorNames = this.ParseSuccessorNames(reader);
+            string content = this.ParseContent(reader);
+
+            return new Motif(name, successorNames, content);
+
+        }
+
+        public string ParseName(StreamReader reader)
+        {
+            // Parse and return the motif name
+            var name = new StringBuilder();
+            char c;
+            bool dash = false;
 
             while (!reader.EndOfStream)
             {
-                char c = (char) reader.Read();
-                if (c == ',' && level == 0)
+                c = (char) reader.Read();
+                switch (c)
+                {
+                case '#':
+                    this.ParseComment(reader);
                     break;
-                if (c == '#')
-                    comment = true;
+                case ' ':
+                    break;
+                case '\n':
+                    this.currentLine++;
+                    break;
+                case '-':
+                    dash = true;
+                    break;
+                case '>':
+                    if (dash)
+                        return name.ToString();
+                    else
+                        throw new ParseError("Unexpected '>'", this.currentLine);
+                    break;
+                default:
+                    name.Append(c);
+                    break;
+                }
+            }
+            if (name.Length > 0)
+                throw new ParseError("Expected '->'", this.currentLine);
+            return null;
+        }
+
+        public string[] ParseSuccessorNames(StreamReader reader)
+        {
+            // Parse and return the successor names
+            var name = new StringBuilder();
+            var names = new List<string>();
+            char c;
+
+            while (!reader.EndOfStream)
+            {
+                c = (char) reader.Read();
+                switch (c)
+                {
+                case '#':
+                    this.ParseComment(reader);
+                    break;
+                case ' ':
+                    break;
+                case '\n':
+                    this.currentLine++;
+                    break;
+                case ',':
+                    names.Add(name.ToString());
+                    name.Clear();
+                    break;
+                case ':':
+                    names.Add(name.ToString());
+                    return names.ToArray();
+                default:
+                    name.Append(c);
+                    break;
+                }
+            }
+            throw new ParseError("Expected ':'", this.currentLine);
+        }
+
+        public void ParseComment(StreamReader reader)
+        {
+            while (!reader.EndOfStream)
+            {
+                char c = (char) reader.Read();
                 if (c == '\n')
                 {
                     this.currentLine++;
-                    comment = false;
-                    continue;
+                    return;
                 }
-                else if (c == '{')
-                    level++;
-                else if (c == '}')
+            }
+        }
+
+        public string ParseContent(StreamReader reader)
+        {
+            StringBuilder sb = new StringBuilder();
+            int level = 0;
+            char c;
+
+            while (!reader.EndOfStream)
+            {
+                c = (char) reader.Read();
+
+                if (c == ',' && level == 0)
+                    return sb.ToString();
+
+                switch (c)
                 {
-                    if (level == 0)
-                        throw new ParseException("Unexpected '}'", this.currentLine);
+                case '#':
+                    this.ParseComment(reader);
+                    break;
+                case '\n':
+                    this.currentLine++;
+                    break;
+                case '{':
+                    level++;
+                    break;
+                case '}':
+                    if (level <= 0)
+                        throw new ParseError("Unexpected '}'", this.currentLine);
                     else
                         level--;
+                    break;
+                default:
+                    sb.Append(c);
+                    break;
                 }
-                sb.Append(c);
             }
 
             if (level != 0)
-                throw new ParseException("Expected '}'", this.currentLine);
+                throw new ParseError("Expected '}'", this.currentLine);
             return sb.ToString();
         }
 
-        public Motif ParseMotif(string sMotif)
+        /*
+        public Motif ParseMotifOld(string sMotif)
         {
             string[] splitMotif = sMotif.Split(new string[] {":"}, StringSplitOptions.None);
             if (splitMotif.Length > 2)
-                throw new ParseException("Too many ':'", this.currentLine);
+                throw new ParseError("Too many ':'", this.currentLine);
             if (splitMotif.Length < 2)
-                throw new ParseException("Expected ':'", this.currentLine);
+                throw new ParseError("Expected ':'", this.currentLine);
 
             string label = splitMotif[0];
             string content = splitMotif[1];
 
             string[] splitLabel = label.Split(new string[] {"->"}, StringSplitOptions.None);
             if (splitLabel.Length > 2)
-                throw new ParseException("Too many '->'", this.currentLine);
+                throw new ParseError("Too many '->'", this.currentLine);
             if (splitLabel.Length < 2)
-                throw new ParseException("Expected '->'", this.currentLine);
+                throw new ParseError("Expected '->'", this.currentLine);
 
             string name = splitLabel[0].Trim();
             string[] successorNames = splitLabel[1].Trim().Split(',');
 
             return new Motif(name, successorNames, content);
         }
+        */
     }
 }
