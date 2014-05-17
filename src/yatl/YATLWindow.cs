@@ -57,11 +57,17 @@ namespace yatl
 
             InputManager.Update();
 
+            if(InputManager.IsKeyHit(Key.F12))
+                this.MakeScreenshot();
+
             this.gamestate.Update(e);
         }
 
         protected override void OnRender(UpdateEventArgs e)
         {
+            if (this.IsExiting)
+                return;
+
             this.renderer.Render(this.gamestate);
 
             this.renderer.FinalizeFrame();
