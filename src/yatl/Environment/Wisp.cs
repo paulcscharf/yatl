@@ -40,11 +40,6 @@ namespace yatl.Environment
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
 
-            var lines = sprites.Lines;
-            lines.Color = Color.White;
-
-            lines.DrawLine(this.position, Vector2.Zero);
-
             base.Draw(sprites);
         }
     }
