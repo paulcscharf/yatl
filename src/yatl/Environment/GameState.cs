@@ -1,9 +1,9 @@
 
-using System.Collections;
 using System.Collections.Generic;
 using amulware.Graphics;
 using OpenTK;
 using OpenTK.Input;
+using yatl.Environment.Level.Generation;
 using yatl.Rendering;
 using yatl.Utilities;
 
@@ -17,7 +17,7 @@ namespace yatl.Environment
 
         public bool DrawDebug { get; private set; }
 
-        public Level Level { get; private set; }
+        public Level.Level Level { get; private set; }
         public Wisp Player { get; private set; }
 
         private readonly List<GameObject> gameObjects = new List<GameObject>();
@@ -26,7 +26,7 @@ namespace yatl.Environment
 
         public GameState()
         {
-            this.Level = new Level(this, LevelGenerator.NewDefault);
+            this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
             this.Player = new Wisp(this, Vector2.Zero);
 
             this.Camera = new Camera(this.Player);
@@ -65,9 +65,10 @@ namespace yatl.Environment
 
             #endregion
 
-            this.Camera.Zoom = InputManager.IsKeyPressed(Key.ControlLeft)
-                ? Settings.Game.Camera.OverviewZoom
-                : Settings.Game.Camera.DefaultZoom;
+            if (InputManager.IsKeyHit(Key.ControlLeft))
+            {
+                this.Camera.Zoom = !this.Camera.Zoom;
+            }
             this.Camera.Update(newArgs);
         }
 

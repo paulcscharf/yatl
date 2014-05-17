@@ -62,11 +62,12 @@
     <Compile Include="Environment\GameObject.cs" />
     <Compile Include="Environment\GameState.cs" />
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
-    <Compile Include="Environment\GeneratingTileInfo.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
-    <Compile Include="Environment\Level.cs" />
-    <Compile Include="Environment\LevelGenerator.cs" />
-    <Compile Include="Environment\TileInfo.cs" />
+    <Compile Include="Environment\Level\Generation\GeneratingTileInfo.cs" />
+    <Compile Include="Environment\Level\Generation\Helpers.cs" />
+    <Compile Include="Environment\Level\Level.cs" />
+    <Compile Include="Environment\Level\Generation\Generator.cs" />
+    <Compile Include="Environment\Level\TileInfo.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Tilemap.cs" />
@@ -101,6 +102,7 @@
     <Compile Include="Utilities\GraphicsHelper.cs" />
     <Compile Include="Utilities\InputManager.cs" />
     <Compile Include="Utilities\LINQHelper.cs" />
+    <Compile Include="Utilities\SteppedStopWatch.cs" />
     <Compile Include="YATLWindow.cs" />
   </ItemGroup>
   <ItemGroup>

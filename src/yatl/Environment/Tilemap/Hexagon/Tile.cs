@@ -11,7 +11,7 @@ namespace yatl.Environment.Tilemap.Hexagon
         int Y { get; }
     }
 
-    struct Tile<TTileInfo> : ITile
+    struct Tile<TTileInfo> : ITile, IEquatable<Tile<TTileInfo>>
     {
         private readonly Tilemap<TTileInfo> tilemap;
 
@@ -60,6 +60,11 @@ namespace yatl.Environment.Tilemap.Hexagon
         public IEnumerable<Tile<TTileInfo>> Neighbours
         {
             get { return this.PossibleNeighbours().Where(t => t.IsValid); }
+        }
+
+        public bool Equals(Tile<TTileInfo> other)
+        {
+            return this.x == other.x && this.y == other.y && this.tilemap == other.tilemap;
         }
     }
 }

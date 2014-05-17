@@ -1,10 +1,11 @@
 using System;
 using amulware.Graphics;
 using OpenTK;
+using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Rendering;
 
-namespace yatl.Environment
+namespace yatl.Environment.Level
 {
     sealed class Level
     {

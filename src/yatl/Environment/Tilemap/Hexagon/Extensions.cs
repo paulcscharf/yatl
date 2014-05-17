@@ -113,5 +113,11 @@ namespace yatl.Environment.Tilemap.Hexagon
         }
 
         #endregion
+
+        public static int TileCountForRadius(int radius)
+        {
+            int dim = radius * 2 + 1;
+            return (dim * dim * 3) / 4;
+        }
     }
 }

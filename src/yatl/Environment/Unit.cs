@@ -1,5 +1,6 @@
 using System;
 using OpenTK;
+using yatl.Environment.Level;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Rendering;
 using amulware.Graphics;
