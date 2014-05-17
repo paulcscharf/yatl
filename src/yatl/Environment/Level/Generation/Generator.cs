@@ -17,14 +17,15 @@ namespace yatl.Environment.Level.Generation
         public int Radius { get; set; }
         public float Openness { get; set; }
 
-        public bool LogGeneration { get; set; }
+        public bool LogGenerationDetails { get; set; }
+        public bool MuteAllOutput { get; set; }
 
         public LevelGenerator WithDefaultSettings
         {
             get
             {
                 this.Radius = Settings.Game.Level.Radius;
-                this.Openness = 0.4f;
+                this.Openness = 0.00f;
 
                 return this;
             }
@@ -32,16 +33,23 @@ namespace yatl.Environment.Level.Generation
 
         public LevelGenerator Verbose
         {
-            get { this.LogGeneration = true; return this; }
+            get { this.LogGenerationDetails = true; return this; }
+        }
+        public LevelGenerator Silent
+        {
+            get { this.MuteAllOutput = true; return this; }
         }
 
         public Tilemap<TileInfo> Generate()
         {
-            Console.WriteLine("------------------------------");
-            Console.WriteLine("Generating level with radius {0} ({1} tiles)...", this.Radius, Extensions.TileCountForRadius(this.Radius));
+            if (!this.MuteAllOutput)
+            {
+                Console.WriteLine("------------------------------");
+                Console.WriteLine("Generating level with radius {0} ({1} tiles)...", this.Radius, Extensions.TileCountForRadius(this.Radius));
+            }
 
             var timer = SteppedStopwatch.StartNew();
-            timer.Mute = !this.LogGeneration;
+            timer.Mute = this.MuteAllOutput || !this.LogGenerationDetails;
 
             #region initialise
 
@@ -77,6 +85,15 @@ namespace yatl.Environment.Level.Generation
 
             timer.WriteStepToConsole("Opened random spanning tree .. {0}");
 
+            if (this.Openness > 0)
+            {
+                tiles.OpenRandomWalls(this.Openness);
+                timer.WriteStepToConsole(
+                    string.Format("Opened {0:0}% random walls ", this.Openness * 100)
+                    .PadRight(30, '.') + " {0}");
+            }
+
+
             #endregion
 
             #region build
@@ -86,10 +103,13 @@ namespace yatl.Environment.Level.Generation
             timer.WriteStepToConsole("Build immutable tilemap ...... {0}");
 
             #endregion
-            
-            timer.Mute = false;
-            timer.WriteTotalToConsole("Generated level in {0}");
-            Console.WriteLine("------------------------------");
+
+            if (!this.MuteAllOutput)
+            {
+                timer.Mute = false;
+                timer.WriteTotalToConsole("Generated level in {0}");
+                Console.WriteLine("------------------------------");
+            }
 
             return result;
         }
