@@ -8,10 +8,12 @@ namespace yatl.Environment
 {
     sealed class Level
     {
+        private readonly GameState game;
         private readonly Tilemap<TileInfo> tilemap;
 
-        public Level()
+        public Level(GameState game)
         {
+            this.game = game;
             this.tilemap = new Tilemap<TileInfo>(Settings.Game.Level.Radius);
         }
 
@@ -46,25 +48,29 @@ namespace yatl.Environment
 
         public void Draw(SpriteManager sprites)
         {
-            var hex = sprites.EmptyHexagon;
-            var font = sprites.GameText;
-            font.Height = 2;
-
-            int i = 0;
-            foreach (var tile in this.tilemap.TilesSpiralOutward)
+            if(this.game.DrawDebug)
             {
-                var argb = Color.Black;
+                var hex = sprites.EmptyHexagon;
+                var font = sprites.GameText;
+                font.Height = 2;
 
-                var position = this.GetPosition(tile);
+                hex.Color = Color.GrayScale(20, 0);
+                font.Color = Color.White;
 
-                hex.Color = argb;
-                hex.DrawSprite(position, 0, Settings.Game.Level.HexagonDiameter);
+                int i = 0;
+                foreach (var tile in this.tilemap.TilesSpiralOutward)
+                {
+                    var position = this.GetPosition(tile);
 
-                font.Color = argb;
-                font.DrawString(position, i.ToString(), 0.5f, 1);
-                font.DrawString(position, tile.X + "," + tile.Y, 0.5f, 0);
+                    var position3D = new Vector3(position.X, position.Y, Settings.Game.Level.OverlayHeight);
 
-                i++;
+                    hex.DrawSprite(position3D, 0, Settings.Game.Level.HexagonDiameter);
+
+                    font.DrawString(position3D, i.ToString(), 0.5f, 1);
+                    font.DrawString(position3D, tile.X + "," + tile.Y, 0.5f, 0);
+
+                    i++;
+                }
             }
         }
     }

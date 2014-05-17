@@ -3,7 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using amulware.Graphics;
 using OpenTK;
+using OpenTK.Input;
 using yatl.Rendering;
+using yatl.Utilities;
 
 namespace yatl.Environment
 {
@@ -12,6 +14,8 @@ namespace yatl.Environment
         private double time;
         private float timeF;
         public float Time { get { return this.timeF; } }
+
+        public bool DrawDebug { get; private set; }
 
         public Level Level { get; private set; }
         public Wisp Player { get; private set; }
@@ -22,7 +26,7 @@ namespace yatl.Environment
 
         public GameState()
         {
-            this.Level = new Level();
+            this.Level = new Level(this);
             this.Player = new Wisp(this, Vector2.Zero);
 
             this.Camera = new Camera(this.Player);
@@ -36,6 +40,9 @@ namespace yatl.Environment
 
             this.time += newArgs.ElapsedTime;
             this.timeF = (float)this.time;
+
+            if (InputManager.IsKeyHit(Key.F3))
+                this.DrawDebug = !this.DrawDebug;
 
             #region Update Game Objects
 
@@ -58,6 +65,9 @@ namespace yatl.Environment
 
             #endregion
 
+            this.Camera.Zoom = InputManager.IsKeyPressed(Key.ControlLeft)
+                ? Settings.Game.Camera.OverviewZoom
+                : Settings.Game.Camera.DefaultZoom;
             this.Camera.Update(newArgs);
         }
 

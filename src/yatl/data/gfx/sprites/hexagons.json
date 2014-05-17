@@ -6,5 +6,7 @@
 	"sprites" : [
 		{ "name" : "filled", "uv" : [ {"lt" : [0, 1], "size" : [1, 1]} ], "size" : [1.07, 1.07] },
 		{ "name" : "empty", "uv" : [ {"lt" : [0, 0], "size" : [1, 1]} ], "size" : [1.07, 1.07] },
+
+		{ "name" : "line", "uv" : [ {"lt" : [0.5, 1], "size" : [0, 1], "rotation" : 1.57079 } ], "size" : [1, 1] },
 	]
 }
