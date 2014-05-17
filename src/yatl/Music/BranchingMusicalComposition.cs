@@ -2,28 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace yatl
 {
     class BranchingMusicalComposition
     {
-        Motif root;
+        public Motif root;
 
-        public BranchingMusicalComposition FromFile(string filename)
+        public static BranchingMusicalComposition FromFile(string filename)
         {
             // Parse file and return a BranchingMusicalComposition
-            string line;
-
-            using (StreamReader reader = new StreamReader(filename))
-            {
-                while (!reader.EndOfStream)
-                {
-                    string sMotif = BranchingMusicalCompositionParser.ReadMotif(reader);
-                    Motif motif = Motif.FromString(sMotif);
-                }
-            }
-
-            throw new NotImplementedException();
+            var self = new BranchingMusicalComposition();
+            var parser = new BranchingMusicalCompositionParser();
+            self.root = parser.ParseFile(filename);
+            return self;
         }
     }
 
@@ -32,12 +25,28 @@ namespace yatl
         public IEnumerable<Motif> Successors
         {
             get;
+            set;
+        }
+        public string Name
+        {
+            get;
             private set;
         }
+        public string[] successorNames;
+        string musicContent;
 
-        public static Motif FromString(string s)
+        public Motif(string name, string[] successorNames, string musicContent)
         {
-            throw new NotImplementedException();
+            this.Name = name;
+            this.successorNames = successorNames;
+            this.musicContent = musicContent;
+        }
+
+        public string ToString()
+        {
+            var successorNames = this.Successors.Select(motif => motif.Name);
+            return this.Name + " -> " + string.Join(",", successorNames)
+                   + ": " + this.musicContent;
         }
     }
 }
