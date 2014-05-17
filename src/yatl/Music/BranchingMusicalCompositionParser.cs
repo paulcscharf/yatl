@@ -1,7 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace yatl
 {
@@ -19,13 +21,69 @@ namespace yatl
 
         void debug(object o)
         {
-            Console.WriteLine(o.ToString());
+            try
+            {
+                foreach (var item in (IEnumerable)o)
+                {
+                    Console.Write(item.ToString());
+                    Console.Write(", ");
+                }
+                Console.WriteLine();
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(o.ToString());
+            }
         }
 
+        /// <summary>
+        /// Parse file and return root motif
+        /// </summary>
+        public Motif Parse(string filename)
+        {
+            // Parse motifs into a dictionary
+            var motifs = new Dictionary<string, Motif>();
+            Motif root = null;
+            using (var reader = new StreamReader(filename))
+            {
+                while (true)
+                {
+                    Motif motif = this.ParseMotif(reader);
+                    if (motif == null)
+                        break;
+                    if (root == null)
+                        root = motif;
+                    motifs.Add(motif.Name, motif);
+                }
+            }
+
+            // Set successors right for all motifs
+            foreach (Motif motif in motifs.Values)
+            {
+                //debug(motif.successorNames);
+                var successors = new List<Motif>();
+                foreach (string successorName in motif.successorNames)
+                {
+                    successors.Add(motifs[successorName]);
+                }
+                //var successors = from m in motifs where motif.successorNames.Contains(m.Key) select m.Value;
+                motif.Successors = successors;
+            }
+
+            Console.WriteLine("Succesfully parsed " + filename);
+            foreach (Motif motif in motifs.Values)
+            {
+                Console.WriteLine(motif.ToString());
+            }
+
+            return root;
+        }
+
+        /// <summary>
+        /// Read and return exactly one motif
+        /// </summary>
         public Motif ParseMotif(StreamReader reader)
         {
-            // Read and return string containing exactly one motif
-
             string name = this.ParseName(reader);
             if (name == null)
                 return null;
@@ -33,12 +91,13 @@ namespace yatl
             string content = this.ParseContent(reader);
 
             return new Motif(name, successorNames, content);
-
         }
 
+        /// <summary>
+        /// Parse and return the motif name
+        /// </summary>
         public string ParseName(StreamReader reader)
         {
-            // Parse and return the motif name
             var name = new StringBuilder();
             char c;
             bool dash = false;
@@ -75,9 +134,11 @@ namespace yatl
             return null;
         }
 
+        /// <summary>
+        /// Parse and return the successor names
+        /// </summary>
         public string[] ParseSuccessorNames(StreamReader reader)
         {
-            // Parse and return the successor names
             var name = new StringBuilder();
             var names = new List<string>();
             char c;
@@ -110,6 +171,9 @@ namespace yatl
             throw new ParseError("Expected ':'", this.currentLine);
         }
 
+        /// <summary>
+        /// Parse and throw away comment
+        /// </summary>
         public void ParseComment(StreamReader reader)
         {
             while (!reader.EndOfStream)
@@ -123,6 +187,9 @@ namespace yatl
             }
         }
 
+        /// <summary>
+        /// Read and return motif content
+        /// </summary>
         public string ParseContent(StreamReader reader)
         {
             StringBuilder sb = new StringBuilder();
@@ -163,30 +230,5 @@ namespace yatl
                 throw new ParseError("Expected '}'", this.currentLine);
             return sb.ToString();
         }
-
-        /*
-        public Motif ParseMotifOld(string sMotif)
-        {
-            string[] splitMotif = sMotif.Split(new string[] {":"}, StringSplitOptions.None);
-            if (splitMotif.Length > 2)
-                throw new ParseError("Too many ':'", this.currentLine);
-            if (splitMotif.Length < 2)
-                throw new ParseError("Expected ':'", this.currentLine);
-
-            string label = splitMotif[0];
-            string content = splitMotif[1];
-
-            string[] splitLabel = label.Split(new string[] {"->"}, StringSplitOptions.None);
-            if (splitLabel.Length > 2)
-                throw new ParseError("Too many '->'", this.currentLine);
-            if (splitLabel.Length < 2)
-                throw new ParseError("Expected '->'", this.currentLine);
-
-            string name = splitLabel[0].Trim();
-            string[] successorNames = splitLabel[1].Trim().Split(',');
-
-            return new Motif(name, successorNames, content);
-        }
-        */
     }
 }

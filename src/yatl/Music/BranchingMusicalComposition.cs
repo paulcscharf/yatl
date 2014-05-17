@@ -2,37 +2,21 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Linq;
 
 namespace yatl
 {
     class BranchingMusicalComposition
     {
-        Motif root;
+        public Motif root;
 
         public static BranchingMusicalComposition FromFile(string filename)
         {
             // Parse file and return a BranchingMusicalComposition
+            var self = new BranchingMusicalComposition();
             var parser = new BranchingMusicalCompositionParser();
-            var motifs = new List<Motif>();
-
-            using (var reader = new StreamReader(filename))
-            {
-                while (!reader.EndOfStream)
-                {
-                    Motif motif = parser.ParseMotif(reader);
-                    if (motif == null)
-                        break;
-                    motifs.Add(motif);
-                }
-            }
-
-            Console.WriteLine("Succesfully parsed " + filename);
-            foreach (var motif in motifs)
-            {
-                Console.WriteLine(motif.ToString());
-            }
-
-            return null;
+            self.root = parser.Parse(filename);
+            return self;
         }
     }
 
@@ -41,14 +25,14 @@ namespace yatl
         public IEnumerable<Motif> Successors
         {
             get;
-            private set;
+            set;
         }
         public string Name
         {
             get;
             private set;
         }
-        string[] successorNames;
+        public string[] successorNames;
         string musicContent;
 
         public Motif(string name, string[] successorNames, string musicContent)
@@ -60,8 +44,9 @@ namespace yatl
 
         public string ToString()
         {
-            return this.Name + " -> " + string.Join(", ", this.successorNames)
-                + ": " + this.musicContent;
+            var successorNames = (from motif in this.Successors select motif.Name);
+            return this.Name + " -> " + string.Join(",", successorNames)
+                   + ": " + this.musicContent;
         }
     }
 }
