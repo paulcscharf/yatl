@@ -62,8 +62,10 @@
     <Compile Include="Environment\GameObject.cs" />
     <Compile Include="Environment\GameState.cs" />
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
+    <Compile Include="Environment\GeneratingTileInfo.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
     <Compile Include="Environment\Level.cs" />
+    <Compile Include="Environment\LevelGenerator.cs" />
     <Compile Include="Environment\TileInfo.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />

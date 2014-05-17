@@ -5,6 +5,8 @@ namespace yatl.Environment.Tilemap.Hexagon
 {
     static class Extensions
     {
+        #region Lookup Tables
+
         private static readonly Step[] directionDelta =
         {
             new Step(0, 0),
@@ -15,16 +17,28 @@ namespace yatl.Environment.Tilemap.Hexagon
             new Step(0, -1),
             new Step(1, -1),
         };
-
-        public static Step Step(this Direction direction)
+        private static readonly Direction[] directionOpposite =
         {
-            return Extensions.directionDelta[(int)direction];
-        }
+            Direction.Unknown,
+            Direction.Right,
+            Direction.UpRight,
+            Direction.UpLeft,
+            Direction.Left,
+            Direction.DownLeft,
+            Direction.DownRight,
+        };
 
-        public static Direction Hexagonal(this Utilities.Direction direction)
+        public static readonly Direction[] Directions =
         {
-            return (Direction)((int)Math.Floor(direction.Degrees * 1/60f + 0.5f) % 6 + 1);
-        }
+            Direction.Left,
+            Direction.DownLeft,
+            Direction.DownRight,
+            Direction.Right,
+            Direction.UpRight,
+            Direction.UpLeft,
+        };
+
+        #endregion
 
         #region Tile<TTileInfo>
 
@@ -40,8 +54,23 @@ namespace yatl.Environment.Tilemap.Hexagon
 
         #endregion
 
-
         #region Direction and Directions
+
+        public static Step Step(this Direction direction)
+        {
+            return Extensions.directionDelta[(int)direction];
+        }
+
+        public static Direction Hexagonal(this Utilities.Direction direction)
+        {
+            return (Direction)((int)Math.Floor(direction.Degrees * 1 / 60f + 0.5f) % 6 + 1);
+        }
+
+        public static Direction Opposite(this Direction direction)
+        {
+            return Extensions.directionOpposite[(int)direction];
+        }
+
 
         private static Directions toDirections(this Direction direction)
         {

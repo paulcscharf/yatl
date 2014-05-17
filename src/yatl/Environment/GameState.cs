@@ -26,7 +26,7 @@ namespace yatl.Environment
 
         public GameState()
         {
-            this.Level = new Level(this);
+            this.Level = new Level(this, LevelGenerator.NewDefault);
             this.Player = new Wisp(this, Vector2.Zero);
 
             this.Camera = new Camera(this.Player);

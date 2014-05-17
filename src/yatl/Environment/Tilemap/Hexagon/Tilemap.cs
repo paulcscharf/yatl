@@ -1,11 +1,15 @@
-﻿using System.Collections.Generic;
+using System;
+using System.Collections;
+using System.Collections.Generic;
 
 namespace yatl.Environment.Tilemap.Hexagon
 {
-    sealed class Tilemap<TTileInfo>
+    sealed class Tilemap<TTileInfo> : IEnumerable<Tile<TTileInfo>>
     {
         private readonly int radius;
         private readonly TTileInfo[,] tiles;
+
+        public int Radius { get { return this.radius; } }
 
         /* Layout of array:
          * (radius 1)
@@ -41,11 +45,32 @@ namespace yatl.Environment.Tilemap.Hexagon
             }
         }
 
+        public TTileInfo this[Tile<TTileInfo> tile]
+        {
+            get { return this[tile.X, tile.Y]; }
+            set { this[tile.X, tile.Y] = value; }
+        }
+
+        public TTileInfo this[ITile tile]
+        {
+            get { return this[tile.X, tile.Y]; }
+            set { this[tile.X, tile.Y] = value; }
+        }
+
         public bool IsValidTile(int x, int y)
         {
             return x >= -this.radius && x <= this.radius
                 && y >= -this.radius && y <= this.radius
                 && x + y >= -this.radius && x + y <= this.radius;
+        }
+
+        public bool IsValidTile(Tile<TTileInfo> tile)
+        {
+            return this.IsValidTile(tile.X, tile.Y);
+        }
+        public bool IsValidTile(ITile tile)
+        {
+            return this.IsValidTile(tile.X, tile.Y);
         }
 
         private void transformToArray(ref int x, ref int y)
@@ -85,6 +110,25 @@ namespace yatl.Environment.Tilemap.Hexagon
 
                 }
             }
+        }
+
+        public IEnumerator<Tile<TTileInfo>> GetEnumerator()
+        {
+            for (int y = -this.radius; y <= this.radius; y++)
+            {
+                int xMin = Math.Max(-this.radius, -this.radius - y);
+                int xMax = Math.Min(this.radius, this.radius - y);
+
+                for (int x = xMin; x <= xMax; x++)
+                {
+                    yield return new Tile<TTileInfo>(this, x, y);
+                }
+            }
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return this.GetEnumerator();
         }
     }
 }
