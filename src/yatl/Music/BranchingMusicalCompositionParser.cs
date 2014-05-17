@@ -46,7 +46,7 @@ namespace yatl
         /// <summary>
         /// Parse file and return root motif
         /// </summary>
-        public Motif Parse(string filename)
+        public Motif ParseFile(string filename)
         {
             // Parse motifs into a dictionary
             var motifs = new Dictionary<string, Motif>();
@@ -89,7 +89,7 @@ namespace yatl
             if (name == null)
                 return null;
             string[] successorNames = this.ParseSuccessorNames(reader);
-            string content = this.ParseContent(reader);
+            string content = this.ParseMusic(reader);
 
             return new Motif(name, successorNames, content);
         }
@@ -162,6 +162,8 @@ namespace yatl
                     name.Clear();
                     break;
                 case ':':
+                    if (name.Length == 0 && names.Count == 0)
+                        throw new ParseError("Expected successor names", this.currentLine);
                     names.Add(name.ToString());
                     return names.ToArray();
                 default:
@@ -191,7 +193,7 @@ namespace yatl
         /// <summary>
         /// Read and return motif content
         /// </summary>
-        public string ParseContent(StreamReader reader)
+        public string ParseMusic(StreamReader reader)
         {
             StringBuilder sb = new StringBuilder();
             int level = 0;

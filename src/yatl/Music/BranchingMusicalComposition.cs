@@ -15,7 +15,7 @@ namespace yatl
             // Parse file and return a BranchingMusicalComposition
             var self = new BranchingMusicalComposition();
             var parser = new BranchingMusicalCompositionParser();
-            self.root = parser.Parse(filename);
+            self.root = parser.ParseFile(filename);
             return self;
         }
     }
