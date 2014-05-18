@@ -44,12 +44,53 @@ namespace yatl.Environment.Level
                         return w;
                     });
 
-                walls.AddRange(wallsToMake.Select(w => new Wall(w.From, w.To)));
+                walls.AddRange(wallsToMake.SelectMany(w => TileInfo.makeWallSections(w.From, w.To)));
 
             }
 
 
             this.Walls = walls.AsReadOnly();
+        }
+
+        private static IEnumerable<Wall> makeWallSections(Vector2 start, Vector2 end)
+        {
+            var startDir = Utilities.Direction.Of(start);
+            var endDir = Utilities.Direction.Of(end);
+
+            var totalAngle = endDir - startDir;
+
+            if (totalAngle.Radians < 0)
+                totalAngle += 360f.Degrees();
+
+            var steps = Math.Max(3, (int)(totalAngle.MagnitudeInDegrees / 30));
+
+            var stepAngle = totalAngle / steps;
+
+            var radiusStart = start.Length;
+            var radiusEnd = end.Length;
+
+            var before = start;
+
+            for (int i = 1; i < steps; i++)
+            {
+                var f = (float)i / steps;
+
+                var x = 1 - (float)Math.Sin(f * Math.PI);//2f * f - 1f;
+                var y = x * x * 0.5f + 0.5f;
+
+                y *= GlobalRandom.NextFloat(0.8f, 1.2f);
+
+                var r = GameMath.Lerp(radiusStart, radiusEnd, f) * y;
+
+
+                var point = (startDir + stepAngle * i).Vector * r;
+
+                yield return new Wall(before, point);
+
+                before = point;
+            }
+
+            yield return new Wall(before, end);
         }
 
         private static Tuple<Vector2, Vector2> makeWallPoints(Direction direction)
@@ -58,8 +99,8 @@ namespace yatl.Environment.Level
             var corner2 = direction.CornerAfter() * Settings.Game.Level.HexagonSide;
 
             return Tuple.Create(
-                Vector2.Lerp(corner1, corner2, 1 / 3f),
-                Vector2.Lerp(corner1, corner2, 2 / 3f)
+                Vector2.Lerp(corner1, corner2, 1 / 6f),
+                Vector2.Lerp(corner1, corner2, 5 / 6f)
                 );
         }
     }
