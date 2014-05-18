@@ -18,6 +18,16 @@ namespace yatl.Environment.Tilemap.Hexagon
         private readonly int x;
         private readonly int y;
 
+        public int Radius
+        {
+            get
+            {
+                return this.x * this.y >= 0
+                    ? Math.Abs(this.x + this.y)
+                    : Math.Max(Math.Abs(this.x), Math.Abs(this.y));
+            }
+        }
+
         public int X { get { return this.x; } }
         public int Y { get { return this.y; } }
 

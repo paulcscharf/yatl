@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;
@@ -36,10 +37,16 @@ namespace yatl.Environment.Level.Generation
 
         public static void OpenRandomWalls(this IEnumerable<GeneratingTile> tiles, float percentage)
         {
+            tiles.OpenRandomWalls(t => percentage);
+        }
+
+        public static void OpenRandomWalls(this IEnumerable<GeneratingTile> tiles, Func<GeneratingTile, float> probability)
+        {
             foreach (var tile in tiles)
             {
+                // ReSharper disable once AccessToForEachVariableInClosure
                 foreach (var direction in Helpers.activeDirections
-                    .Where(d => GlobalRandom.NextDouble() < percentage))
+                    .Where(d => GlobalRandom.NextDouble() < probability(tile)))
                 {
                     tile.OpenTileWall(direction);
                 }

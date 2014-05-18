@@ -122,7 +122,7 @@ namespace yatl.Environment.Level
 
                     hex.DrawSprite(position3D, 0, Settings.Game.Level.HexagonDiameter);
 
-                    font.DrawString(position3D, i.ToString(), 0.5f, 1);
+                    font.DrawString(position3D, tile.Radius.ToString(), 0.5f, 1);
                     font.DrawString(position3D, tile.X + "," + tile.Y, 0.5f, 0);
 
 

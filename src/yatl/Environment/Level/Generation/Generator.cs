@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using OpenTK.Audio;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;
 using Extensions = yatl.Environment.Tilemap.Hexagon.Extensions;
@@ -13,7 +14,8 @@ namespace yatl.Environment.Level.Generation
         public static LevelGenerator NewDefault { get { return new LevelGenerator().WithDefaultSettings; } }
 
         public int Radius { get; set; }
-        public float Openness { get; set; }
+        public float OpennessCore { get; set; }
+        public float OpennessRim { get; set; }
 
         public bool LogGenerationDetails { get; set; }
         public bool MuteAllOutput { get; set; }
@@ -23,7 +25,8 @@ namespace yatl.Environment.Level.Generation
             get
             {
                 this.Radius = Settings.Game.Level.Radius;
-                this.Openness = 0.05f;
+                this.OpennessRim = 0f;
+                this.OpennessCore = 0.5f;
 
                 return this;
             }
@@ -57,7 +60,6 @@ namespace yatl.Environment.Level.Generation
 
             var tiles = tempMap.ToList();
 
-
             timer.WriteStepToConsole("Enumerated tiles ............. {0}");
 
             //var tilesSpiral = tempMap.TilesSpiralOutward.ToList();
@@ -83,11 +85,12 @@ namespace yatl.Environment.Level.Generation
 
             timer.WriteStepToConsole("Opened random spanning tree .. {0}");
 
-            if (this.Openness > 0)
+            if (this.OpennessCore > 0 || this.OpennessRim > 0)
             {
-                tiles.OpenRandomWalls(this.Openness);
+                tiles.OpenRandomWalls(t => GameMath.Lerp(
+                    this.OpennessCore, this.OpennessRim, (float)t.Radius / this.Radius));
                 timer.WriteStepToConsole(
-                    string.Format("Opened {0:0}% random walls ", this.Openness * 100)
+                    string.Format("Opened {0:0}%-{1:0}% random walls ", this.OpennessCore * 100, this.OpennessRim * 100)
                     .PadRight(30, '.') + " {0}");
             }
 
