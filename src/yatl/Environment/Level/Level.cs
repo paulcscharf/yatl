@@ -62,7 +62,7 @@ namespace yatl.Environment.Level
             // draw walls
             {
                 var lines = sprites.Lines;
-                lines.LineWidth = 0.2f;
+                lines.LineWidth = 0.1f;
                 lines.Color = Color.DimGray;
 
                 foreach (var tile in this.tilemap)
@@ -90,7 +90,7 @@ namespace yatl.Environment.Level
 
                 var lines = sprites.Lines;
                 lines.LineWidth = 0.5f;
-                lines.Color = Color.Green;
+                lines.Color = new Color(0, 50, 0, 0);
 
                 int i = 0;
                 foreach (var tile in this.tilemap)

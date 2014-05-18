@@ -35,7 +35,7 @@ namespace yatl.Environment
             {
                 var v = this.game.Level.GetPosition(this.Tile);
 
-                var geo = sprites.FilledHexagon;
+                var geo = sprites.EmptyHexagon;
                 geo.Color = new Color(Color.Green, 0);
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
