@@ -1,6 +1,9 @@
+using System;
+using System.Diagnostics;
 using amulware.Graphics;
 using OpenTK.Graphics.OpenGL;
 using yatl.Environment;
+using yatl.Utilities;
 
 namespace yatl.Rendering
 {
@@ -18,11 +21,15 @@ namespace yatl.Rendering
         private readonly SurfaceManager surfaces;
         private readonly SpriteManager sprites;
 
+        private Stopwatch shaderReloadTimer;
+
         public GameRenderer()
         {
             this.shaders = new ShaderManager();
             this.surfaces = new SurfaceManager(this.shaders);
             this.sprites = new SpriteManager(this.surfaces);
+
+            this.shaderReloadTimer = Stopwatch.StartNew();
         }
 
         public void Render(GameState state)
@@ -34,10 +41,20 @@ namespace yatl.Rendering
 
         public void FinalizeFrame()
         {
+            #region Reload Shaders
+#if DEBUG
+            if (this.shaderReloadTimer.Elapsed > TimeSpan.FromSeconds(0.2))
+            {
+                GraphicsHelper.CheckAndUpdateChangedShaders();
+                this.shaderReloadTimer.Restart();
+            }
+#endif
+            #endregion
+
             #region Global Settings
 
-            GL.DepthMask(false);
-            GL.CullFace(CullFaceMode.FrontAndBack);
+            GL.Disable(EnableCap.CullFace);
+            GL.Disable(EnableCap.DepthTest);
 
             #endregion
 
@@ -47,7 +64,7 @@ namespace yatl.Rendering
             GL.Viewport(0, 0, this.screenWidth, this.screenHeight);
 
             GL.ClearColor(Color.Black);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
 
 
             GL.Viewport(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
@@ -59,6 +76,10 @@ namespace yatl.Rendering
             GL.Disable(EnableCap.ScissorTest);
 
             #region Draw Game
+
+            GL.Enable(EnableCap.DepthTest);
+
+            this.surfaces.Walls.Render();
             
             this.surfaces.Particles.Surface.Render();
 
@@ -66,6 +87,8 @@ namespace yatl.Rendering
 
 
             this.surfaces.GameFontSurface.Render();
+
+            GL.Disable(EnableCap.DepthTest);
 
             #endregion
 

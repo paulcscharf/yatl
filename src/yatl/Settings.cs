@@ -55,6 +55,8 @@ namespace yatl
                 public const float HexagonOuterRadiusSquared = HexagonSide * HexagonSide;
 
                 public const float OverlayHeight = 2;
+
+                public const float WallHeight = 2;
             }
         }
 

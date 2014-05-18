@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using OpenTK.Audio;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;
 using Extensions = yatl.Environment.Tilemap.Hexagon.Extensions;
