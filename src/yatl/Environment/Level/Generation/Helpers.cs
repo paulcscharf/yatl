@@ -18,6 +18,25 @@ namespace yatl.Environment.Level.Generation
             Direction.DownRight,
         };
 
+        public static void MakeWalls(this IEnumerable<GeneratingTile> tiles)
+        {
+            foreach (var tile in tiles)
+                tile.Info.GenerateWalls();
+            foreach (var tile in tiles)
+                tile.connectWallsToNeighbours();
+        }
+
+        private static void connectWallsToNeighbours(this GeneratingTile tile)
+        {
+            var info = tile.Info;
+            foreach (var tuple in info.OpenSides.Enumerate()
+                .Select(d => new { Direction = d, Neighbour = tile.Neighbour(d)})
+                .Where(t => t.Neighbour.IsValid))
+            {
+                info.ConnectEdgeWalls(tuple.Neighbour.Info, tuple.Direction);
+            }
+        }
+
         public static void OpenRandomSpanningTree(this GeneratingTile tile, float minOpen, float maxOpen)
         {
             tile.Info.Visited = true;

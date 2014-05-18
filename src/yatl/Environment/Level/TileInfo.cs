@@ -1,12 +1,9 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using OpenTK;
 using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
-using yatl.Utilities;
-using Direction = yatl.Environment.Tilemap.Hexagon.Direction;
 using Hex = yatl.Settings.Game.Level;
 
 namespace yatl.Environment.Level
@@ -21,103 +18,9 @@ namespace yatl.Environment.Level
         {
             this.OpenSides = info.OpenSides;
 
-            this.generateWalls(info);
+            this.Walls = (info.Walls ?? Enumerable.Empty<Wall>())
+                .Select(w => w.Frozen).ToList().AsReadOnly();
         }
-
-        #region initialising
-
-        private void generateWalls(GeneratingTileInfo info)
-        {
-            var walls = new List<Wall>();
-
-
-            if (this.OpenSides.Any())
-            {
-                var points = this.OpenSides.Enumerate()
-                    .Select(d => TileInfo.makeWallPoints(d, info.CorridorWidths[(int)d]))
-                    .ToList();
-
-                Vector2 before = points.Last().Item2;
-                var wallsToMake = points.Select(t =>
-                {
-                    var w = new { From = before, To = t.Item1 };
-                    before = t.Item2;
-                    return w;
-                });
-
-                walls.AddRange(wallsToMake.SelectMany(w => TileInfo.makeWallSections(w.From, w.To)));
-
-            }
-
-
-            this.Walls = walls.AsReadOnly();
-        }
-
-        private static IEnumerable<Wall> makeWallSections(Vector2 start, Vector2 end)
-        {
-            var startDir = Utilities.Direction.Of(start);
-            var endDir = Utilities.Direction.Of(end);
-
-            var totalAngle = endDir - startDir;
-
-            if (totalAngle.Radians < 0)
-                totalAngle += 360f.Degrees();
-
-            var steps = Math.Max(3, (int)(totalAngle.MagnitudeInDegrees / 30));
-
-            var radiusStart = start.Length;
-            var radiusEnd = end.Length;
-
-            var points = steps > 3
-                ? new[]
-                {
-                    start,
-                    start * 0.8f,
-                    (startDir + totalAngle * 0.3f).Vector * radiusStart * 0.15f * steps,
-                    (startDir + totalAngle * 0.7f).Vector * radiusEnd * 0.15f * steps,
-                    end * 0.8f,
-                    end
-                }
-                : new[]
-                {
-                    start,
-                    start * 0.8f,
-                    end * 0.8f,
-                    end
-                };
-
-            var bezier = new BezierCurve(points);
-
-            var before = start;
-
-            for (int i = 1; i < steps; i++)
-            {
-                var f = (float)i / steps;
-
-                var point = bezier.CalculatePoint(f);
-
-                yield return new Wall(before, point);
-
-                before = point;
-            }
-
-            yield return new Wall(before, end);
-        }
-
-        private static Tuple<Vector2, Vector2> makeWallPoints(Direction direction, float width)
-        {
-            var corner1 = direction.CornerBefore() * Settings.Game.Level.HexagonSide;
-            var corner2 = direction.CornerAfter() * Settings.Game.Level.HexagonSide;
-
-            float halfWidth = width * 0.5f;
-
-            return Tuple.Create(
-                Vector2.Lerp(corner1, corner2, 0.5f - halfWidth),
-                Vector2.Lerp(corner1, corner2, 0.5f + halfWidth)
-                );
-        }
-        #endregion
-
 
         public RayHitResult ShootRay(Ray ray)
         {
@@ -157,39 +60,6 @@ namespace yatl.Environment.Level
             }
 
             return result;
-        }
-    }
-
-    struct RayHitResult
-    {
-        public readonly bool Hit;
-        public readonly float RayFactor;
-        public readonly Vector2 Point;
-        public readonly Vector2 Normal;
-
-        public RayHitResult(bool hit, float rayFactor, Vector2 point, Vector2 normal)
-        {
-            this.Hit = hit;
-            this.RayFactor = rayFactor;
-            this.Point = point;
-            this.Normal = normal;
-        }
-
-        public RayHitResult WithNewPoint(Vector2 point)
-        {
-            return new RayHitResult(this.Hit, this.RayFactor, point, this.Normal);
-        }
-    }
-
-    struct Ray
-    {
-        public readonly Vector2 Start;
-        public readonly Vector2 Direction;
-
-        public Ray(Vector2 start, Vector2 direction)
-        {
-            this.Start = start;
-            this.Direction = direction;
         }
     }
 }

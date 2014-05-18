@@ -67,6 +67,8 @@
     <Compile Include="Environment\Level\Generation\Helpers.cs" />
     <Compile Include="Environment\Level\Level.cs" />
     <Compile Include="Environment\Level\Generation\Generator.cs" />
+    <Compile Include="Environment\Level\Ray.cs" />
+    <Compile Include="Environment\Level\RayHitResult.cs" />
     <Compile Include="Environment\Level\TileInfo.cs" />
     <Compile Include="Environment\Level\Wall.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
@@ -93,6 +95,7 @@
     <Compile Include="Rendering\GameRenderer.cs" />
     <Compile Include="Rendering\SpriteManager.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
+    <Compile Include="Rendering\Walls\WallVertex.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utilities\DeletableObject.cs" />
     <Compile Include="Utilities\DeletableObjectList.cs" />

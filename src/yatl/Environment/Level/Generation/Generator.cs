@@ -103,6 +103,14 @@ namespace yatl.Environment.Level.Generation
 
             #endregion
 
+            #region
+
+            tiles.MakeWalls();
+
+            timer.WriteStepToConsole("Generated level geometry ..... {0}");
+
+            #endregion
+
             #region build
 
             var result = tempMap.Build();
