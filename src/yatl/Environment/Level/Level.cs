@@ -59,6 +59,24 @@ namespace yatl.Environment.Level
 
         public void Draw(SpriteManager sprites)
         {
+            // draw walls
+            {
+                var lines = sprites.Lines;
+                lines.LineWidth = 0.2f;
+                lines.Color = Color.DimGray;
+
+                foreach (var tile in this.tilemap)
+                {
+                    var position = this.GetPosition(tile);
+
+                    foreach (var wall in tile.Info.Walls)
+                    {
+                        lines.DrawLine(position + wall.StartPoint, position + wall.EndPoint);
+                    }
+                }
+            }
+
+
             if(this.game.DrawDebug)
             {
                 var hex = sprites.EmptyHexagon;

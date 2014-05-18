@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;

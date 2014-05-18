@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using OpenTK;
+using yatl.Utilities;
 
 namespace yatl.Environment.Tilemap.Hexagon
 {
@@ -38,6 +41,11 @@ namespace yatl.Environment.Tilemap.Hexagon
             Direction.UpLeft,
         };
 
+        private static readonly Vector2[] corners =
+            Enumerable.Range(0, 7).Select(i => GameMath.Vector2FromRotation(
+                (i * 60f - 30f).Degrees().Radians))
+                .ToArray();
+
         #endregion
 
         #region Tile<TTileInfo>
@@ -55,6 +63,27 @@ namespace yatl.Environment.Tilemap.Hexagon
         #endregion
 
         #region Direction and Directions
+
+        public static IEnumerable<Direction> Enumerate(this Directions directions)
+        {
+            return Extensions.Directions.Where(direction => directions.Includes(direction));
+        }
+
+        public static Vector2 CornerBefore(this Direction direction)
+        {
+            if(direction == Direction.Unknown)
+                throw new ArgumentOutOfRangeException("direction", "Cannot get corner for unknown direction.");
+
+            return Extensions.corners[(int)direction - 1];
+        }
+
+        public static Vector2 CornerAfter(this Direction direction)
+        {
+            if (direction == Direction.Unknown)
+                throw new ArgumentOutOfRangeException("direction", "Cannot get corner for unknown direction.");
+
+            return Extensions.corners[(int)direction];
+        } 
 
         public static Step Step(this Direction direction)
         {
