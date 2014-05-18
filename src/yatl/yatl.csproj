@@ -68,6 +68,7 @@
     <Compile Include="Environment\Level\Level.cs" />
     <Compile Include="Environment\Level\Generation\Generator.cs" />
     <Compile Include="Environment\Level\TileInfo.cs" />
+    <Compile Include="Environment\Level\Wall.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Tilemap.cs" />

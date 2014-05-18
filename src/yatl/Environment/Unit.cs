@@ -44,34 +44,62 @@ namespace yatl.Environment
             if (this.velocity == Vector2.Zero)
                 return;
 
-            // update position and velocity
-            this.position += this.velocity * e.ElapsedTimeF;
+            var step = this.velocity * e.ElapsedTimeF;
+
+            // update position (tests collision recursively)
+            for (int i = 0; i < 5; i++)
+            {
+                var rayResult = new RayHitResult(false, 1, this.position - this.tileCenter + step, Vector2.Zero);
+                while(true)
+                {
+                    var result = this.tile.Info.ShootRay(new Ray(this.position - this.tileCenter, step));
+
+                    if (result.RayFactor < rayResult.RayFactor)
+                        rayResult = result;
+
+                    var point = rayResult.Point + this.tileCenter;
+
+                    var switchedTile = this.updateTile(rayResult.Point);
+
+                    if (!switchedTile)
+                        break;
+
+                    rayResult = rayResult.WithNewPoint(point - this.tileCenter);
+                }
+
+                this.position = this.tileCenter + rayResult.Point;
+
+                if (!rayResult.Hit)
+                    break;
+
+                this.position += rayResult.Normal * 0.01f;
+
+                var projected = rayResult.Normal * Vector2.Dot(rayResult.Normal, step);
+
+                step -= projected;
+            }
+
 
             float slowDownFactor = 1 - this.frictionCoefficient * e.ElapsedTimeF;
             this.velocity *= slowDownFactor < 0 ? 0 : slowDownFactor;
 
-            // update tile
-            this.updateTile();
         }
 
-        private void updateTile()
+        private bool updateTile(Vector2 newPositionRelative)
         {
-            while (true)
-            {
-                var fromTileCenter = this.position - this.tileCenter;
+            var fromTileCenterAbs = new Vector2(Math.Abs(newPositionRelative.X), Math.Abs(newPositionRelative.Y));
 
-                var fromTileCenterAbs = new Vector2(Math.Abs(fromTileCenter.X), Math.Abs(fromTileCenter.Y));
+            if (fromTileCenterAbs.X <= Hex.HexagonWidth * 0.5f
+                && Hex.HexagonSide - fromTileCenterAbs.X
+                * (Hex.HexagonSide / Hex.HexagonWidth)
+                >= fromTileCenterAbs.Y)
+                return false;
 
-                if (fromTileCenterAbs.X <= Hex.HexagonWidth * 0.5f
-                    && Hex.HexagonSide - fromTileCenterAbs.X
-                    * (Hex.HexagonSide / Hex.HexagonWidth)
-                    >= fromTileCenterAbs.Y)
-                    return;
+            this.setTile(this.tile.Neighbour(
+                Utilities.Direction.Of(newPositionRelative).Hexagonal()
+                ));
 
-                this.setTile(this.tile.Neighbour(
-                    Utilities.Direction.Of(fromTileCenter).Hexagonal()
-                    ));
-            }
+            return true;
         }
 
         public override void Draw(SpriteManager sprites)
