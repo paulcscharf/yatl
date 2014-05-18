@@ -25,7 +25,7 @@ namespace yatl.Environment.Level.Generation
             get
             {
                 this.Radius = Settings.Game.Level.Radius;
-                this.Openness = 0.00f;
+                this.Openness = 0.05f;
 
                 return this;
             }
@@ -92,7 +92,6 @@ namespace yatl.Environment.Level.Generation
                     string.Format("Opened {0:0}% random walls ", this.Openness * 100)
                     .PadRight(30, '.') + " {0}");
             }
-
 
             #endregion
 

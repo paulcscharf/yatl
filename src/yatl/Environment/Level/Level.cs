@@ -4,6 +4,8 @@ using OpenTK;
 using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Rendering;
+using yatl.Utilities;
+using Direction = yatl.Environment.Tilemap.Hexagon.Direction;
 
 namespace yatl.Environment.Level
 {
@@ -66,6 +68,8 @@ namespace yatl.Environment.Level
                 hex.Color = Color.GrayScale(20, 0);
                 font.Color = Color.White;
 
+                var hexFull = sprites.FilledHexagon;
+
                 var lines = sprites.Lines;
                 lines.LineWidth = 0.5f;
                 lines.Color = Color.Green;
@@ -75,18 +79,24 @@ namespace yatl.Environment.Level
                 {
                     var position = this.GetPosition(tile);
 
-
-                    // show navigation graph
-                    foreach (var direction in Level.activeDirections)
+                    if (tile.Info.OpenSides.Any())
                     {
-                        if (!tile.Info.OpenSides.Includes(direction))
-                            continue;
+                        // draw center piece
+                        hexFull.Color = lines.Color;
+                        hexFull.DrawSprite(position, 30f.Degrees().Radians, lines.LineWidth * 1.87f);
 
-                        var next = tile.Neighbour(direction);
+                        // show navigation graph
+                        foreach (var direction in Level.activeDirections)
+                        {
+                            if (!tile.Info.OpenSides.Includes(direction))
+                                continue;
 
-                        var positionNext = this.GetPosition(next);
+                            var next = tile.Neighbour(direction);
 
-                        lines.DrawLine(position, positionNext);
+                            var positionNext = this.GetPosition(next);
+
+                            lines.DrawLine(position, positionNext);
+                        } 
                     }
 
 

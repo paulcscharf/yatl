@@ -61,6 +61,24 @@ namespace yatl.Environment.Tilemap.Hexagon
             return Extensions.directionDelta[(int)direction];
         }
 
+        public static bool Any(this Directions direction)
+        {
+            return direction != Hexagon.Directions.None;
+        }
+        public static bool Any(this Directions direction, Directions match)
+        {
+            return direction.Intersect(match) != Hexagon.Directions.None;
+        }
+
+        public static bool All(this Directions direction)
+        {
+            return direction == Hexagon.Directions.All;
+        }
+        public static bool All(this Directions direction, Directions match)
+        {
+            return direction.Intersect(match) == match;
+        }
+
         public static Direction Hexagonal(this Utilities.Direction direction)
         {
             return (Direction)((int)Math.Floor(direction.Degrees * 1 / 60f + 0.5f) % 6 + 1);
