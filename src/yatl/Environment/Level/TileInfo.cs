@@ -69,21 +69,33 @@ namespace yatl.Environment.Level
             var radiusStart = start.Length;
             var radiusEnd = end.Length;
 
+            var points = steps > 3
+                ? new[]
+                {
+                    start,
+                    start * 0.8f,
+                    (startDir + totalAngle * 0.3f).Vector * radiusStart * 0.15f * steps,
+                    (startDir + totalAngle * 0.7f).Vector * radiusEnd * 0.15f * steps,
+                    end * 0.8f,
+                    end
+                }
+                : new[]
+                {
+                    start,
+                    start * 0.8f,
+                    end * 0.8f,
+                    end
+                };
+
+            var bezier = new BezierCurve(points);
+
             var before = start;
 
             for (int i = 1; i < steps; i++)
             {
                 var f = (float)i / steps;
 
-                var x = 1 - (float)Math.Sin(f * Math.PI);//2f * f - 1f;
-                var y = x * x * 0.5f + 0.5f;
-
-                y *= GlobalRandom.NextFloat(0.8f, 1.2f);
-
-                var r = GameMath.Lerp(radiusStart, radiusEnd, f) * y;
-
-
-                var point = (startDir + stepAngle * i).Vector * r;
+                var point = bezier.CalculatePoint(f);
 
                 yield return new Wall(before, point);
 
