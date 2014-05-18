@@ -6,9 +6,12 @@ namespace yatl.Environment.Level.Generation
     {
         public GeneratingTileInfo()
         {
+            this.CorridorWidths = new float[7];
         }
 
         public Directions OpenSides { get; set; }
         public bool Visited { get; set; }
+
+        public float[] CorridorWidths { get; private set; }
     }
 }

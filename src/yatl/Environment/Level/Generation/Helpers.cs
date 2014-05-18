@@ -18,7 +18,7 @@ namespace yatl.Environment.Level.Generation
             Direction.DownRight,
         };
 
-        public static void OpenRandomSpanningTree(this GeneratingTile tile)
+        public static void OpenRandomSpanningTree(this GeneratingTile tile, float minOpen, float maxOpen)
         {
             tile.Info.Visited = true;
             var directions = Extensions.Directions.Shuffled();
@@ -30,17 +30,17 @@ namespace yatl.Environment.Level.Generation
                     continue;
                 if (next.Info.Visited)
                     continue;
-                tile.OpenTileWall(direction);
-                next.OpenRandomSpanningTree();
+                tile.OpenTileWall(direction, minOpen, maxOpen);
+                next.OpenRandomSpanningTree(minOpen, maxOpen);
             }
         }
 
-        public static void OpenRandomWalls(this IEnumerable<GeneratingTile> tiles, float percentage)
+        public static void OpenRandomWalls(this IEnumerable<GeneratingTile> tiles, float percentage, float minOpen, float maxOpen)
         {
-            tiles.OpenRandomWalls(t => percentage);
+            tiles.OpenRandomWalls(t => percentage, minOpen, maxOpen);
         }
 
-        public static void OpenRandomWalls(this IEnumerable<GeneratingTile> tiles, Func<GeneratingTile, float> probability)
+        public static void OpenRandomWalls(this IEnumerable<GeneratingTile> tiles, Func<GeneratingTile, float> probability, float minOpen, float maxOpen)
         {
             foreach (var tile in tiles)
             {
@@ -48,12 +48,17 @@ namespace yatl.Environment.Level.Generation
                 foreach (var direction in Helpers.activeDirections
                     .Where(d => GlobalRandom.NextDouble() < probability(tile)))
                 {
-                    tile.OpenTileWall(direction);
+                    tile.OpenTileWall(direction, minOpen, maxOpen);
                 }
             }
         }
 
-        public static bool OpenTileWall(this Tile<GeneratingTileInfo> tile, Direction direction)
+        public static bool OpenTileWall(this Tile<GeneratingTileInfo> tile, Direction direction, float minOpen, float maxOpen)
+        {
+            return tile.OpenTileWall(direction, GlobalRandom.NextFloat(minOpen, maxOpen));
+        }
+
+        public static bool OpenTileWall(this Tile<GeneratingTileInfo> tile, Direction direction, float width)
         {
             var other = tile.Neighbour(direction);
             if (!other.IsValid)
@@ -62,8 +67,13 @@ namespace yatl.Environment.Level.Generation
             var info = tile.Info;
             var info2 = other.Info;
 
+            var oppositeDir = direction.Opposite();
+
             info.OpenSides = info.OpenSides.And(direction);
-            info2.OpenSides = info2.OpenSides.And(direction.Opposite());
+            info2.OpenSides = info2.OpenSides.And(oppositeDir);
+
+            info.CorridorWidths[(int)direction] = width;
+            info2.CorridorWidths[(int)oppositeDir] = width;
 
             return true;
         }

@@ -7,7 +7,6 @@ using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;
 using Direction = yatl.Environment.Tilemap.Hexagon.Direction;
-using Extensions = yatl.Environment.Tilemap.Hexagon.Extensions;
 
 namespace yatl.Environment.Level
 {
@@ -21,11 +20,11 @@ namespace yatl.Environment.Level
         {
             this.OpenSides = info.OpenSides;
 
-            this.generateWalls();
+            this.generateWalls(info);
         }
 
 
-        private void generateWalls()
+        private void generateWalls(GeneratingTileInfo info)
         {
             var walls = new List<Wall>();
 
@@ -33,7 +32,7 @@ namespace yatl.Environment.Level
             if (this.OpenSides.Any())
             {
                 var points = this.OpenSides.Enumerate()
-                    .Select(TileInfo.makeWallPoints)
+                    .Select(d => TileInfo.makeWallPoints(d, info.CorridorWidths[(int)d]))
                     .ToList();
 
                 Vector2 before = points.Last().Item2;
@@ -105,14 +104,16 @@ namespace yatl.Environment.Level
             yield return new Wall(before, end);
         }
 
-        private static Tuple<Vector2, Vector2> makeWallPoints(Direction direction)
+        private static Tuple<Vector2, Vector2> makeWallPoints(Direction direction, float width)
         {
             var corner1 = direction.CornerBefore() * Settings.Game.Level.HexagonSide;
             var corner2 = direction.CornerAfter() * Settings.Game.Level.HexagonSide;
 
+            float halfWidth = width * 0.5f;
+
             return Tuple.Create(
-                Vector2.Lerp(corner1, corner2, 1 / 6f),
-                Vector2.Lerp(corner1, corner2, 5 / 6f)
+                Vector2.Lerp(corner1, corner2, 0.5f - halfWidth),
+                Vector2.Lerp(corner1, corner2, 0.5f + halfWidth)
                 );
         }
     }

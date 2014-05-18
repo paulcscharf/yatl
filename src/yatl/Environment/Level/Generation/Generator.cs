@@ -17,6 +17,9 @@ namespace yatl.Environment.Level.Generation
         public float OpennessCore { get; set; }
         public float OpennessRim { get; set; }
 
+        public float MinCorridorWidth { get; set; }
+        public float MaxCorridorWidth { get; set; }
+
         public bool LogGenerationDetails { get; set; }
         public bool MuteAllOutput { get; set; }
 
@@ -27,6 +30,9 @@ namespace yatl.Environment.Level.Generation
                 this.Radius = Settings.Game.Level.Radius;
                 this.OpennessRim = 0f;
                 this.OpennessCore = 0.5f;
+
+                this.MinCorridorWidth = 0.2f;
+                this.MaxCorridorWidth = 0.8f;
 
                 return this;
             }
@@ -81,14 +87,15 @@ namespace yatl.Environment.Level.Generation
 
             #region open walls
 
-            new GeneratingTile(tempMap, 0, 0).OpenRandomSpanningTree();
+            new GeneratingTile(tempMap, 0, 0).OpenRandomSpanningTree(this.MinCorridorWidth, this.MaxCorridorWidth);
 
             timer.WriteStepToConsole("Opened random spanning tree .. {0}");
 
             if (this.OpennessCore > 0 || this.OpennessRim > 0)
             {
                 tiles.OpenRandomWalls(t => GameMath.Lerp(
-                    this.OpennessCore, this.OpennessRim, (float)t.Radius / this.Radius));
+                    this.OpennessCore, this.OpennessRim, (float)t.Radius / this.Radius),
+                    this.MinCorridorWidth, this.MaxCorridorWidth);
                 timer.WriteStepToConsole(
                     string.Format("Opened {0:0}%-{1:0}% random walls ", this.OpennessCore * 100, this.OpennessRim * 100)
                     .PadRight(30, '.') + " {0}");
