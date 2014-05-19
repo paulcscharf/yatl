@@ -1,4 +1,4 @@
-using amulware.Graphics;
+﻿using amulware.Graphics;
 using OpenTK;
 using OpenTK.Graphics.OpenGL;
 using System.Runtime.InteropServices;
@@ -18,8 +18,9 @@ namespace yatl.Rendering.Walls
 
         static private void setVertexAttributes()
         {
-            WallVertex.vertexAttributes = new []{
+            WallVertex.vertexAttributes = new[]{
                 new VertexAttribute("v_position", 3, VertexAttribPointerType.Float, WallVertex.size, 0),
+                new VertexAttribute("v_normal", 3, VertexAttribPointerType.Float, WallVertex.size, 12),
             };
         }
 

@@ -34,7 +34,7 @@ namespace yatl.Environment.Level
                 var denominator = ray.Direction.Y * wD.X - ray.Direction.X * wD.Y;
 
                 // disregard backfacing and parallel walls
-                // (denominator is dot product of normal and ray)
+                // (denominator is dot product of non-unit normal and ray)
                 if (denominator >= 0)
                     continue;
 
@@ -56,7 +56,7 @@ namespace yatl.Environment.Level
                 if (wF < 0 || wF > 1)
                     continue;
 
-                result = new RayHitResult(true, f, point, wD.PerpendicularLeft.Normalized());
+                result = new RayHitResult(true, f, point, wall.Normal);
             }
 
             return result;

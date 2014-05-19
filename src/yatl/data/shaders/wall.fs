@@ -4,9 +4,23 @@ in vec3 p_normal;
 
 out vec4 fragColor;
 
+
+void shadeFront()
+{
+
+	fragColor = vec4(0.5 + 0.5 * p_normal, 1);
+}
+
+void shadeBack()
+{
+	fragColor = vec4(0, 0, 0, 1);
+}
+
 void main()
 {
-	float r = p_position.z * 0.5;
+	if(gl_FrontFacing)
+		shadeFront();
+	else
+		shadeBack();
 
-	fragColor = vec4(r, r, r, 1);
 }

@@ -31,7 +31,7 @@ namespace yatl.Environment.Level.Generation
                 this.OpennessCore = 0.5f;
 
                 this.MinCorridorWidth = 0.2f;
-                this.MaxCorridorWidth = 0.8f;
+                this.MaxCorridorWidth = 0.75f;
 
                 return this;
             }

@@ -60,7 +60,16 @@ namespace yatl
             if(InputManager.IsKeyHit(Key.F12))
                 this.MakeScreenshot();
 
+
+            if (InputManager.IsKeyHit(Key.F5))
+                this.restartGame();
+
             this.gamestate.Update(e);
+        }
+
+        private void restartGame()
+        {
+            this.gamestate = new GameState();
         }
 
         protected override void OnRender(UpdateEventArgs e)

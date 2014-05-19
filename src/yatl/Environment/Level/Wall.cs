@@ -7,6 +7,7 @@ namespace yatl.Environment.Level
     {
         public Vector2 StartPoint { get; private set; }
         public Vector2 EndPoint { get; private set; }
+        public Vector2 Normal { get; private set; }
 
         private bool immutable;
 
@@ -17,6 +18,7 @@ namespace yatl.Environment.Level
         {
             this.StartPoint = startPoint;
             this.EndPoint = endPoint;
+            this.Normal = (endPoint - startPoint).PerpendicularLeft.Normalized();
         }
 
         #region Mutable Properties
