@@ -7,61 +7,29 @@ using System.Linq;
 
 namespace yatl
 {
-    class ParseError : Exception
+    class BranchingMusicalCompositionParser : Parser
     {
-        public ParseError(string message, int lineNumber)
-        : base("At line " + lineNumber.ToString() + ": " + message)
-        {
-        }
-    }
 
-    class BranchingMusicalCompositionParser
-    {
-        int currentLine = 0;
-
-        /// <summary>
-        /// Print given object
-        /// If instance of IEnumerable, do it recursively
-        /// </summary>
-        static void dump(object o)
+        public BranchingMusicalCompositionParser(StreamReader reader): base(reader)
         {
-            try
-            {
-                var list = (IEnumerable)o;
-                Console.Write("{");
-                foreach (var item in list)
-                {
-                    dump(item);
-                    Console.Write(", ");
-                }
-                Console.Write("}");
-            }
-            catch (Exception e)
-            {
-                Console.Write(o.ToString());
-            }
-            Console.WriteLine();
         }
 
         /// <summary>
-        /// Parse file and return root motif
+        /// Parse entire stream and return root motif
         /// </summary>
-        public Motif ParseFile(string filename)
+        public Motif ParseFile()
         {
             // Parse motifs into a dictionary
             var motifs = new Dictionary<string, Motif>();
             Motif root = null;
-            using (var reader = new StreamReader(filename))
+            while (true)
             {
-                while (true)
-                {
-                    Motif motif = this.ParseMotif(reader);
-                    if (motif == null)
-                        break;
-                    if (root == null)
-                        root = motif;
-                    motifs.Add(motif.Name, motif);
-                }
+                Motif motif = this.parseMotif();
+                if (motif == null)
+                    break;
+                if (root == null)
+                    root = motif;
+                motifs.Add(motif.Name, motif);
             }
 
             // Set successors right for all motifs
@@ -70,7 +38,6 @@ namespace yatl
                 motif.Successors = motif.successorNames.Select(key => motifs[key]).ToList();
             }
 
-            Console.WriteLine("Succesfully parsed " + filename);
             dump(motifs.Values);
             foreach (Motif motif in motifs.Values)
             {
@@ -83,13 +50,13 @@ namespace yatl
         /// <summary>
         /// Read and return exactly one motif
         /// </summary>
-        public Motif ParseMotif(StreamReader reader)
+        Motif parseMotif()
         {
-            string name = this.ParseName(reader);
+            string name = this.parseName();
             if (name == null)
                 return null;
-            string[] successorNames = this.ParseSuccessorNames(reader);
-            string content = this.ParseMusic(reader);
+            string[] successorNames = this.parseSuccessorNames();
+            string content = this.parseMusicObject().ToString();
 
             return new Motif(name, successorNames, content);
         }
@@ -97,24 +64,24 @@ namespace yatl
         /// <summary>
         /// Parse and return the motif name
         /// </summary>
-        public string ParseName(StreamReader reader)
+        string parseName()
         {
             var name = new StringBuilder();
             char c;
             bool dash = false;
 
-            while (!reader.EndOfStream)
+            while (!this.EndOfStream)
             {
-                c = (char) reader.Read();
+                c = this.read();
+
                 switch (c)
                 {
                 case '#':
-                    this.ParseComment(reader);
+                    this.parseComment();
                     break;
                 case ' ':
                     break;
                 case '\n':
-                    this.currentLine++;
                     break;
                 case '-':
                     dash = true;
@@ -123,7 +90,7 @@ namespace yatl
                     if (dash)
                         return name.ToString();
                     else
-                        throw new ParseError("Unexpected '>'", this.currentLine);
+                        parseError("Unexpected '>'");
                     break;
                 default:
                     name.Append(c);
@@ -131,31 +98,30 @@ namespace yatl
                 }
             }
             if (name.Length > 0)
-                throw new ParseError("Expected '->'", this.currentLine);
+                parseError("Expected '->'");
             return null;
         }
 
         /// <summary>
         /// Parse and return the successor names
         /// </summary>
-        public string[] ParseSuccessorNames(StreamReader reader)
+        string[] parseSuccessorNames()
         {
             var name = new StringBuilder();
             var names = new List<string>();
             char c;
 
-            while (!reader.EndOfStream)
+            while (!this.EndOfStream)
             {
-                c = (char) reader.Read();
+                c = this.read();
                 switch (c)
                 {
                 case '#':
-                    this.ParseComment(reader);
+                    this.parseComment();
                     break;
                 case ' ':
                     break;
                 case '\n':
-                    this.currentLine++;
                     break;
                 case ',':
                     names.Add(name.ToString());
@@ -163,7 +129,7 @@ namespace yatl
                     break;
                 case ':':
                     if (name.Length == 0 && names.Count == 0)
-                        throw new ParseError("Expected successor names", this.currentLine);
+                        parseError("Expected successor names");
                     names.Add(name.ToString());
                     return names.ToArray();
                 default:
@@ -171,20 +137,21 @@ namespace yatl
                     break;
                 }
             }
-            throw new ParseError("Expected ':'", this.currentLine);
+            // How to fix this??????/
+            parseError("Expected ':'");
+            return null;
         }
 
         /// <summary>
         /// Parse and throw away comment
         /// </summary>
-        public void ParseComment(StreamReader reader)
+        void parseComment()
         {
-            while (!reader.EndOfStream)
+            while (!this.EndOfStream)
             {
-                char c = (char) reader.Read();
+                char c = this.read();
                 if (c == '\n')
                 {
-                    this.currentLine++;
                     return;
                 }
             }
@@ -193,45 +160,53 @@ namespace yatl
         /// <summary>
         /// Read and return motif content
         /// </summary>
-        public string ParseMusic(StreamReader reader)
+        MusicObject parseMusicObject()
         {
-            StringBuilder sb = new StringBuilder();
+            string duration;
             int level = 0;
             char c;
 
-            while (!reader.EndOfStream)
+            while (!this.EndOfStream)
             {
-                c = (char) reader.Read();
+                c = this.peek();
 
                 if (c == ',' && level == 0)
-                    return sb.ToString();
+                    throw new NotImplementedException("");
 
                 switch (c)
                 {
                 case '#':
-                    this.ParseComment(reader);
-                    break;
-                case '\n':
-                    this.currentLine++;
+                    this.parseComment();
                     break;
                 case '{':
                     level++;
                     break;
                 case '}':
                     if (level <= 0)
-                        throw new ParseError("Unexpected '}'", this.currentLine);
+                        parseError("Unexpected '}'");
                     else
                         level--;
                     break;
                 default:
-                    sb.Append(c);
+                    if (true) //if alphabet char
+                    {
+                        string pitchName = this.parseWord();
+                        try
+                        {
+                            Pitch pitch = Pitch.FromString(pitchName);
+                        }
+                        catch (KeyNotFoundException e)
+                        {
+                            parseError("Don't know pitch " + pitchName);
+                        }
+                    }
                     break;
                 }
             }
 
             if (level != 0)
-                throw new ParseError("Expected '}'", this.currentLine);
-            return sb.ToString();
+                parseError("Expected '}'");
+            return null;
         }
     }
 }

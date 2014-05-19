@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 
 namespace yatl
@@ -17,7 +18,7 @@ namespace yatl
     }
 
     /// <summary>
-    /// MusicObjects that sound simultaneously
+    /// Set of MusicObjects that sound simultaneously
     /// </summary>
     class Parallel : MusicObject
     {
@@ -27,7 +28,7 @@ namespace yatl
     }
 
     /// <summary>
-    /// MusicObjects that sound subsequently
+    /// Set of MusicObjects that sound subsequently
     /// </summary>
     class Serial : MusicObject
     {
