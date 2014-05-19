@@ -91,6 +91,7 @@
     <Compile Include="Music\Pitch.cs" />
     <Compile Include="Music\BranchingMusicalComposition.cs" />
     <Compile Include="Music\BranchingMusicalCompositionParser.cs" />
+    <Compile Include="Music\Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\GameRenderer.cs" />
     <Compile Include="Rendering\ShaderManager.cs" />
