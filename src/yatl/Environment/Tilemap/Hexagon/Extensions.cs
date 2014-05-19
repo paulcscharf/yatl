@@ -1,9 +1,15 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
+using OpenTK;
+using yatl.Utilities;
 
 namespace yatl.Environment.Tilemap.Hexagon
 {
     static class Extensions
     {
+        #region Lookup Tables
+
         private static readonly Step[] directionDelta =
         {
             new Step(0, 0),
@@ -14,12 +20,33 @@ namespace yatl.Environment.Tilemap.Hexagon
             new Step(0, -1),
             new Step(1, -1),
         };
-
-        public static Step Step(this Direction direction)
+        private static readonly Direction[] directionOpposite =
         {
-            return Extensions.directionDelta[(int)direction];
-        }
+            Direction.Unknown,
+            Direction.Right,
+            Direction.UpRight,
+            Direction.UpLeft,
+            Direction.Left,
+            Direction.DownLeft,
+            Direction.DownRight,
+        };
 
+        public static readonly Direction[] Directions =
+        {
+            Direction.Left,
+            Direction.DownLeft,
+            Direction.DownRight,
+            Direction.Right,
+            Direction.UpRight,
+            Direction.UpLeft,
+        };
+
+        private static readonly Vector2[] corners =
+            Enumerable.Range(0, 7).Select(i => GameMath.Vector2FromRotation(
+                (i * 60f - 30f).Degrees().Radians))
+                .ToArray();
+
+        #endregion
 
         #region Tile<TTileInfo>
 
@@ -35,8 +62,62 @@ namespace yatl.Environment.Tilemap.Hexagon
 
         #endregion
 
-
         #region Direction and Directions
+
+        public static IEnumerable<Direction> Enumerate(this Directions directions)
+        {
+            return Extensions.Directions.Where(direction => directions.Includes(direction));
+        }
+
+        public static Vector2 CornerBefore(this Direction direction)
+        {
+            if(direction == Direction.Unknown)
+                throw new ArgumentOutOfRangeException("direction", "Cannot get corner for unknown direction.");
+
+            return Extensions.corners[(int)direction - 1];
+        }
+
+        public static Vector2 CornerAfter(this Direction direction)
+        {
+            if (direction == Direction.Unknown)
+                throw new ArgumentOutOfRangeException("direction", "Cannot get corner for unknown direction.");
+
+            return Extensions.corners[(int)direction];
+        } 
+
+        public static Step Step(this Direction direction)
+        {
+            return Extensions.directionDelta[(int)direction];
+        }
+
+        public static bool Any(this Directions direction)
+        {
+            return direction != Hexagon.Directions.None;
+        }
+        public static bool Any(this Directions direction, Directions match)
+        {
+            return direction.Intersect(match) != Hexagon.Directions.None;
+        }
+
+        public static bool All(this Directions direction)
+        {
+            return direction == Hexagon.Directions.All;
+        }
+        public static bool All(this Directions direction, Directions match)
+        {
+            return direction.Intersect(match) == match;
+        }
+
+        public static Direction Hexagonal(this Utilities.Direction direction)
+        {
+            return (Direction)((int)Math.Floor(direction.Degrees * 1 / 60f + 0.5f) % 6 + 1);
+        }
+
+        public static Direction Opposite(this Direction direction)
+        {
+            return Extensions.directionOpposite[(int)direction];
+        }
+
 
         private static Directions toDirections(this Direction direction)
         {
@@ -79,5 +160,11 @@ namespace yatl.Environment.Tilemap.Hexagon
         }
 
         #endregion
+
+        public static int TileCountForRadius(int radius)
+        {
+            int dim = radius * 2 + 1;
+            return (dim * dim * 3) / 4;
+        }
     }
 }

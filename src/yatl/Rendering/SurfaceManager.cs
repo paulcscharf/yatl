@@ -3,7 +3,7 @@ using System;
 using amulware.Graphics;
 using OpenTK;
 using yatl.Environment;
-using yatl.Utilities;
+using yatl.Rendering.Walls;
 
 namespace yatl.Rendering
 {
@@ -32,9 +32,15 @@ namespace yatl.Rendering
 
         #region Sprites
 
-        public SpriteSet<UVColorVertexData> Particles { get; set; }
+        public SpriteSet<UVColorVertexData> Particles { get; private set; }
 
-        public SpriteSet<UVColorVertexData> Hexagons { get; set; } 
+        public SpriteSet<UVColorVertexData> Hexagons { get; private set; } 
+
+        #endregion
+
+        #region Level Geometry
+
+        public IndexedSurface<WallVertex> Walls { get; private set; }
 
         #endregion
 
@@ -57,6 +63,8 @@ namespace yatl.Rendering
             this.initFonts(shaders);
             this.initParticles(shaders);
             this.initHexagons(shaders);
+
+            this.initWalls(shaders);
         }
 
         private void initMatrices()
@@ -106,6 +114,16 @@ namespace yatl.Rendering
             this.Hexagons = this.loadGameSpriteSet(shaders, "hexagons");
         }
 
+        private void initWalls(ShaderManager shaders)
+        {
+            this.Walls = new IndexedSurface<WallVertex>();
+            this.Walls.AddSettings(
+                this.gameModelview,
+                this.gameProjection
+                );
+            shaders.Wall.UseOnSurface(this.Walls);
+        }
+
         private SpriteSet<UVColorVertexData> loadGameSpriteSet(ShaderManager shaders, string filename)
         {
             return SpriteSet<UVColorVertexData>.FromJsonFile(
@@ -152,21 +170,6 @@ namespace yatl.Rendering
                 );
 
             this.gameModelview.Matrix = Matrix4.LookAt(camera.Position, camera.Focus, upVector);
-        }
-    }
-
-    sealed class ShaderManager
-    {
-        public ISurfaceShader UVColor { get; private set; }
-
-        public ShaderManager()
-        {
-            this.initialise();
-        }
-
-        private void initialise()
-        {
-            this.UVColor = GraphicsHelper.LoadShaderProgram("data/shaders/uvcolor");
         }
     }
 }

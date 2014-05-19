@@ -179,5 +179,12 @@ namespace yatl.Utilities
                 list[j] = temp;
             }
         }
+
+        public static List<T> Shuffled<T>(this IEnumerable<T> ts)
+        {
+            var list = ts.ToList();
+            list.Shuffle();
+            return list;
+        }
     }
 }

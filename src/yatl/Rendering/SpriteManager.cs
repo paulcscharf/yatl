@@ -1,5 +1,6 @@
 using amulware.Graphics;
 using OpenTK;
+using yatl.Rendering.Walls;
 
 namespace yatl.Rendering
 {
@@ -21,6 +22,9 @@ namespace yatl.Rendering
 
         public Sprite2DGeometry FilledHexagon { get; private set; }
         public Sprite2DGeometry EmptyHexagon { get; private set; }
+        public Sprite2DGeometry Lines { get; private set; }
+
+        public WallGeometry Wall { get; private set; }
 
         public SpriteManager(SurfaceManager surfaces)
         {
@@ -42,6 +46,9 @@ namespace yatl.Rendering
 
             this.FilledHexagon = (Sprite2DGeometry)surfaces.Hexagons["filled"].Geometry;
             this.EmptyHexagon = (Sprite2DGeometry)surfaces.Hexagons["empty"].Geometry;
+            this.Lines = (Sprite2DGeometry)surfaces.Hexagons["line"].Geometry;
+
+            this.Wall = new WallGeometry(surfaces.Walls);
         }
     }
 }

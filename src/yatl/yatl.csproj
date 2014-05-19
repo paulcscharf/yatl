@@ -59,10 +59,18 @@
   <ItemGroup>
     <Compile Include="Environment\Camera.cs" />
     <Compile Include="Environment\ControlScheme.cs" />
+    <Compile Include="Environment\GameObject.cs" />
     <Compile Include="Environment\GameState.cs" />
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
-    <Compile Include="Environment\Level.cs" />
+    <Compile Include="Environment\Level\Generation\GeneratingTileInfo.cs" />
+    <Compile Include="Environment\Level\Generation\Helpers.cs" />
+    <Compile Include="Environment\Level\Level.cs" />
+    <Compile Include="Environment\Level\Generation\Generator.cs" />
+    <Compile Include="Environment\Level\Ray.cs" />
+    <Compile Include="Environment\Level\RayHitResult.cs" />
+    <Compile Include="Environment\Level\TileInfo.cs" />
+    <Compile Include="Environment\Level\Wall.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Tilemap.cs" />
@@ -86,8 +94,11 @@
     <Compile Include="Music\Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\GameRenderer.cs" />
+    <Compile Include="Rendering\ShaderManager.cs" />
     <Compile Include="Rendering\SpriteManager.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
+    <Compile Include="Rendering\Walls\WallGeometry.cs" />
+    <Compile Include="Rendering\Walls\WallVertex.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Utilities\DeletableObject.cs" />
     <Compile Include="Utilities\DeletableObjectList.cs" />
@@ -100,6 +111,7 @@
     <Compile Include="Utilities\GraphicsHelper.cs" />
     <Compile Include="Utilities\InputManager.cs" />
     <Compile Include="Utilities\LINQHelper.cs" />
+    <Compile Include="Utilities\SteppedStopWatch.cs" />
     <Compile Include="YATLWindow.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -110,6 +122,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <Content Include="data\gfx\sprites\particles.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\shaders\wall.fs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\shaders\post\blurh.fs">
@@ -141,6 +156,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\music\foo.bmc">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\shaders\wall.vs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\shaders\post.vs">

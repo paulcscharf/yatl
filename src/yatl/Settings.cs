@@ -27,13 +27,15 @@ namespace yatl
 
                 public const float DefaultZoom = 1;
 
+                public const float OverviewZoom = 8f;
+
                 public const float FocusForce = 5f;
                 public const float PositionForce = 3f;
             }
 
             public static class Level
             {
-                public const int Radius = 5;
+                public const int Radius = 8;
 
                 private const float sqrtOfThree = 1.73205080757f;
 
@@ -46,6 +48,15 @@ namespace yatl
                 public readonly static Vector2 HexagonGridUnitX = new Vector2(HexagonWidth, 0);
                 public readonly static Vector2 HexagonGridUnitY = new Vector2(HexagonWidth * 0.5f, HexagonHeight);
 
+                public readonly static amulware.Graphics.Matrix2 TileToPosition =
+                    new amulware.Graphics.Matrix2(HexagonGridUnitX, HexagonGridUnitY);
+
+                public const float HexagonInnerRadiusSquared = (HexagonWidth * 0.5f) * (HexagonWidth * 0.5f);
+                public const float HexagonOuterRadiusSquared = HexagonSide * HexagonSide;
+
+                public const float OverlayHeight = 2;
+
+                public const float WallHeight = 2;
             }
         }
 

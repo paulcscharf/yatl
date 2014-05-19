@@ -1,9 +1,11 @@
 
-using System.Collections;
 using System.Collections.Generic;
 using amulware.Graphics;
 using OpenTK;
+using OpenTK.Input;
+using yatl.Environment.Level.Generation;
 using yatl.Rendering;
+using yatl.Utilities;
 
 namespace yatl.Environment
 {
@@ -13,8 +15,10 @@ namespace yatl.Environment
         private float timeF;
         public float Time { get { return this.timeF; } }
 
-        private readonly Level level;
-        private readonly Wisp player;
+        public bool DrawDebug { get; private set; }
+
+        public Level.Level Level { get; private set; }
+        public Wisp Player { get; private set; }
 
         private readonly List<GameObject> gameObjects = new List<GameObject>();
 
@@ -22,10 +26,10 @@ namespace yatl.Environment
 
         public GameState()
         {
-            this.level = new Level();
-            this.player = new Wisp(this, Vector2.Zero);
+            this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
+            this.Player = new Wisp(this, Vector2.Zero);
 
-            this.Camera = new Camera(this.player);
+            this.Camera = new Camera(this.Player);
         }
 
         public void Update(UpdateEventArgs args)
@@ -36,6 +40,9 @@ namespace yatl.Environment
 
             this.time += newArgs.ElapsedTime;
             this.timeF = (float)this.time;
+
+            if (InputManager.IsKeyHit(Key.F3))
+                this.DrawDebug = !this.DrawDebug;
 
             #region Update Game Objects
 
@@ -58,12 +65,16 @@ namespace yatl.Environment
 
             #endregion
 
+            if (InputManager.IsKeyHit(Key.ControlLeft))
+            {
+                this.Camera.Zoom = !this.Camera.Zoom;
+            }
             this.Camera.Update(newArgs);
         }
 
         public void Draw(SpriteManager sprites)
         {
-            this.level.Draw(sprites);
+            this.Level.Draw(sprites);
 
             foreach (var gameObject in this.gameObjects)
             {
