@@ -23,13 +23,17 @@ namespace yatl.Environment.Level.Generation
         public float[] CorridorWidths { get; private set; }
 
         public List<Wall> Walls { get; private set; }
+        public TriangulatedFloor Floor { get; private set; }
 
         private Dictionary<Direction, EdgeWallPair> edgeWalls;
 
-        private class EdgeWallPair
+        public class EdgeWallPair
         {
             private readonly Wall wallIn;
             private readonly Wall wallOut;
+
+            public Wall WallIn { get { return this.wallIn; } }
+            public Wall WallOut { get { return this.wallOut; } }
 
             public EdgeWallPair(Wall wallIn, Wall wallOut)
             {
@@ -44,6 +48,11 @@ namespace yatl.Environment.Level.Generation
                 other.wallIn.Previous = this.wallOut;
                 other.wallOut.Next = this.wallIn;
             }
+        }
+
+        public void GenerateFloor()
+        {
+            this.Floor = new TriangulatedFloor(this.OpenSides, this.edgeWalls);
         }
 
         #region generate walls

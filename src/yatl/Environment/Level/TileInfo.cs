@@ -14,12 +14,16 @@ namespace yatl.Environment.Level
 
         public ReadOnlyCollection<Wall> Walls { get; private set; }
 
+        public TriangulatedFloor Floor { get; private set; }
+
         public TileInfo(GeneratingTileInfo info)
         {
             this.OpenSides = info.OpenSides;
 
             this.Walls = (info.Walls ?? Enumerable.Empty<Wall>())
                 .Select(w => w.Frozen).ToList().AsReadOnly();
+
+            this.Floor = info.Floor;
         }
 
         public RayHitResult ShootRay(Ray ray)
