@@ -6,5 +6,6 @@
 #B > A : {2c   e   f   e  d    c   G  c,
           #1c c g g a a 2g 1f f e e d d 2c},
 # Part C; Scary tune
-C > A : d4 fis4 f4 cis4 e4 dis4 b4 d4 dis4 ais4 b4,
+#C > A : d4 fis4 f4 cis4 e4 dis4 b4 d4 dis4 ais4 b4,
+X > X : c4 cis4,
 

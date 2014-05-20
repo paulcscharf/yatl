@@ -51,14 +51,20 @@ namespace yatl
 
         protected char peek()
         {
-            return (char) this.reader.Peek();
+            int c = this.reader.Peek();
+            if (c == -1)
+                throw this.parseError("Unexpected end of file.");
+            return (char) c;
         }
 
         protected char read()
         {
-            this.parseNewlines();
+            //this.parseNewlines();
             this.column++;
-            return (char) this.reader.Read();
+            int c = this.reader.Read();
+            if (c == -1)
+                throw this.parseError("Unexpected end of file.");
+            return (char) c;
         }
 
         public bool EndOfStream
@@ -75,21 +81,14 @@ namespace yatl
         protected string parseWord()
         {
             StringBuilder word = new StringBuilder();
-            while (!reader.EndOfStream)
+            while (!EndOfStream)
             {
-                switch ((char) reader.Peek())
-                {
-                case ' ':
+                char c = (char) reader.Peek();
+                if (!char.IsLetterOrDigit(c))
                     return word.ToString();
-                    break;
-                case '\n':
-                    return word.ToString();
-                    break;
-                default:
-                    word.Append((char)reader.Read());
-                    break;
-                }
+                word.Append((char)reader.Read());
             }
+
             if (word.Length == 0)
                 throw parseError("Unexpected EOF");
             return word.ToString();

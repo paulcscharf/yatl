@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -20,6 +21,11 @@ namespace yatl
         {
             this.duration = duration;
             this.pitch = pitch;
+        }
+
+        public override string ToString()
+        {
+            return this.duration.ToString() + " " + this.pitch.ToString();
         }
     }
 
@@ -43,6 +49,11 @@ namespace yatl
         public Serial(MusicObject[] content)
         {
             this.content = content;
+        }
+
+        public override string ToString()
+        {
+            return string.Join(" ", this.content.Select(obj => obj.ToString()));
         }
     }
 }

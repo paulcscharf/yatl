@@ -24,12 +24,23 @@ namespace yatl
             Motif root = null;
             while (true)
             {
-                Motif motif = this.parseMotif();
-                if (motif == null)
+                this.parseSpace(); // Skip meaningless spaces and linebreaks
+                if (EndOfStream)
                     break;
-                if (root == null)
-                    root = motif;
-                motifs.Add(motif.Name, motif);
+                char c = this.peek();
+
+                switch (c)
+                {
+                case '#':
+                    this.parseComment();
+                    break;
+                default:
+                    Motif motif = this.parseMotif();
+                    if (root == null)
+                        root = motif;
+                    motifs.Add(motif.Name, motif);
+                    break;
+                }
             }
 
             // Set successors right for all motifs
@@ -53,8 +64,6 @@ namespace yatl
         Motif parseMotif()
         {
             string name = this.parseName();
-            if (name == null)
-                return null;
             string[] successorNames = this.parseSuccessorNames();
             MusicObject content = this.parseMusicObject();
 
@@ -68,7 +77,7 @@ namespace yatl
         {
             var name = new StringBuilder();
 
-            while (!this.EndOfStream)
+            while (true)
             {
                 this.parseSpace(); // Skip meaningless spaces and linebreaks
                 char c = this.peek();
@@ -88,9 +97,6 @@ namespace yatl
                     break;
                 }
             }
-            if (name.Length > 0)
-                throw parseError("Expected '->'");
-            return null;
         }
 
         /// <summary>
@@ -101,7 +107,7 @@ namespace yatl
             var name = new StringBuilder();
             var names = new List<string>();
 
-            while (!this.EndOfStream)
+            while (true)
             {
                 this.parseSpace(); // Skip meaningless spaces and linebreaks
                 char c = this.peek();
@@ -112,9 +118,9 @@ namespace yatl
                     this.parseComment();
                     break;
                 case ',':
+                    this.read();
                     names.Add(name.ToString());
                     name.Clear();
-                    this.read();
                     break;
                 case ':':
                     this.read();
@@ -123,12 +129,11 @@ namespace yatl
                     names.Add(name.ToString());
                     return names.ToArray();
                 default:
+                    this.read();
                     name.Append(c);
                     break;
                 }
             }
-
-            throw parseError("Expected ':'");
         }
 
         /// <summary>
@@ -138,7 +143,7 @@ namespace yatl
         {
             if (this.read() != '#')
                 throw parseError("Expected '#' to parse comment");
-            while (!this.EndOfStream)
+            while (!EndOfStream)
             {
                 char c = this.read();
                 if (c == '\n')
@@ -153,7 +158,7 @@ namespace yatl
         /// </summary>
         MusicObject parseMusicObject()
         {
-            while (!this.EndOfStream)
+            while (true)
             {
                 // Skip meaningless spaces and linebreaks
                 this.parseSpace();
@@ -171,7 +176,6 @@ namespace yatl
                     return this.parseSerial();
                 }
             }
-            throw parseError("Unexpected EOF");
         }
 
         /// <summary>
@@ -184,10 +188,17 @@ namespace yatl
             string pitchName = "";
             char c;
 
-            while (!this.EndOfStream)
+            while (true)
             {
-                // Skip meaningless spaces and linebreaks
+                // Skip spaces and linebreaks
                 this.parseSpace();
+                if (EndOfStream)
+                {
+                    if (content.Count == 0 || duration.Length > 0)
+                        throw parseError("Expected music objects");
+                    return new Serial(content.ToArray());
+                }
+
                 c = this.peek();
 
                 switch (c)
@@ -201,6 +212,7 @@ namespace yatl
                     break;
                 case ',':
                     // Return
+                    this.read();
                     return new Serial(content.ToArray());
                     break;
                 default:
@@ -210,6 +222,7 @@ namespace yatl
                         {
                             // Must be part of duration,
                             // because notes don't start with a digit
+                            // TODO: make sure durations can be attached
                             duration = this.parseWord();
                         }
                     }
@@ -236,7 +249,6 @@ namespace yatl
                     break;
                 }
             }
-            throw parseError("Unexpected EOF");
         }
         /// <summary>
         /// Read and return things
