@@ -18,6 +18,12 @@ namespace yatl.Environment.Level.Generation
             Direction.DownRight,
         };
 
+        public static void MakeFloors(this IEnumerable<GeneratingTile> tiles)
+        {
+            foreach (var tile in tiles)
+                tile.Info.GenerateFloor();
+        }
+
         public static void MakeWalls(this IEnumerable<GeneratingTile> tiles)
         {
             foreach (var tile in tiles)

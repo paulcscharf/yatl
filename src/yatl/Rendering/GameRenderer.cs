@@ -71,7 +71,7 @@ namespace yatl.Rendering
             GL.Scissor(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
 
             GL.Enable(EnableCap.ScissorTest);
-            GL.ClearColor(Color.CornflowerBlue);
+            GL.ClearColor(Color.DimGray);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Disable(EnableCap.ScissorTest);
 
@@ -79,7 +79,12 @@ namespace yatl.Rendering
 
             GL.Enable(EnableCap.DepthTest);
 
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Line);
+
             this.surfaces.Walls.Render();
+            GL.PolygonMode(MaterialFace.FrontAndBack, PolygonMode.Fill);
+
+            GL.Disable(EnableCap.DepthTest);
             
             this.surfaces.Particles.Surface.Render();
 
@@ -88,7 +93,6 @@ namespace yatl.Rendering
 
             this.surfaces.GameFontSurface.Render();
 
-            GL.Disable(EnableCap.DepthTest);
 
             #endregion
 

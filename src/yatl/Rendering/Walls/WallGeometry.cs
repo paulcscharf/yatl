@@ -1,6 +1,7 @@
 ﻿using amulware.Graphics;
 using OpenTK;
 using yatl.Environment.Level;
+using yatl.Environment.Level.Generation;
 
 namespace yatl.Rendering.Walls
 {
@@ -11,6 +12,11 @@ namespace yatl.Rendering.Walls
         public WallGeometry(IndexedSurface<WallVertex> surface)
         {
             this.surface = surface;
+        }
+
+        public void DrawFloor(TriangulatedFloor floor, Vector2 offset)
+        {
+            floor.AddToSurface(this.surface, offset);
         }
 
         public void DrawWall(Wall wall, Vector2 offset)

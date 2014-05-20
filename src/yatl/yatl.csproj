@@ -65,6 +65,7 @@
     <Compile Include="Environment\interfaces\IPositionable.cs" />
     <Compile Include="Environment\Level\Generation\GeneratingTileInfo.cs" />
     <Compile Include="Environment\Level\Generation\Helpers.cs" />
+    <Compile Include="Environment\Level\Generation\TriangulatedFloor.cs" />
     <Compile Include="Environment\Level\Level.cs" />
     <Compile Include="Environment\Level\Generation\Generator.cs" />
     <Compile Include="Environment\Level\Ray.cs" />

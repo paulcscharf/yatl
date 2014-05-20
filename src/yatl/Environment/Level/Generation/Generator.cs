@@ -28,7 +28,7 @@ namespace yatl.Environment.Level.Generation
             {
                 this.Radius = Settings.Game.Level.Radius;
                 this.OpennessRim = 0f;
-                this.OpennessCore = 0.5f;
+                this.OpennessCore = 1f;
 
                 this.MinCorridorWidth = 0.2f;
                 this.MaxCorridorWidth = 0.75f;
@@ -107,6 +107,10 @@ namespace yatl.Environment.Level.Generation
             tiles.MakeWalls();
 
             timer.WriteStepToConsole("Generated level walls ........ {0}");
+
+            tiles.MakeFloors();
+
+            timer.WriteStepToConsole("Generated level floors ....... {0}");
 
             #endregion
 
