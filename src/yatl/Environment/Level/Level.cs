@@ -71,13 +71,13 @@ namespace yatl.Environment.Level
                 {
                     var position = this.GetPosition(tile);
 
-                    walls.DrawFloor(tile.Info.Floor, position);
 
                     foreach (var wall in tile.Info.Walls)
                     {
                         //lines.DrawLine(position + wall.StartPoint, position + wall.EndPoint);
                         walls.DrawWall(wall, position);
                     }
+                    walls.DrawFloor(tile.Info.Floor, position);
                 }
             }
 

@@ -7,8 +7,8 @@ out vec4 fragColor;
 
 void shadeFront()
 {
-
-	fragColor = vec4(0.5 + 0.5 * p_normal, 1);
+	vec3 normal = normalize(p_normal);
+	fragColor = vec4(0.5 + 0.5 * normal, 1);
 }
 
 void shadeBack()
