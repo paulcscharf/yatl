@@ -15,6 +15,12 @@ namespace yatl
     {
         int duration;
         Pitch pitch;
+
+        public Note(int duration, Pitch pitch)
+        {
+            this.duration = duration;
+            this.pitch = pitch;
+        }
     }
 
     /// <summary>
@@ -33,5 +39,10 @@ namespace yatl
     class Serial : MusicObject
     {
         MusicObject[] content;
+
+        public Serial(MusicObject[] content)
+        {
+            this.content = content;
+        }
     }
 }

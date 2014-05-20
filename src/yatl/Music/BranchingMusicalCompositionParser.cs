@@ -56,7 +56,7 @@ namespace yatl
             if (name == null)
                 return null;
             string[] successorNames = this.parseSuccessorNames();
-            string content = this.parseMusicObject().ToString();
+            MusicObject content = this.parseMusicObject();
 
             return new Motif(name, successorNames, content);
         }
@@ -67,38 +67,29 @@ namespace yatl
         string parseName()
         {
             var name = new StringBuilder();
-            char c;
-            bool dash = false;
 
             while (!this.EndOfStream)
             {
-                c = this.read();
+                this.parseSpace(); // Skip meaningless spaces and linebreaks
+                char c = this.peek();
 
                 switch (c)
                 {
                 case '#':
                     this.parseComment();
                     break;
-                case ' ':
-                    break;
-                case '\n':
-                    break;
-                case '-':
-                    dash = true;
-                    break;
                 case '>':
-                    if (dash)
-                        return name.ToString();
-                    else
-                        parseError("Unexpected '>'");
+                    this.read();
+                    return name.ToString();
                     break;
                 default:
+                    this.read();
                     name.Append(c);
                     break;
                 }
             }
             if (name.Length > 0)
-                parseError("Expected '->'");
+                throw parseError("Expected '->'");
             return null;
         }
 
@@ -109,27 +100,26 @@ namespace yatl
         {
             var name = new StringBuilder();
             var names = new List<string>();
-            char c;
 
             while (!this.EndOfStream)
             {
-                c = this.read();
+                this.parseSpace(); // Skip meaningless spaces and linebreaks
+                char c = this.peek();
+
                 switch (c)
                 {
                 case '#':
                     this.parseComment();
                     break;
-                case ' ':
-                    break;
-                case '\n':
-                    break;
                 case ',':
                     names.Add(name.ToString());
                     name.Clear();
+                    this.read();
                     break;
                 case ':':
+                    this.read();
                     if (name.Length == 0 && names.Count == 0)
-                        parseError("Expected successor names");
+                        throw parseError("Expected successor names");
                     names.Add(name.ToString());
                     return names.ToArray();
                 default:
@@ -137,9 +127,8 @@ namespace yatl
                     break;
                 }
             }
-            // How to fix this??????/
-            parseError("Expected ':'");
-            return null;
+
+            throw parseError("Expected ':'");
         }
 
         /// <summary>
@@ -147,6 +136,8 @@ namespace yatl
         /// </summary>
         void parseComment()
         {
+            if (this.read() != '#')
+                throw parseError("Expected '#' to parse comment");
             while (!this.EndOfStream)
             {
                 char c = this.read();
@@ -158,20 +149,15 @@ namespace yatl
         }
 
         /// <summary>
-        /// Read and return motif content
+        /// Detect the type of the toplevel MusicObject and parse it
         /// </summary>
         MusicObject parseMusicObject()
         {
-            string duration;
-            int level = 0;
-            char c;
-
             while (!this.EndOfStream)
             {
-                c = this.peek();
-
-                if (c == ',' && level == 0)
-                    throw new NotImplementedException("");
+                // Skip meaningless spaces and linebreaks
+                this.parseSpace();
+                char c = this.peek();
 
                 switch (c)
                 {
@@ -179,34 +165,85 @@ namespace yatl
                     this.parseComment();
                     break;
                 case '{':
-                    level++;
-                    break;
-                case '}':
-                    if (level <= 0)
-                        parseError("Unexpected '}'");
-                    else
-                        level--;
+                    return this.parseParallel();
                     break;
                 default:
-                    if (true) //if alphabet char
+                    return this.parseSerial();
+                }
+            }
+            throw parseError("Unexpected EOF");
+        }
+
+        /// <summary>
+        /// Read and return things
+        /// </summary>
+        Serial parseSerial()
+        {
+            var content = new List<MusicObject>();
+            string duration = "";
+            string pitchName = "";
+            char c;
+
+            while (!this.EndOfStream)
+            {
+                // Skip meaningless spaces and linebreaks
+                this.parseSpace();
+                c = this.peek();
+
+                switch (c)
+                {
+                case '#':
+                    this.parseComment();
+                    break;
+                case '{':
+                    Parallel parallel = this.parseParallel();
+                    content.Add(parallel);
+                    break;
+                case ',':
+                    // Return
+                    return new Serial(content.ToArray());
+                    break;
+                default:
+                    if (char.IsDigit(c))
                     {
-                        string pitchName = this.parseWord();
+                        if (pitchName.Length == 0)
+                        {
+                            // Must be part of duration,
+                            // because notes don't start with a digit
+                            duration = this.parseWord();
+                        }
+                    }
+                    else
+                    {
+                        pitchName = this.parseWord();
+
+                        // We're done parsing a note, so let's construct it
                         try
                         {
                             Pitch pitch = Pitch.FromString(pitchName);
+                            Note note;
+                            if (duration.Length == 0)
+                                note = new Note(1, pitch);
+                            else
+                                note = new Note(int.Parse(duration), pitch);
+                            content.Add(note);
                         }
                         catch (KeyNotFoundException e)
                         {
-                            parseError("Don't know pitch " + pitchName);
+                            throw parseError("Don't know pitch " + pitchName);
                         }
                     }
                     break;
                 }
             }
-
-            if (level != 0)
-                parseError("Expected '}'");
-            return null;
+            throw parseError("Unexpected EOF");
+        }
+        /// <summary>
+        /// Read and return things
+        /// </summary>
+        Parallel parseParallel()
+        {
+            throw new NotImplementedException();
         }
     }
 }

@@ -37,9 +37,9 @@ namespace yatl
             private set;
         }
         public string[] successorNames;
-        string musicContent;
+        MusicObject musicContent;
 
-        public Motif(string name, string[] successorNames, string musicContent)
+        public Motif(string name, string[] successorNames, MusicObject musicContent)
         {
             this.Name = name;
             this.successorNames = successorNames;
@@ -50,7 +50,7 @@ namespace yatl
         {
             var successorNames = this.Successors.Select(motif => motif.Name);
             return this.Name + " -> " + string.Join(",", successorNames)
-                   + ": " + this.musicContent;
+                   + ": " + this.musicContent.ToString();
         }
     }
 }

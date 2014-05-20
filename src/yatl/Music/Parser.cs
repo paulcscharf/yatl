@@ -26,33 +26,10 @@ namespace yatl
             this.reader = reader;
         }
 
-        /// <summary>
-        /// Print given object
-        /// If instance of IEnumerable, do it recursively
-        /// </summary>
-        public static void dump(object o)
-        {
-            try
-            {
-                var list = (IEnumerable)o;
-                Console.Write("{");
-                foreach (var item in list)
-                {
-                    dump(item);
-                    Console.Write(", ");
-                }
-                Console.Write("}");
-            }
-            catch (Exception e)
-            {
-                Console.Write(o.ToString());
-            }
-            Console.WriteLine();
-        }
 
-        protected void parseError(string message)
+        protected ParseError parseError(string message)
         {
-            throw new ParseError(message, this.line, this.column);
+            return new ParseError(message, this.line, this.column);
         }
 
         void parseNewlines()
@@ -114,7 +91,7 @@ namespace yatl
                 }
             }
             if (word.Length == 0)
-                this.parseError("Unexpected EOF");
+                throw parseError("Unexpected EOF");
             return word.ToString();
         }
 
@@ -137,6 +114,30 @@ namespace yatl
                     return;
                 }
             }
+        }
+
+        /// <summary>
+        /// Print given object
+        /// If instance of IEnumerable, do it recursively
+        /// </summary>
+        public static void dump(object o)
+        {
+            try
+            {
+                var list = (IEnumerable)o;
+                Console.Write("{");
+                foreach (var item in list)
+                {
+                    dump(item);
+                    Console.Write(", ");
+                }
+                Console.Write("}");
+            }
+            catch (Exception e)
+            {
+                Console.Write(o.ToString());
+            }
+            Console.WriteLine();
         }
     }
 }
