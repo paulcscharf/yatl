@@ -186,7 +186,6 @@ namespace yatl
             var content = new List<MusicObject>();
             string duration = "";
             string pitchName = "";
-            char c;
 
             while (true)
             {
@@ -199,7 +198,7 @@ namespace yatl
                     return new Serial(content.ToArray());
                 }
 
-                c = this.peek();
+                char c = this.peek();
 
                 switch (c)
                 {
@@ -213,6 +212,10 @@ namespace yatl
                 case ',':
                     // Return
                     this.read();
+                    return new Serial(content.ToArray());
+                    break;
+                case '}':
+                    // Return
                     return new Serial(content.ToArray());
                     break;
                 default:
@@ -243,7 +246,7 @@ namespace yatl
                         }
                         catch (KeyNotFoundException e)
                         {
-                            throw parseError("Don't know pitch " + pitchName);
+                            throw parseError("Don't know pitch '" + pitchName + "'");
                         }
                     }
                     break;
@@ -255,7 +258,41 @@ namespace yatl
         /// </summary>
         Parallel parseParallel()
         {
-            throw new NotImplementedException();
+            var content = new List<MusicObject>();
+
+            if (this.read() != '{')
+                throw parseError("Expected '{' for parsing parallel");
+            content.Add(this.parseSerial());
+
+
+            while (true)
+            {
+                // Skip spaces and linebreaks
+                this.parseSpace();
+                if (EndOfStream)
+                {
+                    if (content.Count == 0)
+                        throw parseError("Expected music objects");
+                    return new Parallel(content.ToArray());
+                }
+
+                char c = this.peek();
+
+                switch (c)
+                {
+                case '#':
+                    this.parseComment();
+                    break;
+                case '}':
+                    // Return
+                    this.read();
+                    return new Parallel(content.ToArray());
+                    break;
+                default:
+                    content.Add(this.parseSerial());
+                    break;
+                }
+            }
         }
     }
 }

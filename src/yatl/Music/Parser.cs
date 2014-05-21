@@ -85,7 +85,11 @@ namespace yatl
             {
                 char c = (char) reader.Peek();
                 if (!char.IsLetterOrDigit(c))
+                {
+                    if (word.Length == 0)
+                        throw parseError("Expected alphanumerical characters");
                     return word.ToString();
+                }
                 word.Append((char)reader.Read());
             }
 
