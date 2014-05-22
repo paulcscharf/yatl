@@ -28,7 +28,7 @@ namespace yatl.Environment.Level.Generation
             {
                 this.Radius = Settings.Game.Level.Radius;
                 this.OpennessRim = 0f;
-                this.OpennessCore = 1f;
+                this.OpennessCore = 0.5f;
 
                 this.MinCorridorWidth = 0.2f;
                 this.MaxCorridorWidth = 0.75f;

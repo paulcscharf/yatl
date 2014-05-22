@@ -35,7 +35,7 @@ namespace yatl
 
             public static class Level
             {
-                public const int Radius = 8;
+                public const int Radius = 10;
 
                 private const float sqrtOfThree = 1.73205080757f;
 
