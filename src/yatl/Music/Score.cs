@@ -13,10 +13,9 @@ namespace yatl
     }
     abstract class MusicObject
     {
-        public int Duration
+        public abstract int Duration
         {
             get;
-            set;
         }
     }
 
@@ -26,10 +25,19 @@ namespace yatl
     class Note : MusicObject
     {
         Pitch pitch;
+        int duration;
+
+        public override int Duration
+        {
+            get
+            {
+                return this.duration;
+            }
+        }
 
         public Note(int duration, Pitch pitch)
         {
-            this.Duration = duration;
+            this.duration = duration;
             this.pitch = pitch;
         }
 
@@ -47,34 +55,47 @@ namespace yatl
         // NOTE: All MusicObjects should have the same duration
         // Throw Exception if not
         MusicObject[] content;
+        int durationMultiplier;
+        int innerDuration;
 
-        public Parallel(MusicObject[] content)
+        public override int Duration
+        {
+            get
+            {
+                return this.innerDuration * this.durationMultiplier;
+            }
+        }
+
+        public Parallel(MusicObject[] content, int durationMultiplier = 1)
         {
             if (content.Length == 0)
                 throw new ValueException("No empty content allowed.");
 
             int duration = content[0].Duration;
+            Console.WriteLine(content[0].ToString());
+            Console.WriteLine(duration.ToString());
             bool allSameDuration = content.All(o => o.Duration == duration);
             if (!allSameDuration)
                 throw new ValueException("Not every musicobject has the same duration.");
 
-            this.Duration = Duration;
+            this.durationMultiplier = durationMultiplier;
+            this.innerDuration = duration;
             this.content = content;
         }
 
         public override string ToString()
         {
-            return "{" + string.Join(",", this.content.Select(obj => obj.ToString())) + "}";
+            return this.durationMultiplier.ToString() + "{" + string.Join(",", this.content.Select(obj => obj.ToString())) + "}";
         }
     }
 
-    /// <summary>
-    /// Set of MusicObjects that sound subsequently
-    /// </summary>
+/// <summary>
+/// Set of MusicObjects that sound subsequently
+/// </summary>
     class Serial : MusicObject
     {
         MusicObject[] content;
-        public int Duration
+        public override int Duration
         {
             get
             {

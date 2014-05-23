@@ -169,9 +169,9 @@ namespace yatl
                 case '#':
                     this.parseComment();
                     break;
-                case '{':
-                    return this.parseParallel();
-                    break;
+                //case '{':
+                    //return this.parseParallel();
+                    //break;
                 default:
                     return this.parseSerial();
                 }
@@ -206,7 +206,14 @@ namespace yatl
                     this.parseComment();
                     break;
                 case '{':
-                    Parallel parallel = this.parseParallel();
+                    Parallel parallel;
+                    if (duration.Length == 0)
+                        parallel = this.parseParallel();
+                    else
+                    {
+                        parallel = this.parseParallel(int.Parse(duration));
+                        duration = "";
+                    }
                     content.Add(parallel);
                     break;
                 case ',':
@@ -221,13 +228,9 @@ namespace yatl
                 default:
                     if (char.IsDigit(c))
                     {
-                        if (pitchName.Length == 0)
-                        {
-                            // Must be part of duration,
-                            // because notes don't start with a digit
-                            // TODO: make sure durations can be attached
-                            duration = this.parseWord();
-                        }
+                        // Must be part of duration,
+                        // because notes don't start with a digit
+                        duration = this.parseWord();
                     }
                     else
                     {
@@ -256,7 +259,7 @@ namespace yatl
         /// <summary>
         /// Read and return things
         /// </summary>
-        Parallel parseParallel()
+        Parallel parseParallel(int durationMultiplier = 1)
         {
             var content = new List<MusicObject>();
 
@@ -273,7 +276,7 @@ namespace yatl
                 {
                     if (content.Count == 0)
                         throw parseError("Expected music objects");
-                    return new Parallel(content.ToArray());
+                    return new Parallel(content.ToArray(), durationMultiplier);
                 }
 
                 char c = this.peek();
@@ -286,7 +289,7 @@ namespace yatl
                 case '}':
                     // Return
                     this.read();
-                    return new Parallel(content.ToArray());
+                    return new Parallel(content.ToArray(), durationMultiplier);
                     break;
                 default:
                     content.Add(this.parseSerial());

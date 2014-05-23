@@ -21,6 +21,14 @@ namespace yatl
         int column = 0;
         StreamReader reader;
 
+        public bool EndOfStream
+        {
+            get
+            {
+                return this.reader.EndOfStream;
+            }
+        }
+
         public Parser(StreamReader reader)
         {
             this.reader = reader;
@@ -30,23 +38,6 @@ namespace yatl
         protected ParseError parseError(string message)
         {
             return new ParseError(message, this.line, this.column);
-        }
-
-        void parseNewlines()
-        {
-            while (true)
-            {
-                char c = (char) this.reader.Peek();
-                if (c == '\n')
-                {
-                    this.column = 0;
-                    this.line++;
-                    this.reader.Read();
-                    c = (char) this.reader.Peek();
-                }
-                else
-                    return;
-            }
         }
 
         protected char peek()
@@ -59,7 +50,6 @@ namespace yatl
 
         protected char read()
         {
-            //this.parseNewlines();
             this.column++;
             int c = this.reader.Read();
             if (c == -1)
@@ -67,30 +57,23 @@ namespace yatl
             return (char) c;
         }
 
-        public bool EndOfStream
-        {
-            get
-            {
-                return this.reader.EndOfStream;
-            }
-        }
-
         /// <summary>
-        /// Parse characters until space or newline, then return string
+        /// Parse sequence of alpha numberic characters
         /// </summary>
         protected string parseWord()
         {
             StringBuilder word = new StringBuilder();
             while (!EndOfStream)
             {
-                char c = (char) reader.Peek();
+                char c = (char) this.peek();
                 if (!char.IsLetterOrDigit(c))
                 {
                     if (word.Length == 0)
                         throw parseError("Expected alphanumerical characters");
                     return word.ToString();
                 }
-                word.Append((char)reader.Read());
+                this.read();
+                word.Append(c);
             }
 
             if (word.Length == 0)
@@ -99,7 +82,7 @@ namespace yatl
         }
 
         /// <summary>
-        /// Parse consume spaces and newlines, then return
+        /// Parse spaces and newlines, then return void
         /// </summary>
         protected void parseSpace()
         {
