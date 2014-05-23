@@ -22,12 +22,20 @@ namespace yatl.Rendering
         private readonly SpriteManager sprites;
 
         private Stopwatch shaderReloadTimer;
+        private DeferredBuffer deferredBuffer;
+        private PostProcessSurface debugDeferred;
 
         public GameRenderer()
         {
+            this.deferredBuffer = new DeferredBuffer();
             this.shaders = new ShaderManager();
             this.surfaces = new SurfaceManager(this.shaders);
             this.sprites = new SpriteManager(this.surfaces);
+
+
+            this.debugDeferred = new PostProcessSurface();
+            this.debugDeferred.AddSettings(this.deferredBuffer);
+            this.shaders.DebugDeferred.UseOnSurface(this.debugDeferred);
 
             this.shaderReloadTimer = Stopwatch.StartNew();
         }
@@ -54,12 +62,38 @@ namespace yatl.Rendering
             #region Global Settings
 
             GL.Disable(EnableCap.CullFace);
+
+            #endregion
+
+            
+            #region Draw Game
+
+            #region Set and clear deferred buffer
+
+            this.deferredBuffer.Bind();
+
+            GL.Viewport(0, 0, this.scissorW, this.scissorH);
+            GL.ClearColor(0, 0, 0, 0);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+            #endregion
+
+            #region Draw deferred geometry
+
+            GL.Enable(EnableCap.DepthTest);
+            GL.DepthFunc(DepthFunction.Less);
+
+            this.surfaces.Walls.Render();
+
             GL.Disable(EnableCap.DepthTest);
 
             #endregion
 
-            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
+            #region Set and clear backbuffer
 
+            this.deferredBuffer.Unbind();
+
+            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
 
             GL.Viewport(0, 0, this.screenWidth, this.screenHeight);
 
@@ -75,22 +109,27 @@ namespace yatl.Rendering
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Disable(EnableCap.ScissorTest);
 
-            #region Draw Game
+            #endregion
 
-            GL.Enable(EnableCap.DepthTest);
-            GL.DepthFunc(DepthFunction.Less);
-
-            this.surfaces.Walls.Render();
-
-            GL.Disable(EnableCap.DepthTest);
+            #region Draw lights
             
+            this.debugDeferred.Render();
+
+            #endregion
+
+            #region Draw particles
+
             this.surfaces.Particles.Surface.Render();
+            
+            #endregion
+
+            #region Draw Debug
 
             this.surfaces.Hexagons.Surface.Render();
 
-
             this.surfaces.GameFontSurface.Render();
 
+            #endregion
 
             #endregion
 
@@ -128,6 +167,8 @@ namespace yatl.Rendering
                 this.scissorW = this.screenWidth;
                 this.scissorH = h;
             }
+
+            this.deferredBuffer.Resize(this.scissorW, this.scissorH);
         }
     }
 }
