@@ -9,7 +9,8 @@ namespace yatl
         {
             public const int DefaultWindowWidth = 1280;
             public const int DefaultWindowHeight = 720;
-            public const int DefaultFPS = 50;
+            public const int UpdateFPS = 50;
+            public const int DrawFPS = 50;
         }
 
         public static class Game

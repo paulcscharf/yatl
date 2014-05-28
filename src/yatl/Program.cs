@@ -15,7 +15,7 @@ namespace yatl
 
             int glMajor = 1;
             int glMinor = 0;
-            new YATLWindow(glMajor, glMinor).Run(Settings.General.DefaultFPS);
+            new YATLWindow(glMajor, glMinor).Run(Settings.General.UpdateFPS, Settings.General.DrawFPS);
         }
     }
 }
