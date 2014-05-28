@@ -27,7 +27,7 @@ namespace yatl
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
         {
-            soundEvents.OrderBy(o => o.StartTime);
+            soundEvents = soundEvents.OrderBy(o => o.StartTime);
 
             foreach (var soundEvent in soundEvents) {
                 soundEvent.AddOffset(this.time);

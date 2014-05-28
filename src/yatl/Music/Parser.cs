@@ -119,7 +119,7 @@ namespace yatl
                 }
                 Console.Write("}");
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 Console.Write(o.ToString());
             }

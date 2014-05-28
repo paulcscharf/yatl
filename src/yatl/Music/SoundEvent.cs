@@ -20,12 +20,16 @@ namespace yatl
             this.StartTime += offsetTime;
         }
 
+        public void MultiplyOffset(double multiplier)
+        {
+            this.StartTime *= multiplier;
+        }
+
         public abstract void Execute(MusicManager manager);
     }
 
     class NoteOn : SoundEvent
     {
-        public double StartTime;
         public Note Note;
         public Source Source = null;
 
@@ -39,13 +43,14 @@ namespace yatl
             this.Source = manager.PianoSound.GenerateSource();
             this.Source.Pitch = (float) (this.Note.Frequency / 130.8);
             this.Source.Play();
-            Console.WriteLine("Playing note " + this.ToString());
+            Console.WriteLine("Playing note " + this.Note.ToString());
+            Console.WriteLine("Frequency " + this.Note.Frequency.ToString());
+            Console.WriteLine("Time " + this.StartTime.ToString());
         }
     }
 
     class NoteOff : SoundEvent
     {
-        public double StartTime;
         NoteOn noteOn;
 
         public NoteOff(double startTime, NoteOn noteOn) : base(startTime)

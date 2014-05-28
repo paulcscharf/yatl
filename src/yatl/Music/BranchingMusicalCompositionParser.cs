@@ -90,7 +90,6 @@ namespace yatl
                 case '>':
                     this.read();
                     return name.ToString();
-                    break;
                 default:
                     this.read();
                     name.Append(c);
@@ -211,8 +210,8 @@ namespace yatl
                         parallel = this.parseParallel();
                     else
                     {
-                        parallel = this.parseParallel(int.Parse(duration));
                         duration = "";
+                        parallel = this.parseParallel(int.Parse(duration));
                     }
                     content.Add(parallel);
                     break;
@@ -220,11 +219,9 @@ namespace yatl
                     // Return
                     this.read();
                     return new Serial(content.ToArray());
-                    break;
                 case '}':
                     // Return
                     return new Serial(content.ToArray());
-                    break;
                 default:
                     if (char.IsDigit(c))
                     {
@@ -243,11 +240,13 @@ namespace yatl
                             Note note;
                             if (duration.Length == 0)
                                 note = new Note(1, pitch);
-                            else
+                            else {
                                 note = new Note(int.Parse(duration), pitch);
+                                duration = "";
+                            }
                             content.Add(note);
                         }
-                        catch (KeyNotFoundException e)
+                        catch (KeyNotFoundException)
                         {
                             throw parseError("Don't know pitch '" + pitchName + "'");
                         }
@@ -290,7 +289,6 @@ namespace yatl
                     // Return
                     this.read();
                     return new Parallel(content.ToArray(), durationMultiplier);
-                    break;
                 default:
                     content.Add(this.parseSerial());
                     break;

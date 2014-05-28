@@ -105,7 +105,12 @@ namespace yatl
 
         public override IEnumerable<SoundEvent> Render()
         {
-            throw new NotImplementedException();
+            foreach (var child in this.content) {
+                foreach (var soundEvent in child.Render()) {
+                    soundEvent.MultiplyOffset(this.durationMultiplier);
+                    yield return soundEvent;
+                }
+            }
         }
 
         public override string ToString()
