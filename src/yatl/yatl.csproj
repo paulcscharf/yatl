@@ -86,9 +86,10 @@
     <Compile Include="Input\InputAction.cs" />
     <Compile Include="Input\KeyboardKeyAction.cs" />
     <Compile Include="Input\LambdaAction.cs" />
+    <Compile Include="Music\SoundEvent.cs" />
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Program.cs" />
-    <Compile Include="Music\Score.cs" />
+    <Compile Include="Music\Audible.cs" />
     <Compile Include="Music\Pitch.cs" />
     <Compile Include="Music\BranchingMusicalComposition.cs" />
     <Compile Include="Music\BranchingMusicalCompositionParser.cs" />

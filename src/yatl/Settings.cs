@@ -9,7 +9,7 @@ namespace yatl
         {
             public const int DefaultWindowWidth = 1280;
             public const int DefaultWindowHeight = 720;
-            public const int UpdateFPS = 50;
+            public const int UpdateFPS = 200;
             public const int DrawFPS = 50;
         }
 

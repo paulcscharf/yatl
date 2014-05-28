@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using amulware.Graphics;
 using Cireon.Audio;
 using yatl.Utilities;
@@ -8,16 +9,14 @@ namespace yatl
 {
     sealed class MusicManager
     {
-        private double time = 0;
-        SoundFile pianoSound;
-        private Queue<SoundEvent> scheduledEvents = new Queue<SoundEvent>();
-        private List<Source> pendingSources = new List<Source>();
-
+        double time = 0;
+        Queue<SoundEvent> eventSchedule = new Queue<SoundEvent>();
+        public SoundFile PianoSound;
 
         public MusicManager()
         {
             AudioManager.Initialize();
-            this.pianoSound = new SoundFile("data/music/PianoC3.ogg");
+            this.PianoSound = new SoundFile("data/music/PianoC3.ogg");
 
             string filename = "data/music/foo.bmc";
             Console.WriteLine("Parsing " + filename);
@@ -28,36 +27,21 @@ namespace yatl
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
         {
+            soundEvents.OrderBy(o => o.StartTime);
+
             foreach (var soundEvent in soundEvents) {
                 soundEvent.AddOffset(this.time);
-                this.scheduledEvents.Enqueue(soundEvent);
+                this.eventSchedule.Enqueue(soundEvent);
             }
-        }
-
-        void playNote(Note note)
-        {
-            var source = this.pianoSound.GenerateSource();
-            source.Pitch = (float) (note.Frequency / 130.8);
-            source.Play();
-
-            foreach (var pendingSource in this.pendingSources) {
-                pendingSource.Stop();
-            }
-            this.pendingSources.Clear();
-
-            this.pendingSources.Add(source);
-            Console.WriteLine("Playing note " + note.ToString());
-            Console.WriteLine("Pitch " + source.Pitch.ToString());
-            Console.WriteLine("Time " + this.time.ToString());
         }
 
         public void Update(UpdateEventArgs args)
         {
             this.time += args.ElapsedTimeInS;
 
-            while (this.scheduledEvents.Count != 0 && this.scheduledEvents.Peek().StartTime <= this.time) {
-                var next = this.scheduledEvents.Dequeue();
-                this.playNote(next.Note);
+            while (this.eventSchedule.Count != 0 && this.eventSchedule.Peek().StartTime <= this.time) {
+                var nextEvent = this.eventSchedule.Dequeue();
+                nextEvent.Execute(this);
             }
         }
     }
