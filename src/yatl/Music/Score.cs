@@ -45,9 +45,6 @@ namespace yatl
 
         public override void Play()
         {
-            var source = MusicManager.PianoSound.GenerateSource();
-            source.Pitch = (float) (this.pitch.Frequency / 130.8);
-            source.Play();
         }
 
         public override string ToString()
@@ -92,6 +89,11 @@ namespace yatl
             this.content = content;
         }
 
+        public override void Play()
+        {
+            throw new NotImplementedException();
+        }
+
         public override string ToString()
         {
             return this.durationMultiplier.ToString() + "{" + string.Join(",", this.content.Select(obj => obj.ToString())) + "}";
@@ -115,6 +117,11 @@ namespace yatl
         public Serial(Playable[] content)
         {
             this.content = content;
+        }
+
+        public override void Play()
+        {
+            throw new NotImplementedException();
         }
 
         public override string ToString()
