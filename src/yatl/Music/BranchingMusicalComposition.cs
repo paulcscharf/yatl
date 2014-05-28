@@ -37,9 +37,9 @@ namespace yatl
             private set;
         }
         public string[] successorNames;
-        MusicObject musicContent;
+        Playable musicContent;
 
-        public Motif(string name, string[] successorNames, MusicObject musicContent)
+        public Motif(string name, string[] successorNames, Playable musicContent)
         {
             this.Name = name;
             this.successorNames = successorNames;

@@ -16,8 +16,8 @@ namespace yatl
     class Pitch
     {
         public readonly string Name;
-        public readonly double Frequency;
-        static Dictionary<string, double> nameFrequencyTable = new Dictionary<string, double>
+        public readonly float Frequency;
+        static Dictionary<string, float> nameFrequencyTable = new Dictionary<string, float>
         {
             {"c0", 16.35},
             {"cis0", 17.32},
@@ -98,7 +98,7 @@ namespace yatl
             {"b5", 987.8},
         };
 
-        public Pitch(string name, double frequency)
+        public Pitch(string name, float frequency)
         {
             this.Name = name;
             this.Frequency = frequency;

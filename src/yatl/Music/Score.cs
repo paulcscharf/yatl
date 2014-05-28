@@ -11,18 +11,20 @@ namespace yatl
         {
         }
     }
-    abstract class MusicObject
+    abstract class Playable
     {
         public abstract int Duration
         {
             get;
         }
+
+        public abstract void Play();
     }
 
     /// <summary>
     /// Atomic MusicObject
     /// </summary>
-    class Note : MusicObject
+    class Note : Playable
     {
         Pitch pitch;
         int duration;
@@ -41,6 +43,13 @@ namespace yatl
             this.pitch = pitch;
         }
 
+        public override void Play()
+        {
+            var source = MusicManager.PianoSound.GenerateSource();
+            source.Pitch = (float) (this.pitch.Frequency / 130.8);
+            source.Play();
+        }
+
         public override string ToString()
         {
             return this.Duration.ToString() + " " + this.pitch.ToString();
@@ -50,11 +59,11 @@ namespace yatl
     /// <summary>
     /// Set of MusicObjects that sound simultaneously
     /// </summary>
-    class Parallel : MusicObject
+    class Parallel : Playable
     {
         // NOTE: All MusicObjects should have the same duration
         // Throw Exception if not
-        MusicObject[] content;
+        Playable[] content;
         int durationMultiplier;
         int innerDuration;
 
@@ -66,7 +75,7 @@ namespace yatl
             }
         }
 
-        public Parallel(MusicObject[] content, int durationMultiplier = 1)
+        public Parallel(Playable[] content, int durationMultiplier = 1)
         {
             if (content.Length == 0)
                 throw new ValueException("No empty content allowed.");
@@ -92,9 +101,9 @@ namespace yatl
 /// <summary>
 /// Set of MusicObjects that sound subsequently
 /// </summary>
-    class Serial : MusicObject
+    class Serial : Playable
     {
-        MusicObject[] content;
+        Playable[] content;
         public override int Duration
         {
             get
@@ -103,7 +112,7 @@ namespace yatl
             }
         }
 
-        public Serial(MusicObject[] content)
+        public Serial(Playable[] content)
         {
             this.content = content;
         }
