@@ -65,6 +65,8 @@ namespace yatl
                 this.restartGame();
 
             this.gamestate.Update(e);
+
+            this.musicManager.Update(e);
         }
 
         private void restartGame()
