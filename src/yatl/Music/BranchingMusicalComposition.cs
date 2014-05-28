@@ -24,29 +24,28 @@ namespace yatl
         }
     }
 
-    class Motif
+    class Motif : Audible
     {
-        public IEnumerable<Motif> Successors
-        {
-            get;
-            set;
-        }
-        public string Name
-        {
-            get;
-            private set;
-        }
+        public IEnumerable<Motif> Successors { get; set; }
+        public string Name { get; private set; }
         public string[] successorNames;
-        Playable musicContent;
+        Audible musicContent;
 
-        public Motif(string name, string[] successorNames, Playable musicContent)
+        public Motif(string name, string[] successorNames, Audible musicContent)
         {
             this.Name = name;
             this.successorNames = successorNames;
             this.musicContent = musicContent;
         }
 
-        public string ToString()
+        public override IEnumerable<SoundEvent> Render()
+        {
+            return musicContent.Render();
+        }
+
+        public override double Duration { get { return this.musicContent.Duration; } }
+
+        public override string ToString()
         {
             var successorNames = this.Successors.Select(motif => motif.Name);
             return this.Name + " -> " + string.Join(",", successorNames)

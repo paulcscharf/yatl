@@ -65,7 +65,7 @@ namespace yatl
         {
             string name = this.parseName();
             string[] successorNames = this.parseSuccessorNames();
-            Playable content = this.parseMusicObject();
+            Audible content = this.parseMusicObject();
 
             return new Motif(name, successorNames, content);
         }
@@ -156,7 +156,7 @@ namespace yatl
         /// <summary>
         /// Detect the type of the toplevel MusicObject and parse it
         /// </summary>
-        Playable parseMusicObject()
+        Audible parseMusicObject()
         {
             while (true)
             {
@@ -183,7 +183,7 @@ namespace yatl
         /// </summary>
         Serial parseSerial()
         {
-            var content = new List<Playable>();
+            var content = new List<Audible>();
             string duration = "";
             string pitchName = "";
 
@@ -261,7 +261,7 @@ namespace yatl
         /// </summary>
         Parallel parseParallel(int durationMultiplier = 1)
         {
-            var content = new List<Playable>();
+            var content = new List<Audible>();
 
             if (this.read() != '{')
                 throw parseError("Expected '{' for parsing parallel");
