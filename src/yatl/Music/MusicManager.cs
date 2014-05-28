@@ -1,20 +1,4 @@
-﻿//AudioManager.Initialize();
-//Console.WriteLine(AudioManager.Instance.MasterVolume);
-//AudioManager.Instance.MasterVolume = 1.9f;
-//Console.WriteLine(AudioManager.Instance.MasterVolume);
-
-//PianoSound = new SoundFile("data/music/PianoC3.ogg");
-//var s1 = PianoSound.GenerateSource();
-//var s2 = PianoSound.GenerateSource();
-//var s3 = PianoSound.GenerateSource();
-//s1.Volume = 1.9f;
-//s1.Play();
-//s2.Pitch = 2;
-//s2.Play();
-//System.Threading.Thread.Sleep(1000);
-//s3.Pitch = 3f;
-//s3.Play();
-using System;
+﻿using System;
 using System.Collections.Generic;
 using amulware.Graphics;
 using Cireon.Audio;
@@ -25,14 +9,15 @@ namespace yatl
     sealed class MusicManager
     {
         private double time = 0;
-        SoundFile pianoSound = new SoundFile("data/music/PianoC3.ogg");
+        SoundFile pianoSound;
         private Queue<SoundEvent> scheduledEvents = new Queue<SoundEvent>();
 
 
         public MusicManager()
         {
             AudioManager.Initialize();
-			var s1 = pianoSound.GenerateSource();
+            this.pianoSound = new SoundFile("data/music/PianoC3.ogg");
+			var s1 = this.pianoSound.GenerateSource();
 			s1.Play();
             System.Threading.Thread.Sleep(1000);
 
@@ -69,17 +54,6 @@ namespace yatl
                 var next = this.scheduledEvents.Dequeue();
                 this.playNote(next.Note);
             }
-
-
-            // random notes shenanigans
-            //if (this.time >= this.nextNoteTime)
-            //{
-            //    var source = this.pianoSound.GenerateSource();
-            //    source.Pitch = GlobalRandom.NextFloat(1f, 3f);
-            //    source.Play();
-
-            //    this.nextNoteTime = this.time + GlobalRandom.NextFloat(0.2f, 2f);
-            //}
         }
     }
 }
