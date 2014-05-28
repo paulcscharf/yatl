@@ -11,6 +11,7 @@ namespace yatl
         private double time = 0;
         SoundFile pianoSound;
         private Queue<SoundEvent> scheduledEvents = new Queue<SoundEvent>();
+        private List<Source> pendingSources = new List<Source>();
 
 
         public MusicManager()
@@ -38,6 +39,13 @@ namespace yatl
             var source = this.pianoSound.GenerateSource();
             source.Pitch = (float) (note.Frequency / 130.8);
             source.Play();
+
+            foreach (var pendingSource in this.pendingSources) {
+                pendingSource.Stop();
+            }
+            this.pendingSources.Clear();
+
+            this.pendingSources.Add(source);
             Console.WriteLine("Playing note " + note.ToString());
             Console.WriteLine("Pitch " + source.Pitch.ToString());
             Console.WriteLine("Time " + this.time.ToString());

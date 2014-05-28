@@ -8,5 +8,5 @@
 # Part C; Scary tune
 #X > Y : c4 1 {1 c4,cis4},
 #Y > X : c4 cis4,
-A > A : d4 fis4 f4 cis4 e4 dis4 b4 d4 dis4 ais4 b4
+A > A : d4 fis4 f4 cis4 e4 dis4 b3 d4 cis4 ais3 b3
 
