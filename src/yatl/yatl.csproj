@@ -126,10 +126,6 @@
     <Content Include="data\gfx\sprites\particles.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\Piano.pp.C4.aiff">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
-    <Content Include="data\music\Piano.pp.C4.wav" />
     <Content Include="data\shaders\post\debugDeferred.fs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -167,7 +163,7 @@
     <None Include="data\music\foo.bmc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\music\Piano.ogg">
+    <None Include="data\music\PianoC3.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\shaders\wall.vs">

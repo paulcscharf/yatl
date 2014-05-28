@@ -15,16 +15,18 @@ namespace yatl
              //AudioManager.Instance.MasterVolume = 2;
              Console.WriteLine(AudioManager.Instance.MasterVolume);
 
-             var sf = new SoundFile("data/music/Piano.ogg");
-             var source = sf.GenerateSource();
+             var sf = new SoundFile("data/music/PianoC3.ogg");
+             var s1 = sf.GenerateSource();
+             var s2 = sf.GenerateSource();
+             var s3 = sf.GenerateSource();
              //source.Volume = 2;
-             source.Play();
+             s1.Play();
              System.Threading.Thread.Sleep(1000);
-             source.Pitch = 2;
-             source.Play();
+             s2.Pitch = 2;
+             s2.Play();
              System.Threading.Thread.Sleep(1000);
-             source.Pitch = 3;
-             source.Play();
+             s3.Pitch = 3;
+             s3.Play();
          }
     }
 }
