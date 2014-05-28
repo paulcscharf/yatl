@@ -17,9 +17,6 @@ namespace yatl
         {
             AudioManager.Initialize();
             this.pianoSound = new SoundFile("data/music/PianoC3.ogg");
-			var s1 = this.pianoSound.GenerateSource();
-			s1.Play();
-            System.Threading.Thread.Sleep(1000);
 
             string filename = "data/music/foo.bmc";
             Console.WriteLine("Parsing " + filename);
