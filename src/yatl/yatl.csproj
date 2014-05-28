@@ -126,6 +126,10 @@
     <Content Include="data\gfx\sprites\particles.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="data\music\Piano.pp.C4.aiff">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\music\Piano.pp.C4.wav" />
     <Content Include="data\shaders\post\debugDeferred.fs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -163,6 +167,9 @@
     <None Include="data\music\foo.bmc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Include="data\music\Piano.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Include="data\shaders\wall.vs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
@@ -186,6 +193,10 @@
     <ProjectReference Include="..\..\libs\awgraphics\src\amulware.Graphics\amulware.Graphics.csproj">
       <Project>{59beda5c-d68a-4011-89ba-c09421d22974}</Project>
       <Name>amulware.Graphics</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\libs\Cireon.Audio\src\Cireon.Audio\Cireon.Audio.csproj">
+      <Project>{c978fa42-aa1d-43f5-96f2-3dc0913ffa6f}</Project>
+      <Name>Cireon.Audio</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
