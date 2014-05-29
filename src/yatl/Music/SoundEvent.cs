@@ -43,9 +43,6 @@ namespace yatl
             this.Source = manager.PianoSound.GenerateSource();
             this.Source.Pitch = (float) (this.Note.Frequency / 130.8);
             this.Source.Play();
-            Console.WriteLine("Playing note " + this.Note.ToString());
-            Console.WriteLine("Frequency " + this.Note.Frequency.ToString());
-            Console.WriteLine("Time " + this.StartTime.ToString());
         }
     }
 

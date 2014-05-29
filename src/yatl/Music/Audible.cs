@@ -92,8 +92,6 @@ namespace yatl
                 throw new Exception("No empty content allowed.");
 
             double duration = content[0].Duration;
-            Console.WriteLine(content[0].ToString());
-            Console.WriteLine(duration.ToString());
             bool allSameDuration = content.All(o => o.Duration == duration);
             if (!allSameDuration)
                 throw new Exception("Not every musicobject has the same duration.");
