@@ -6,6 +6,9 @@ using Cireon.Audio;
 
 namespace yatl
 {
+    /// <summary>
+    /// Abstract class for all kinds of sound events
+    /// </summary>
     abstract class SoundEvent
     {
         public double StartTime;

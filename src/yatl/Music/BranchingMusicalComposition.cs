@@ -12,7 +12,7 @@ namespace yatl
 
         public BranchingMusicalComposition(string filename)
         {
-            // Parse file and return a BranchingMusicalComposition
+            // Parse file and return a composition
             using (var reader = new StreamReader(filename))
             {
                 var parser = new BranchingMusicalCompositionParser(reader);
@@ -25,8 +25,8 @@ namespace yatl
     class Motif : Audible
     {
         public Motif[] Successors { get; set; }
-        public string Name { get; private set; }
-        public string[] successorNames;
+        public readonly string Name;
+        public readonly string[] successorNames;
         Audible musicContent;
 
         public Motif(string name, string[] successorNames, Audible musicContent)

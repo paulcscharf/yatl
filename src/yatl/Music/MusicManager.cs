@@ -30,6 +30,8 @@ namespace yatl
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
         {
             soundEvents = soundEvents.OrderBy(o => o.StartTime);
+
+            // Place the soundevents after the last event that is currently scheduled
             double offset;
             if (this.eventSchedule.Count == 0)
                 offset = this.time;
@@ -53,19 +55,19 @@ namespace yatl
         {
             this.time += args.ElapsedTimeInS;
 
+            // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
                 var nextEvent = this.eventSchedule.First.Value;
                 this.eventSchedule.RemoveFirst();
                 nextEvent.Execute(this);
             }
 
+            // Schedule soundevents
             if (this.eventSchedule.Count == 0)
                 this.scheduleNextMotif();
             else {
-                SoundEvent last = this.eventSchedule.Last.Value;
-                double endOfMotif = last.StartTime;
-                // If current motif ends in less than 5 seconds
-                if (endOfMotif + 5 > this.time)
+                // If current motif ends in less than 5 seconds, schedule next motif
+                if (this.eventSchedule.Last.Value.StartTime + 5 > this.time)
                     this.scheduleNextMotif();
             }
         }

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 
 namespace yatl
 {
+    /// <summary>
+    /// Abstract class for objects that can be rendered to sound events
+    /// </summary>
     abstract class Audible
     {
         public abstract double Duration { get; }
@@ -13,7 +16,7 @@ namespace yatl
     }
 
     /// <summary>
-    /// Atomic MusicObject
+    /// Atomic music object
     /// </summary>
     class Note : Audible
     {
@@ -44,7 +47,7 @@ namespace yatl
     }
 
     /// <summary>
-    /// Set of MusicObjects that sound subsequently
+    /// Set of music objects that sound subsequently
     /// </summary>
     class Serial : Audible
     {
@@ -76,7 +79,7 @@ namespace yatl
     }
 
     /// <summary>
-    /// Set of MusicObjects that sound simultaneously
+    /// Set of music objects that sound simultaneously
     /// </summary>
     class Parallel : Audible
     {

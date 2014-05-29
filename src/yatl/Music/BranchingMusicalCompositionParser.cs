@@ -9,10 +9,7 @@ namespace yatl
 {
     class BranchingMusicalCompositionParser : Parser
     {
-
-        public BranchingMusicalCompositionParser(StreamReader reader): base(reader)
-        {
-        }
+        public BranchingMusicalCompositionParser(StreamReader reader): base(reader) { }
 
         /// <summary>
         /// Parse entire stream and return root motif
