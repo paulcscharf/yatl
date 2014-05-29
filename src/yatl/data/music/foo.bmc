@@ -1,13 +1,13 @@
 # Branching Musical Composition
 
 # Part A
-#A > B, C : 1 {c4 c4 g4 g4 a4 a4} 2 g4 1 {f4 f4 e4 e4 d4 d4} 2 c4,
+A > B, C : c4 c4 g4 g4 a4 a4 2g4 f4 f4 e4 e4 d4 d4 2c4,
 # Part B
-#B > A : {2c4   e4   f4   e4  d4    c4   G4  c4,
-          #1c4 c4 g4 g4 a4 a4 2g4 1f4 f4 e4 e4 d4 d4 2c4},
+B > A : {2c3    2e3   2f3   2e3 2d3    2c3   2g2   2c2,
+         1c4 c4 g4 g4 a4 a4 2g4 1f4 f4 e4 e4 d4 d4 2c4},
+C > A : {2e3    2d3   2c3   2g2 2e3    2d3   2c2   2g2,
+         1g4 g4 f4 f4 e4 e4 2d4 1g4 g4 f4 f4 e4 e4 2d4},
 # Part C; Scary tune
-#X > Y : c4 1 {1 c4,cis4},
-#Y > X : c4 cis4,
-A > A : {d4 fis4 f4 cis4 e4 dis4 b3 d4   cis4 ais3 b3,
+X > X : {d4 fis4 f4 cis4 e4 dis4 b3 d4   cis4 ais3 b3,
          b3 a3   2 gis3  g3 2 fis3  fis3 2 e3      d3}
 

@@ -8,25 +8,23 @@ namespace yatl
 {
     class BranchingMusicalComposition
     {
-        public Motif root;
+        public readonly Motif Root;
 
-        public static BranchingMusicalComposition FromFile(string filename)
+        public BranchingMusicalComposition(string filename)
         {
             // Parse file and return a BranchingMusicalComposition
-            var self = new BranchingMusicalComposition();
             using (var reader = new StreamReader(filename))
             {
                 var parser = new BranchingMusicalCompositionParser(reader);
-                self.root = parser.ParseFile();
+                this.Root = parser.ParseFile();
             }
             Console.WriteLine("Succesfully parsed " + filename);
-            return self;
         }
     }
 
     class Motif : Audible
     {
-        public IEnumerable<Motif> Successors { get; set; }
+        public Motif[] Successors { get; set; }
         public string Name { get; private set; }
         public string[] successorNames;
         Audible musicContent;

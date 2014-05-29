@@ -82,6 +82,30 @@ namespace yatl
         }
 
         /// <summary>
+        /// Parse sequence of alpha numberic characters
+        /// </summary>
+        protected string parseInteger()
+        {
+            StringBuilder word = new StringBuilder();
+            while (!EndOfStream)
+            {
+                char c = (char) this.peek();
+                if (!char.IsDigit(c))
+                {
+                    if (word.Length == 0)
+                        throw parseError("Expected numerical characters");
+                    return word.ToString();
+                }
+                this.read();
+                word.Append(c);
+            }
+
+            if (word.Length == 0)
+                throw parseError("Unexpected EOF");
+            return word.ToString();
+        }
+
+        /// <summary>
         /// Parse spaces and newlines, then return void
         /// </summary>
         protected void parseSpace()

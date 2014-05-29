@@ -46,7 +46,7 @@ namespace yatl
             // Set successors right for all motifs
             foreach (Motif motif in motifs.Values)
             {
-                motif.Successors = motif.successorNames.Select(key => motifs[key]).ToList();
+                motif.Successors = motif.successorNames.Select(key => motifs[key]).ToArray();
             }
 
             dump(motifs.Values);
@@ -210,8 +210,8 @@ namespace yatl
                         parallel = this.parseParallel();
                     else
                     {
-                        duration = "";
                         parallel = this.parseParallel(int.Parse(duration));
+                        duration = "";
                     }
                     content.Add(parallel);
                     break;
@@ -227,7 +227,7 @@ namespace yatl
                     {
                         // Must be part of duration,
                         // because notes don't start with a digit
-                        duration = this.parseWord();
+                        duration = this.parseInteger();
                     }
                     else
                     {
