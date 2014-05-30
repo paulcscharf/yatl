@@ -19,6 +19,8 @@ namespace yatl
         public readonly double Frequency;
         static Dictionary<string, double> nameFrequencyTable = new Dictionary<string, double>
         {
+            {"_", 0},
+
             {"c0", 16.35},
             {"cis0", 17.32},
             {"d0", 18.35},

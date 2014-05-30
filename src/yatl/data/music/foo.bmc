@@ -1,13 +1,17 @@
 # Branching Musical Composition
 
-# Part A
+# Dark subraph
+dark1 > dark1 : {
+d4   fis4 f4 cis4 e4   dis4 b3 d4   cis4 ais3 b3,
+fis3 a3   2gis3   g3   2fis3   fis3 2e3       d3,
+b3 d3 2cis3 3b3 a3 ais3 fis3 b3,
+b4   d5   fis5 f5 cis5 e5 dis5 b4   d5 cis5   ais4,
+},
+
+# Light subgraph
 A > B, C : c4 c4 g4 g4 a4 a4 2g4 f4 f4 e4 e4 d4 d4 2c4,
-# Part B
 B > A : {2c3    2e3   2f3   2e3 2d3    2c3   2g2   2c2,
          1c4 c4 g4 g4 a4 a4 2g4 1f4 f4 e4 e4 d4 d4 2c4},
 C > A : {2e3    2d3   2c3   2g2 2e3    2d3   2c2   2g2,
-         1g4 g4 f4 f4 e4 e4 2d4 1g4 g4 f4 f4 e4 e4 2d4},
-# Part C; Scary tune
-X > X : {d4 fis4 f4 cis4 e4 dis4 b3 d4   cis4 ais3 b3,
-         b3 a3   2 gis3  g3 2 fis3  fis3 2 e3      d3}
+         1g4 g4 f4 f4 e4 e4 2d4 1g4 g4 f4 f4 e4 e4 2d4}
 

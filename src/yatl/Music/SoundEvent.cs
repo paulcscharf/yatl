@@ -44,7 +44,7 @@ namespace yatl
         public override void Execute(MusicManager manager)
         {
             this.Source = manager.PianoSound.GenerateSource();
-            this.Source.Pitch = (float) (this.Note.Frequency / 130.8);
+            this.Source.Pitch = (float) (this.Note.Frequency / 261.6); //130.8);
             this.Source.Play();
         }
     }
