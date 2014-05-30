@@ -9,7 +9,7 @@ namespace yatl
 {
     class BranchingMusicalCompositionParser : Parser
     {
-        public BranchingMusicalCompositionParser(StreamReader reader): base(reader) { }
+        public BranchingMusicalCompositionParser(StreamReader reader) : base(reader) { }
 
         /// <summary>
         /// Parse entire stream and return root motif
@@ -19,36 +19,32 @@ namespace yatl
             // Parse motifs into a dictionary
             var motifs = new Dictionary<string, Motif>();
             Motif root = null;
-            while (true)
-            {
+            while (true) {
                 this.parseSpace(); // Skip meaningless spaces and linebreaks
                 if (EndOfStream)
                     break;
                 char c = this.peek();
 
-                switch (c)
-                {
-                case '#':
-                    this.parseComment();
-                    break;
-                default:
-                    Motif motif = this.parseMotif();
-                    if (root == null)
-                        root = motif;
-                    motifs.Add(motif.Name, motif);
-                    break;
+                switch (c) {
+                    case '#':
+                        this.parseComment();
+                        break;
+                    default:
+                        Motif motif = this.parseMotif();
+                        if (root == null)
+                            root = motif;
+                        motifs.Add(motif.Name, motif);
+                        break;
                 }
             }
 
             // Set successors right for all motifs
-            foreach (Motif motif in motifs.Values)
-            {
+            foreach (Motif motif in motifs.Values) {
                 motif.Successors = motif.successorNames.Select(key => motifs[key]).ToArray();
             }
 
             dump(motifs.Values);
-            foreach (Motif motif in motifs.Values)
-            {
+            foreach (Motif motif in motifs.Values) {
                 Console.WriteLine(motif.ToString());
             }
 
@@ -74,23 +70,21 @@ namespace yatl
         {
             var name = new StringBuilder();
 
-            while (true)
-            {
+            while (true) {
                 this.parseSpace(); // Skip meaningless spaces and linebreaks
                 char c = this.peek();
 
-                switch (c)
-                {
-                case '#':
-                    this.parseComment();
-                    break;
-                case '>':
-                    this.read();
-                    return name.ToString();
-                default:
-                    this.read();
-                    name.Append(c);
-                    break;
+                switch (c) {
+                    case '#':
+                        this.parseComment();
+                        break;
+                    case '>':
+                        this.read();
+                        return name.ToString();
+                    default:
+                        this.read();
+                        name.Append(c);
+                        break;
                 }
             }
         }
@@ -103,31 +97,29 @@ namespace yatl
             var name = new StringBuilder();
             var names = new List<string>();
 
-            while (true)
-            {
+            while (true) {
                 this.parseSpace(); // Skip meaningless spaces and linebreaks
                 char c = this.peek();
 
-                switch (c)
-                {
-                case '#':
-                    this.parseComment();
-                    break;
-                case ',':
-                    this.read();
-                    names.Add(name.ToString());
-                    name.Clear();
-                    break;
-                case ':':
-                    this.read();
-                    if (name.Length == 0 && names.Count == 0)
-                        throw parseError("Expected successor names");
-                    names.Add(name.ToString());
-                    return names.ToArray();
-                default:
-                    this.read();
-                    name.Append(c);
-                    break;
+                switch (c) {
+                    case '#':
+                        this.parseComment();
+                        break;
+                    case ',':
+                        this.read();
+                        names.Add(name.ToString());
+                        name.Clear();
+                        break;
+                    case ':':
+                        this.read();
+                        if (name.Length == 0 && names.Count == 0)
+                            throw parseError("Expected successor names");
+                        names.Add(name.ToString());
+                        return names.ToArray();
+                    default:
+                        this.read();
+                        name.Append(c);
+                        break;
                 }
             }
         }
@@ -139,11 +131,9 @@ namespace yatl
         {
             if (this.read() != '#')
                 throw parseError("Expected '#' to parse comment");
-            while (!EndOfStream)
-            {
+            while (!EndOfStream) {
                 char c = this.read();
-                if (c == '\n')
-                {
+                if (c == '\n') {
                     return;
                 }
             }
@@ -154,22 +144,20 @@ namespace yatl
         /// </summary>
         Audible parseMusicObject()
         {
-            while (true)
-            {
+            while (true) {
                 // Skip meaningless spaces and linebreaks
                 this.parseSpace();
                 char c = this.peek();
 
-                switch (c)
-                {
-                case '#':
-                    this.parseComment();
-                    break;
-                //case '{':
+                switch (c) {
+                    case '#':
+                        this.parseComment();
+                        break;
+                    //case '{':
                     //return this.parseParallel();
                     //break;
-                default:
-                    return this.parseSerial();
+                    default:
+                        return this.parseSerial();
                 }
             }
         }
@@ -183,12 +171,10 @@ namespace yatl
             string duration = "";
             string pitchName = "";
 
-            while (true)
-            {
+            while (true) {
                 // Skip spaces and linebreaks
                 this.parseSpace();
-                if (EndOfStream)
-                {
+                if (EndOfStream) {
                     if (content.Count == 0 || duration.Length > 0)
                         throw parseError("Expected music objects");
                     return new Serial(content.ToArray());
@@ -196,59 +182,53 @@ namespace yatl
 
                 char c = this.peek();
 
-                switch (c)
-                {
-                case '#':
-                    this.parseComment();
-                    break;
-                case '{':
-                    Parallel parallel;
-                    if (duration.Length == 0)
-                        parallel = this.parseParallel();
-                    else
-                    {
-                        parallel = this.parseParallel(int.Parse(duration));
-                        duration = "";
-                    }
-                    content.Add(parallel);
-                    break;
-                case ',':
-                    // Return
-                    this.read();
-                    return new Serial(content.ToArray());
-                case '}':
-                    // Return
-                    return new Serial(content.ToArray());
-                default:
-                    if (char.IsDigit(c))
-                    {
-                        // Must be part of duration,
-                        // because notes don't start with a digit
-                        duration = this.parseInteger();
-                    }
-                    else
-                    {
-                        pitchName = this.parseWord();
+                switch (c) {
+                    case '#':
+                        this.parseComment();
+                        break;
+                    case '{':
+                        Parallel parallel;
+                        if (duration.Length == 0)
+                            parallel = this.parseParallel();
+                        else {
+                            parallel = this.parseParallel(int.Parse(duration));
+                            duration = "";
+                        }
+                        content.Add(parallel);
+                        break;
+                    case ',':
+                        // Return
+                        this.read();
+                        return new Serial(content.ToArray());
+                    case '}':
+                        // Return
+                        return new Serial(content.ToArray());
+                    default:
+                        if (char.IsDigit(c)) {
+                            // Must be part of duration,
+                            // because notes don't start with a digit
+                            duration = this.parseInteger();
+                        }
+                        else {
+                            pitchName = this.parseWord();
 
-                        // We're done parsing a note, so let's construct it
-                        try
-                        {
-                            Pitch pitch = Pitch.FromString(pitchName);
-                            Note note;
-                            if (duration.Length == 0)
-                                note = new Note(1, pitch);
-                            else {
-                                note = new Note(int.Parse(duration), pitch);
-                                duration = "";
+                            // We're done parsing a note, so let's construct it
+                            try {
+                                Pitch pitch = Pitch.FromString(pitchName);
+                                Note note;
+                                if (duration.Length == 0)
+                                    note = new Note(1, pitch);
+                                else {
+                                    note = new Note(int.Parse(duration), pitch);
+                                    duration = "";
+                                }
+                                content.Add(note);
                             }
-                            content.Add(note);
+                            catch (KeyNotFoundException) {
+                                throw parseError("Don't know pitch '" + pitchName + "'");
+                            }
                         }
-                        catch (KeyNotFoundException)
-                        {
-                            throw parseError("Don't know pitch '" + pitchName + "'");
-                        }
-                    }
-                    break;
+                        break;
                 }
             }
         }
@@ -264,12 +244,10 @@ namespace yatl
             content.Add(this.parseSerial());
 
 
-            while (true)
-            {
+            while (true) {
                 // Skip spaces and linebreaks
                 this.parseSpace();
-                if (EndOfStream)
-                {
+                if (EndOfStream) {
                     if (content.Count == 0)
                         throw parseError("Expected music objects");
                     return new Parallel(content.ToArray(), durationMultiplier);
@@ -277,18 +255,17 @@ namespace yatl
 
                 char c = this.peek();
 
-                switch (c)
-                {
-                case '#':
-                    this.parseComment();
-                    break;
-                case '}':
-                    // Return
-                    this.read();
-                    return new Parallel(content.ToArray(), durationMultiplier);
-                default:
-                    content.Add(this.parseSerial());
-                    break;
+                switch (c) {
+                    case '#':
+                        this.parseComment();
+                        break;
+                    case '}':
+                        // Return
+                        this.read();
+                        return new Parallel(content.ToArray(), durationMultiplier);
+                    default:
+                        content.Add(this.parseSerial());
+                        break;
                 }
             }
         }

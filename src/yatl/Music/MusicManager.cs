@@ -13,10 +13,13 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
+        Random random;
         public SoundFile PianoSound;
 
         public MusicManager()
         {
+            this.random = new Random();
+
             AudioManager.Initialize();
             this.PianoSound = new SoundFile("data/music/Piano.pp.C4_2.ogg");
 
@@ -24,7 +27,7 @@ namespace yatl
             Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
             this.currentMotif = this.composition.Root;
-            this.Schedule(this.currentMotif.Render());
+            this.Schedule(this.currentMotif.Render(0.5));
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -46,8 +49,12 @@ namespace yatl
 
         void scheduleNextMotif()
         {
-            Motif nextMotif = this.currentMotif.Successors.RandomElement();
-            this.Schedule(nextMotif.Render());
+            string tag = new string[] { "light", "dark" }.RandomElement();
+            Motif nextMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
+
+            double tension = this.random.NextDouble();
+
+            this.Schedule(nextMotif.Render(tension));
             this.currentMotif = nextMotif;
         }
 
@@ -70,6 +77,8 @@ namespace yatl
                 if (this.eventSchedule.Last.Value.StartTime + 5 > this.time)
                     this.scheduleNextMotif();
             }
+
+            AudioManager.Instance.Update((float)args.ElapsedTimeInS);
         }
     }
 }

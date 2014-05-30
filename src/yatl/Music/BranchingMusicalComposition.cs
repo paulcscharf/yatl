@@ -13,8 +13,7 @@ namespace yatl
         public BranchingMusicalComposition(string filename)
         {
             // Parse file and return a composition
-            using (var reader = new StreamReader(filename))
-            {
+            using (var reader = new StreamReader(filename)) {
                 var parser = new BranchingMusicalCompositionParser(reader);
                 this.Root = parser.ParseFile();
             }
@@ -36,9 +35,9 @@ namespace yatl
             this.musicContent = musicContent;
         }
 
-        public override IEnumerable<SoundEvent> Render()
+        public override IEnumerable<SoundEvent> Render(double tension)
         {
-            return musicContent.Render();
+            return musicContent.Render(tension);
         }
 
         public override double Duration { get { return this.musicContent.Duration; } }

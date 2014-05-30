@@ -35,17 +35,20 @@ namespace yatl
     {
         public Note Note;
         public Source Source = null;
+        public double Volume;
 
-        public NoteOn(double startTime, Note note) : base(startTime)
+        public NoteOn(double startTime, Note note, double volume)
+            : base(startTime)
         {
             this.Note = note;
+            this.Volume = volume;
         }
 
         public override void Execute(MusicManager manager)
         {
             this.Source = manager.PianoSound.GenerateSource();
-            this.Source.Volume = 0.4f; // Fix jitter
-            this.Source.Pitch = (float) (this.Note.Frequency / 261.6); //130.8);
+            this.Source.Volume = (float) (this.Volume * 0.4); // Fix jitter
+            this.Source.Pitch = (float)(this.Note.Frequency / 261.6); //130.8);
             this.Source.Play();
         }
     }
@@ -54,17 +57,19 @@ namespace yatl
     {
         NoteOn noteOn;
 
-        public NoteOff(double startTime, NoteOn noteOn) : base(startTime)
+        public NoteOff(double startTime, NoteOn noteOn)
+            : base(startTime)
         {
             this.noteOn = noteOn;
         }
 
         public override void Execute(MusicManager manager)
         {
-            if (this.noteOn.Source == null)
+            var source = this.noteOn.Source;
+            if (source == null)
                 throw new Exception("NoteOn must be executed before NoteOff.");
-            this.noteOn.Source.Stop();
-            this.noteOn.Source.Dispose();
+            if (!source.FinishedPlaying && !source.Disposed)
+                source.Stop();
         }
     }
 }
