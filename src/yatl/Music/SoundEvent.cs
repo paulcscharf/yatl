@@ -44,6 +44,7 @@ namespace yatl
         public override void Execute(MusicManager manager)
         {
             this.Source = manager.PianoSound.GenerateSource();
+            this.Source.Volume = 0.4f; // Fix jitter
             this.Source.Pitch = (float) (this.Note.Frequency / 261.6); //130.8);
             this.Source.Play();
         }
@@ -63,6 +64,7 @@ namespace yatl
             if (this.noteOn.Source == null)
                 throw new Exception("NoteOn must be executed before NoteOff.");
             this.noteOn.Source.Stop();
+            this.noteOn.Source.Dispose();
         }
     }
 }
