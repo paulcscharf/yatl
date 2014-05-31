@@ -10,6 +10,7 @@ namespace yatl
     sealed class MusicManager
     {
         double time = 0;
+        double speed = 1;
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
@@ -47,12 +48,11 @@ namespace yatl
             }
         }
 
-        void scheduleNextMotif()
+        void scheduleNextMotif(double tension)
         {
             string tag = new string[] { "light", "dark" }.RandomElement();
             Motif nextMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
 
-            double tension = this.random.NextDouble();
 
             this.Schedule(nextMotif.Render(tension));
             this.currentMotif = nextMotif;
@@ -60,7 +60,11 @@ namespace yatl
 
         public void Update(UpdateEventArgs args)
         {
-            this.time += args.ElapsedTimeInS;
+            double tension = this.random.NextDouble();
+            this.speed = 1;
+
+            double elapsedTime = args.ElapsedTimeInS * this.speed;
+            this.time += elapsedTime;
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
@@ -71,14 +75,14 @@ namespace yatl
 
             // Schedule soundevents
             if (this.eventSchedule.Count == 0)
-                this.scheduleNextMotif();
+                this.scheduleNextMotif(tension);
             else {
                 // If current motif ends in less than 5 seconds, schedule next motif
                 if (this.eventSchedule.Last.Value.StartTime + 5 > this.time)
-                    this.scheduleNextMotif();
+                    this.scheduleNextMotif(tension);
             }
 
-            AudioManager.Instance.Update((float)args.ElapsedTimeInS);
+            AudioManager.Instance.Update((float)elapsedTime);
         }
     }
 }
