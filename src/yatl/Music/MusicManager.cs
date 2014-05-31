@@ -8,14 +8,11 @@ using yatl.Utilities;
 /* TODO
  * 
  * Should have:
- * Several types of speedups
- * Repeat samples
+ * Several types of speedups and slowdowns
+ * Manually implement looping of buffers for ASR sounds
  * Several instruments for single note
  * More instrument samples
  * More frequencies in table
- * 
- * Would have:
- * Automated sustain
  * 
  * */
 
