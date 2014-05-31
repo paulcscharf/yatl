@@ -26,14 +26,17 @@ namespace yatl
         BranchingMusicalComposition composition;
         Motif currentMotif;
         Random random;
+
         public Instrument Piano;
         public Instrument Violin;
+        OggStream ambient;
 
         public MusicManager()
         {
             this.random = new Random();
 
             AudioManager.Initialize();
+            this.ambient = new OggStream("data/music/ambient1.ogg");
             this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
             this.Violin = new ASRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-loop.ogg", 207.7);
 
@@ -41,7 +44,11 @@ namespace yatl
             Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
             this.currentMotif = this.composition.Root;
-            this.Schedule(this.currentMotif.Render(0.5, this.Violin));
+
+            this.Schedule(this.currentMotif.Render(0.5, this.Piano));
+
+            this.ambient.IsLooped = true;
+            this.ambient.Play();
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -61,23 +68,27 @@ namespace yatl
             }
         }
 
-        void scheduleNextMotif(double tension)
+        void scheduleNextMotif(double tension, double lightness)
         {
-            string tag = new string[] { "light", "dark" }.RandomElement();
+            //string tag = new string[] { "light", "dark" }.RandomElement();
+            string tag = lightness > .5 ? "light" : "dark";
             Motif nextMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
 
 
-            this.Schedule(nextMotif.Render(tension, this.Violin));
+            this.Schedule(nextMotif.Render(tension, this.Piano));
             this.currentMotif = nextMotif;
         }
 
         public void Update(UpdateEventArgs args)
         {
-            double tension = this.random.NextDouble();
-            this.speed = 0.2;
+            double tension = .8;
+            double lightness = .3;
+            this.speed = .8;
 
             double elapsedTime = args.ElapsedTimeInS * this.speed;
             this.time += elapsedTime;
+
+            this.ambient.Volume = (float)(tension / 4 * (1 - lightness));
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
@@ -88,11 +99,11 @@ namespace yatl
 
             // Schedule soundevents
             if (this.eventSchedule.Count == 0)
-                this.scheduleNextMotif(tension);
+                this.scheduleNextMotif(tension, lightness);
             else {
                 // If current motif ends in less than 5 seconds, schedule next motif
-                if (this.eventSchedule.Last.Value.StartTime + 5 > this.time)
-                    this.scheduleNextMotif(tension);
+                if (this.eventSchedule.Last.Value.StartTime - 5 < this.time)
+                    this.scheduleNextMotif(tension, lightness);
             }
 
             AudioManager.Instance.Update((float)elapsedTime);
