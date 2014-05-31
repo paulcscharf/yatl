@@ -51,24 +51,32 @@ namespace yatl
 
     class ASRSound : Sound
     {
-        Source attack, sustain, decay;
+        Source attack, sustain, release;
 
-        public ASRSound(SoundFile attackSample, double sampleFrequency, double volume, double frequency)
+        public ASRSound(SoundFile attack, SoundFile sustain, SoundFile release, double sampleFrequency, double volume, double frequency)
             : base(sampleFrequency, volume, frequency)
         {
-            this.attack = attackSample.GenerateSource();
-            this.attack.Volume = (float) (volume * 0.4); // Fix jitter
-            this.attack.Pitch = (float)(frequency / this.sampleFrequency);
+            this.attack = attack.GenerateSource();
+            this.sustain = sustain.GenerateSource();
+            this.release = release.GenerateSource();
+
+            foreach (var source in new Source[] { this.attack, this.sustain, this.release }) {
+                source.Volume = (float)(volume * 0.4); // Fix jitter
+                source.Pitch = (float)(frequency / this.sampleFrequency);
+            }
         }
 
         public override void Play()
         {
-            throw new NotImplementedException();
+            //this.attack.Play();
+            this.sustain.Repeating = true;
+            this.sustain.Play();
         }
 
         public override void Stop()
         {
-            throw new NotImplementedException();
+            this.release.Play();
+            this.sustain.Stop();
         }
     }
 }

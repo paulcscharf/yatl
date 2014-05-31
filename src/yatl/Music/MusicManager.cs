@@ -38,13 +38,13 @@ namespace yatl
 
             AudioManager.Initialize();
             this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
-            //this.Violin = new SoundFile("data/music/ViolinGis3.ogg");
+            this.Violin = new ASRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-loop.ogg", 207.7);
 
             string filename = "data/music/foo.bmc";
             Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
             this.currentMotif = this.composition.Root;
-            this.Schedule(this.currentMotif.Render(0.5, this.Piano));
+            this.Schedule(this.currentMotif.Render(0.5, this.Violin));
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -70,14 +70,14 @@ namespace yatl
             Motif nextMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
 
 
-            this.Schedule(nextMotif.Render(tension, this.Piano));
+            this.Schedule(nextMotif.Render(tension, this.Violin));
             this.currentMotif = nextMotif;
         }
 
         public void Update(UpdateEventArgs args)
         {
             double tension = this.random.NextDouble();
-            this.speed = 1;
+            this.speed = 0.2;
 
             double elapsedTime = args.ElapsedTimeInS * this.speed;
             this.time += elapsedTime;

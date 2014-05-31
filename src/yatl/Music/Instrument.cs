@@ -28,7 +28,7 @@ namespace yatl
         public SimpleInstrument(string soundfile, double sampleFrequency)
             : base(sampleFrequency)
         {
-            this.sample = new SoundFile(soundfile);
+            this.sample = SoundFile.FromOgg(soundfile);
         }
 
         public override Sound CreateSound(double volume, double frequency)
@@ -41,17 +41,17 @@ namespace yatl
     {
         SoundFile attack, sustain, release;
 
-        public ASRInstrument(SoundFile attack, SoundFile sustain, SoundFile release, double sampleFrequency)
+        public ASRInstrument(string attack, string sustain, string release, double sampleFrequency)
             : base(sampleFrequency)
         {
-            this.attack = attack;
-            this.sustain = sustain;
-            this.release = release;
+            this.attack = SoundFile.FromOgg(attack);
+            this.sustain = SoundFile.FromOgg(sustain);
+            this.release = SoundFile.FromOgg(release);
         }
 
         public override Sound CreateSound(double volume, double frequency)
         {
-            throw new NotImplementedException();
+            return new ASRSound(this.attack, this.sustain, this.release, this.sampleFrequency, volume, frequency);
         }
     }
 }
