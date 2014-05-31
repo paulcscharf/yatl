@@ -36,7 +36,7 @@ namespace yatl
             this.musicContent = musicContent;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
+        public override IEnumerable<SoundEvent> Render(double tension, Instrument instrument)
         {
             return musicContent.Render(tension, instrument);
         }

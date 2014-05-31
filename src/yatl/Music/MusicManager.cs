@@ -5,6 +5,20 @@ using amulware.Graphics;
 using Cireon.Audio;
 using yatl.Utilities;
 
+/* TODO
+ * 
+ * Should have:
+ * Several types of speedups
+ * Repeat samples
+ * Several instruments for single note
+ * More instrument samples
+ * More frequencies in table
+ * 
+ * Would have:
+ * Automated sustain
+ * 
+ * */
+
 namespace yatl
 {
     sealed class MusicManager
@@ -15,22 +29,22 @@ namespace yatl
         BranchingMusicalComposition composition;
         Motif currentMotif;
         Random random;
-        public SoundFile PianoSound;
-        public SoundFile ViolinSound;
+        public Instrument Piano;
+        public Instrument Violin;
 
         public MusicManager()
         {
             this.random = new Random();
 
             AudioManager.Initialize();
-            this.PianoSound = new SoundFile("data/music/Piano.pp.C4_2.ogg");
-            this.ViolinSound = new SoundFile("data/music/ViolinGis3.ogg");
+            this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
+            //this.Violin = new SoundFile("data/music/ViolinGis3.ogg");
 
             string filename = "data/music/foo.bmc";
             Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
             this.currentMotif = this.composition.Root;
-            this.Schedule(this.currentMotif.Render(0.5, this.ViolinSound));
+            this.Schedule(this.currentMotif.Render(0.5, this.Piano));
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -56,7 +70,7 @@ namespace yatl
             Motif nextMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
 
 
-            this.Schedule(nextMotif.Render(tension, this.ViolinSound));
+            this.Schedule(nextMotif.Render(tension, this.Piano));
             this.currentMotif = nextMotif;
         }
 

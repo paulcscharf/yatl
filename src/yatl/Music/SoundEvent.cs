@@ -34,24 +34,22 @@ namespace yatl
     class NoteOn : SoundEvent
     {
         public Note Note;
-        public SoundFile Instrument;
-        public Source Source = null;
+        public Instrument Instrument;
+        public Sound Sound = null;
         public double Volume;
 
-        public NoteOn(double startTime, Note note, SoundFile Instrument, double volume)
+        public NoteOn(double startTime, Note note, Instrument instrument, double volume)
             : base(startTime)
         {
             this.Note = note;
             this.Volume = volume;
-            this.Instrument = Instrument;
+            this.Instrument = instrument;
         }
 
         public override void Execute()
         {
-            this.Source = this.Instrument.GenerateSource();
-            this.Source.Volume = (float) (this.Volume * 0.4); // Fix jitter
-            this.Source.Pitch = (float)(this.Note.Frequency / 261.6); //130.8);
-            this.Source.Play();
+            this.Sound = this.Instrument.CreateSound(this.Volume, this.Note.Frequency);
+            this.Sound.Play();
         }
     }
 
@@ -67,11 +65,7 @@ namespace yatl
 
         public override void Execute()
         {
-            var source = this.noteOn.Source;
-            if (source == null)
-                throw new Exception("NoteOn must be executed before NoteOff.");
-            if (!source.FinishedPlaying && !source.Disposed)
-                source.Stop();
+            this.noteOn.Sound.Stop();
         }
     }
 }

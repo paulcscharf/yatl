@@ -86,6 +86,8 @@
     <Compile Include="Input\InputAction.cs" />
     <Compile Include="Input\KeyboardKeyAction.cs" />
     <Compile Include="Input\LambdaAction.cs" />
+    <Compile Include="Music\Instrument.cs" />
+    <Compile Include="Music\Sound.cs" />
     <Compile Include="Music\SoundEvent.cs" />
     <Compile Include="Music\MusicManager.cs" />
     <Compile Include="Program.cs" />
@@ -128,6 +130,15 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\music\Piano.pp.C4_2.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\music\ViolinGis3-attack.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\music\ViolinGis3-decay.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\music\ViolinGis3-loop.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\music\ViolinGis3.ogg">

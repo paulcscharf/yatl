@@ -13,7 +13,7 @@ namespace yatl
     {
         public abstract double Duration { get; }
 
-        public abstract IEnumerable<SoundEvent> Render(double tension, SoundFile instrument);
+        public abstract IEnumerable<SoundEvent> Render(double tension, Instrument instrument);
     }
 
     /// <summary>
@@ -33,13 +33,15 @@ namespace yatl
             this.pitch = pitch;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
+        public override IEnumerable<SoundEvent> Render(double tension, Instrument instrument)
         {
             double volume = Math.Max(0.3, tension);
             var start = new NoteOn(0, this, instrument, volume);
+            //var start = instrument.Play(volume, this.pitch.Frequency);
             yield return start;
 
             var end = new NoteOff(this.Duration, start);
+            //var end = instrument.Stop(start, duration);
             yield return end;
         }
 
@@ -62,7 +64,7 @@ namespace yatl
             this.content = content;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
+        public override IEnumerable<SoundEvent> Render(double tension, Instrument instrument)
         {
             double time = 0;
 
@@ -107,7 +109,7 @@ namespace yatl
             this.content = content;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
+        public override IEnumerable<SoundEvent> Render(double tension, Instrument instrument)
         {
             int number = this.content.Length;
             number -= Math.Max(1, (int)(number * (1 - tension)));
