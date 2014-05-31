@@ -16,6 +16,7 @@ namespace yatl
         Motif currentMotif;
         Random random;
         public SoundFile PianoSound;
+        public SoundFile ViolinSound;
 
         public MusicManager()
         {
@@ -23,12 +24,13 @@ namespace yatl
 
             AudioManager.Initialize();
             this.PianoSound = new SoundFile("data/music/Piano.pp.C4_2.ogg");
+            this.ViolinSound = new SoundFile("data/music/ViolinGis3.ogg");
 
             string filename = "data/music/foo.bmc";
             Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
             this.currentMotif = this.composition.Root;
-            this.Schedule(this.currentMotif.Render(0.5));
+            this.Schedule(this.currentMotif.Render(0.5, this.ViolinSound));
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -54,7 +56,7 @@ namespace yatl
             Motif nextMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
 
 
-            this.Schedule(nextMotif.Render(tension));
+            this.Schedule(nextMotif.Render(tension, this.ViolinSound));
             this.currentMotif = nextMotif;
         }
 
@@ -70,7 +72,7 @@ namespace yatl
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
                 var nextEvent = this.eventSchedule.First.Value;
                 this.eventSchedule.RemoveFirst();
-                nextEvent.Execute(this);
+                nextEvent.Execute();
             }
 
             // Schedule soundevents

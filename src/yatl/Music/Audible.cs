@@ -2,6 +2,7 @@ using System;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
+using Cireon.Audio;
 
 namespace yatl
 {
@@ -12,7 +13,7 @@ namespace yatl
     {
         public abstract double Duration { get; }
 
-        public abstract IEnumerable<SoundEvent> Render(double tension);
+        public abstract IEnumerable<SoundEvent> Render(double tension, SoundFile instrument);
     }
 
     /// <summary>
@@ -32,10 +33,10 @@ namespace yatl
             this.pitch = pitch;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension)
+        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
         {
-            double volume = tension;
-            var start = new NoteOn(0, this, volume);
+            double volume = Math.Max(0.3, tension);
+            var start = new NoteOn(0, this, instrument, volume);
             yield return start;
 
             var end = new NoteOff(this.Duration, start);
@@ -61,12 +62,12 @@ namespace yatl
             this.content = content;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension)
+        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
         {
             double time = 0;
 
             foreach (var child in this.content) {
-                foreach (var soundEvent in child.Render(tension)) {
+                foreach (var soundEvent in child.Render(tension, instrument)) {
                     soundEvent.AddOffset(time);
                     yield return soundEvent;
                 }
@@ -106,13 +107,13 @@ namespace yatl
             this.content = content;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension)
+        public override IEnumerable<SoundEvent> Render(double tension, SoundFile instrument)
         {
             int number = this.content.Length;
             number -= Math.Max(1, (int)(number * (1 - tension)));
 
             foreach (var child in this.content.Take(number)) {
-                foreach (var soundEvent in child.Render(tension)) {
+                foreach (var soundEvent in child.Render(tension, instrument)) {
                     soundEvent.MultiplyOffset(this.durationMultiplier);
                     yield return soundEvent;
                 }
