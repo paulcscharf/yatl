@@ -66,6 +66,8 @@ namespace yatl
 
             this.gamestate.Update(e);
 
+            this.musicManager.Parameters = this.gamestate.MusicParameters;
+
             this.musicManager.Update(e);
         }
 

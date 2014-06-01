@@ -1,0 +1,23 @@
+{
+	"textures" : [ 
+		{ "name" : "diffuseTexture", "filename" : "hud.png" }
+	],
+	"uvSize": [16, 12],
+	"sprites" : [
+		{ "name" : "square",		"uv" : [ {"lt" : [4, 0], "size" : [4, 4]} ] },
+		{ "name" : "squarefilled",	"uv" : [ {"lt" : [0, 0], "size" : [4, 4]} ] },
+
+		{ "name" : "barStart",	"uv" : [ {"lt" : [4, 0], "size" : [1, 4]} ] },
+		{ "name" : "barEnd",	"uv" : [ {"lt" : [7, 0], "size" : [1, 4]} ] },
+		{ "name" : "barMiddle",	"uv" : [ {"lt" : [6, 0], "size" : [0, 4]} ] },
+
+		{ "name" : "barFilledStart",	"uv" : [ {"lt" : [0, 0], "size" : [1, 4]} ] },
+		{ "name" : "barFilledEnd",		"uv" : [ {"lt" : [3, 0], "size" : [1, 4]} ] },
+		{ "name" : "barFilledMiddle",	"uv" : [ {"lt" : [2, 0], "size" : [0, 4]} ] },
+
+
+		{ "name" : "barThinStart",	"uv" : [ {"lt" : [8, 0], "size" : [2, 8]} ] },
+		{ "name" : "barThinEnd",	"uv" : [ {"lt" : [14, 0], "size" : [2, 8]} ] },
+		{ "name" : "barThinMiddle",	"uv" : [ {"lt" : [12, 0], "size" : [0, 8]} ] },
+	]
+}

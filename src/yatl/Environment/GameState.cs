@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using amulware.Graphics;
 using OpenTK;
 using OpenTK.Input;
+using yatl.Environment.Hud;
 using yatl.Environment.Level.Generation;
 using yatl.Rendering;
 using yatl.Utilities;
@@ -22,6 +23,10 @@ namespace yatl.Environment
 
         private readonly List<GameObject> gameObjects = new List<GameObject>();
 
+
+        private readonly MusicSettingsHud musicSettings;
+        public MusicParameters MusicParameters { get { return this.musicSettings.Parameters; } }
+
         public Camera Camera { get; private set; }
 
         public GameState()
@@ -30,6 +35,8 @@ namespace yatl.Environment
             this.Player = new Wisp(this, Vector2.Zero);
 
             this.Camera = new Camera(this.Player);
+
+            this.musicSettings = new MusicSettingsHud();
         }
 
         public void Update(UpdateEventArgs args)
@@ -70,6 +77,8 @@ namespace yatl.Environment
                 this.Camera.Zoom = !this.Camera.Zoom;
             }
             this.Camera.Update(newArgs);
+
+            this.musicSettings.Update(newArgs);
         }
 
         public void Draw(SpriteManager sprites)
@@ -81,6 +90,7 @@ namespace yatl.Environment
                 gameObject.Draw(sprites);
             }
 
+            this.musicSettings.Draw(sprites);
         }
 
         public void AddObject(GameObject gameObject)

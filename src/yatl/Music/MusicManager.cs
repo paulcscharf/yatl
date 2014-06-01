@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using amulware.Graphics;
 using Cireon.Audio;
+using yatl.Environment;
 using yatl.Utilities;
 
 /* TODO
@@ -30,6 +31,8 @@ namespace yatl
         public Instrument Piano;
         public Instrument Violin;
         OggStream ambient;
+
+        public MusicParameters Parameters { get; set; }
 
         public MusicManager()
         {
@@ -81,8 +84,8 @@ namespace yatl
 
         public void Update(UpdateEventArgs args)
         {
-            double tension = .8;
-            double lightness = .3;
+            double tension = this.Parameters.Tension;
+            double lightness = this.Parameters.Lightness;
             this.speed = .8;
 
             double elapsedTime = args.ElapsedTimeInS * this.speed;

@@ -34,7 +34,9 @@ namespace yatl.Rendering
 
         public SpriteSet<UVColorVertexData> Particles { get; private set; }
 
-        public SpriteSet<UVColorVertexData> Hexagons { get; private set; } 
+        public SpriteSet<UVColorVertexData> Hexagons { get; private set; }
+
+        public SpriteSet<UVColorVertexData> Hud { get; private set; } 
 
         #endregion
 
@@ -63,6 +65,7 @@ namespace yatl.Rendering
             this.initFonts(shaders);
             this.initParticles(shaders);
             this.initHexagons(shaders);
+            this.initHud(shaders);
 
             this.initWalls(shaders);
         }
@@ -112,6 +115,15 @@ namespace yatl.Rendering
         private void initHexagons(ShaderManager shaders)
         {
             this.Hexagons = this.loadGameSpriteSet(shaders, "hexagons");
+        }
+
+        private void initHud(ShaderManager shaders)
+        {
+            this.Hud = SpriteSet<UVColorVertexData>.FromJsonFile(
+                "data/gfx/sprites/hud.json", s => new Sprite2DGeometry(s),
+                shaders.UVColor, new SurfaceSetting[]
+                {this.screenModelview, this.gameProjection, SurfaceBlendSetting.PremultipliedAlpha},
+                SurfaceManager.premultiplyTexture, true);
         }
 
         private void initWalls(ShaderManager shaders)

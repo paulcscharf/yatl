@@ -135,6 +135,8 @@ namespace yatl.Rendering
 
             #region Draw Interface
 
+            this.surfaces.Hud.Surface.Render();
+
             this.surfaces.ScreenFontSurface.Render();
 
             #endregion

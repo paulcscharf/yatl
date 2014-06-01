@@ -62,6 +62,7 @@
     <Compile Include="Environment\GameObject.cs" />
     <Compile Include="Environment\GameState.cs" />
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
+    <Compile Include="Environment\Hud\MusicSettingsHud.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
     <Compile Include="Environment\Level\Generation\GeneratingTileInfo.cs" />
     <Compile Include="Environment\Level\Generation\Helpers.cs" />
@@ -72,6 +73,7 @@
     <Compile Include="Environment\Level\RayHitResult.cs" />
     <Compile Include="Environment\Level\TileInfo.cs" />
     <Compile Include="Environment\Level\Wall.cs" />
+    <Compile Include="Environment\MusicParameters.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Tilemap.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\DeferredBuffer.cs" />
     <Compile Include="Rendering\GameRenderer.cs" />
+    <Compile Include="Rendering\Hud\HudGeometry.cs" />
     <Compile Include="Rendering\ShaderManager.cs" />
     <Compile Include="Rendering\SpriteManager.cs" />
     <Compile Include="Rendering\SurfaceManager.cs" />
@@ -116,6 +119,7 @@
     <Compile Include="Utilities\GraphicsHelper.cs" />
     <Compile Include="Utilities\InputManager.cs" />
     <Compile Include="Utilities\LINQHelper.cs" />
+    <Compile Include="Environment\Hud\Scrollbar.cs" />
     <Compile Include="Utilities\SteppedStopWatch.cs" />
     <Compile Include="YATLWindow.cs" />
   </ItemGroup>
@@ -126,6 +130,9 @@
     <None Include="data\gfx\sprites\hexagons.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="data\gfx\sprites\hud.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\gfx\sprites\particles.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -182,6 +189,9 @@
     </Content>
     <None Include="App.config" />
     <Content Include="data\gfx\fonts\calibri.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="data\gfx\sprites\hud.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <None Include="data\gfx\sprites\particles.json">
