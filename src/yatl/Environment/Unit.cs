@@ -79,10 +79,8 @@ namespace yatl.Environment
                 step -= projected;
             }
 
-
             float slowDownFactor = 1 - this.frictionCoefficient * e.ElapsedTimeF;
             this.velocity *= slowDownFactor < 0 ? 0 : slowDownFactor;
-
         }
 
         private bool updateTile(Vector2 newPositionRelative)

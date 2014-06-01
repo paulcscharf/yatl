@@ -17,8 +17,8 @@ namespace yatl
         {
             public static class Wisp
             {
-                public const float FrictionCoefficient = 7f;
-                public const float Acceleration = 60f;
+                public const float FrictionCoefficient = 3f;
+                public const float Acceleration = 25f;
             }
 
             public static class Camera
