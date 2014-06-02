@@ -86,12 +86,12 @@ namespace yatl
         {
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
-            this.speed = .8;
+            this.speed = .9 + .32 * tension;
 
             double elapsedTime = args.ElapsedTimeInS * this.speed;
             this.time += elapsedTime;
 
-            this.ambient.Volume = (float)(tension / 4 * (1 - lightness));
+            this.ambient.Volume = (float)(tension * (1 - lightness));
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
@@ -104,8 +104,8 @@ namespace yatl
             if (this.eventSchedule.Count == 0)
                 this.scheduleNextMotif(tension, lightness);
             else {
-                // If current motif ends in less than 5 seconds, schedule next motif
-                if (this.eventSchedule.Last.Value.StartTime - 5 < this.time)
+                // If current motif ends in less than 1 seconds, schedule next motif
+                if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
                     this.scheduleNextMotif(tension, lightness);
             }
 
