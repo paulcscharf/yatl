@@ -10,6 +10,8 @@ namespace yatl.Rendering
 
         public ISurfaceShader DebugDeferred { get; private set; }
 
+        public ISurfaceShader PointLights { get; private set; }
+
         public ShaderManager()
         {
             this.initialise();
@@ -21,6 +23,8 @@ namespace yatl.Rendering
             this.Wall = GraphicsHelper.LoadShaderProgram("data/shaders/wall");
 
             this.DebugDeferred = GraphicsHelper.LoadShaderProgram("data/shaders/post.vs", "data/shaders/post/debugDeferred.fs");
+
+            this.PointLights = GraphicsHelper.LoadShaderProgram("data/shaders/deferred/pointlight");
         }
     }
 }

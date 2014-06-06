@@ -2,6 +2,7 @@ using amulware.Graphics;
 using OpenTK;
 using yatl.Environment.Level;
 using yatl.Environment.Level.Generation;
+using yatl.Utilities;
 
 namespace yatl.Rendering.Walls
 {
@@ -32,13 +33,19 @@ namespace yatl.Rendering.Walls
             var startNormal = new Vector3((normal + before.Normal).Normalized());
             var endNormal = new Vector3((normal + after.Normal).Normalized());
 
-            var normal3D = new Vector3(normal);
+            var startTangent = startNormal.Xy.PerpendicularLeft.WithZ(0);
+            var endTangent = endNormal.Xy.PerpendicularLeft.WithZ(0);
+            var startUp = (new Vector3(0, 0, Settings.Game.Level.WallHeight) - startNormal);
+            var endUp = (new Vector3(0, 0, Settings.Game.Level.WallHeight) - endNormal);
+
+            var startNormal3D = Vector3.Cross(startTangent, startUp).Normalized();
+            var endNormal3D = Vector3.Cross(endTangent, endUp).Normalized();
 
             this.surface.AddQuad(
-                new WallVertex(new Vector3(start.X, start.Y, 0), startNormal), // left bottom
-                new WallVertex(new Vector3(start.X, start.Y, Settings.Game.Level.WallHeight) - startNormal, startNormal), // left top
-                new WallVertex(new Vector3(end.X, end.Y, Settings.Game.Level.WallHeight) - endNormal, endNormal), // right top
-                new WallVertex(new Vector3(end.X, end.Y, 0), endNormal) // right bottom
+                new WallVertex(new Vector3(start.X, start.Y, 0), Vector3.UnitZ), // left bottom
+                new WallVertex(new Vector3(start.X, start.Y, Settings.Game.Level.WallHeight) - startNormal, startNormal3D), // left top
+                new WallVertex(new Vector3(end.X, end.Y, Settings.Game.Level.WallHeight) - endNormal, endNormal3D), // right top
+                new WallVertex(new Vector3(end.X, end.Y, 0), Vector3.UnitZ) // right bottom
                 );
         }
     }

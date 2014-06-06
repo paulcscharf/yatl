@@ -100,6 +100,8 @@
     <Compile Include="Music\Parser.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Rendering\DeferredBuffer.cs" />
+    <Compile Include="Rendering\Deferred\DeferredPointLightGeometry.cs" />
+    <Compile Include="Rendering\Deferred\DeferredPointLightVertex.cs" />
     <Compile Include="Rendering\GameRenderer.cs" />
     <Compile Include="Rendering\Hud\HudGeometry.cs" />
     <Compile Include="Rendering\ShaderManager.cs" />
@@ -160,6 +162,9 @@
     <Content Include="data\music\ViolinGis3.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="data\shaders\deferred\pointlight.fs">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\shaders\post\debugDeferred.fs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -201,6 +206,9 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\music\PianoC3.ogg">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="data\shaders\deferred\pointlight.vs">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\shaders\wall.vs">

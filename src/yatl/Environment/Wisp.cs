@@ -42,6 +42,8 @@ namespace yatl.Environment
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
 
+            sprites.PointLight.Draw(this.position.WithZ(1), Color.IndianRed, 3, 8);
+
             base.Draw(sprites);
         }
     }

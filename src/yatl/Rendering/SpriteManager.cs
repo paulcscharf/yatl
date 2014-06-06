@@ -1,5 +1,6 @@
 using amulware.Graphics;
 using OpenTK;
+using yatl.Rendering.Deferred;
 using yatl.Rendering.Hud;
 using yatl.Rendering.Walls;
 
@@ -28,6 +29,8 @@ namespace yatl.Rendering
 
         public WallGeometry Wall { get; private set; }
 
+        public DeferredPointLightGeometry PointLight { get; private set; }
+
         public SpriteManager(SurfaceManager surfaces)
         {
             this.initialise(surfaces);
@@ -52,6 +55,8 @@ namespace yatl.Rendering
             this.Hud = new HudGeometry(surfaces.Hud);
 
             this.Wall = new WallGeometry(surfaces.Walls);
+
+            this.PointLight = new DeferredPointLightGeometry(surfaces.PointLights);
         }
     }
 }

@@ -29,7 +29,7 @@ namespace yatl.Rendering
         {
             this.deferredBuffer = new DeferredBuffer();
             this.shaders = new ShaderManager();
-            this.surfaces = new SurfaceManager(this.shaders);
+            this.surfaces = new SurfaceManager(this.shaders, this.deferredBuffer);
             this.sprites = new SpriteManager(this.surfaces);
 
 
@@ -113,8 +113,15 @@ namespace yatl.Rendering
 
             #region Draw lights
             
-            this.debugDeferred.Render();
+            //this.debugDeferred.Render();
 
+            GL.Enable(EnableCap.CullFace);
+            GL.CullFace(CullFaceMode.Front);
+
+            this.surfaces.PointLights.Render();
+
+
+            GL.Disable(EnableCap.CullFace);
             #endregion
 
             #region Draw particles

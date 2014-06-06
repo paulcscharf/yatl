@@ -337,6 +337,12 @@ namespace yatl.Utilities
         #endregion
 
         #region Vector related stuff
+
+        public static Vector3 WithZ(this Vector2 xy, float z)
+        {
+            return new Vector3(xy.X, xy.Y, z);
+        }
+
         /// <summary>
         /// Creates a vector based on an angle and radius.
         /// </summary>

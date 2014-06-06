@@ -9,7 +9,7 @@ void shadeFront()
 {
 	vec3 normal = normalize(p_normal);
 
-	fragColor[0] = vec4(p_position, 0); // position
+	fragColor[0] = vec4(p_position, 1); // position
 	fragColor[1] = vec4(0.5 + 0.5 * normal, 0); // normal
 }
 

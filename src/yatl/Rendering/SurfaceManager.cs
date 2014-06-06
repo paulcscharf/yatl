@@ -3,6 +3,7 @@ using System;
 using amulware.Graphics;
 using OpenTK;
 using yatl.Environment;
+using yatl.Rendering.Deferred;
 using yatl.Rendering.Walls;
 
 namespace yatl.Rendering
@@ -46,12 +47,18 @@ namespace yatl.Rendering
 
         #endregion
 
-        public SurfaceManager(ShaderManager shaders)
+        #region Deferred
+
+        public IndexedSurface<DeferredPointLightVertex> PointLights { get; set; }
+        
+        #endregion
+
+        public SurfaceManager(ShaderManager shaders, DeferredBuffer deferredBuffer)
         {
-            this.initialise(shaders);
+            this.initialise(shaders, deferredBuffer);
         }
 
-        private void initialise(ShaderManager shaders)
+        private void initialise(ShaderManager shaders, DeferredBuffer deferredBuffer)
         {
             this.initMatrices();
 
@@ -68,6 +75,8 @@ namespace yatl.Rendering
             this.initHud(shaders);
 
             this.initWalls(shaders);
+
+            this.initDeferred(shaders, deferredBuffer);
         }
 
         private void initMatrices()
@@ -134,6 +143,18 @@ namespace yatl.Rendering
                 this.gameProjection
                 );
             shaders.Wall.UseOnSurface(this.Walls);
+        }
+
+        private void initDeferred(ShaderManager shaders, DeferredBuffer deferredBuffer)
+        {
+            this.PointLights = new IndexedSurface<DeferredPointLightVertex>();
+            this.PointLights.AddSettings(
+                this.gameModelview,
+                this.gameProjection,
+                SurfaceBlendSetting.PremultipliedAlpha,
+                deferredBuffer
+                );
+            shaders.PointLights.UseOnSurface(this.PointLights);
         }
 
         private SpriteSet<UVColorVertexData> loadGameSpriteSet(ShaderManager shaders, string filename)

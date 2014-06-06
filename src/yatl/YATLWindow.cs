@@ -55,7 +55,8 @@ namespace yatl
                 return;
             }
 
-            InputManager.Update();
+            if(this.Focused)
+                InputManager.Update();
 
             if(InputManager.IsKeyHit(Key.F12))
                 this.MakeScreenshot();
