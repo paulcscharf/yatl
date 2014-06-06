@@ -4,6 +4,7 @@ using System.IO;
 using System.Text;
 using System.Linq;
 using Cireon.Audio;
+using yatl.Environment;
 
 namespace yatl
 {
@@ -36,9 +37,9 @@ namespace yatl
             this.musicContent = musicContent;
         }
 
-        public override IEnumerable<SoundEvent> Render(double tension, Instrument instrument)
+        public override IEnumerable<SoundEvent> Render(MusicParameters parameters, Instrument instrument)
         {
-            return musicContent.Render(tension, instrument);
+            return musicContent.Render(parameters, instrument);
         }
 
         public override double Duration { get { return this.musicContent.Duration; } }
