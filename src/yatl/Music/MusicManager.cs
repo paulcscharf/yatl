@@ -15,6 +15,10 @@ using yatl.Utilities;
  * More instrument samples
  * More frequencies in table
  * 
+ * NOTES
+ * 
+ * We may want to have a seperate loop for generation, for the delay it causes in playing music
+ * Why not pass MusicParameters to Update method?
  * */
 
 namespace yatl
@@ -31,6 +35,7 @@ namespace yatl
 
         public Instrument Piano;
         public Instrument Violin;
+        public Instrument Strings;
         OggStream ambient;
 
         public MusicParameters Parameters { get; set; }
@@ -43,6 +48,8 @@ namespace yatl
             this.ambient = new OggStream("data/music/ambient1.ogg");
             this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
             this.Violin = new SRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-decay.ogg", 207.7);
+            //this.Strings = new SimpleInstrument("data/music/StringsC5.ogg", 523.3);
+            this.Strings = new SRInstrument("data/music/StringsC5-sustain.ogg", "data/music/StringsC5-decay.ogg", 523.3);
 
             string filename = "data/music/DarkAndLight.bmc";
             Console.WriteLine("Parsing " + filename);
@@ -78,7 +85,7 @@ namespace yatl
             else
                 this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
 
-            this.Schedule(this.currentMotif.Render(this.Parameters, this.Piano));
+            this.Schedule(this.currentMotif.Render(this.Parameters, this.Strings));
         }
 
         public void Update(UpdateEventArgs args)

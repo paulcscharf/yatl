@@ -17,7 +17,7 @@ namespace yatl.Environment.Hud
 
         public MusicSettingsHud()
         {
-            this.lightnessBar = new Scrollbar(new Vector3(-16, 2, 0), 0.3f, this.change,
+            this.lightnessBar = new Scrollbar(new Vector3(-16, 2, 0), 0.6f, this.change,
                 KeyboardKeyAction.FromKey(Key.Number1), KeyboardKeyAction.FromKey(Key.Number2));
 
             this.tensionBar = new Scrollbar(new Vector3(-16, 4.5f, 0), 0.8f, this.change,

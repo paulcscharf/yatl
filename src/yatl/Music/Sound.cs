@@ -52,7 +52,7 @@ namespace yatl
 
     class SRSound : Sound
     {
-        Source attack, sustain, release;
+        Source sustain, release;
 
         public SRSound(SoundFile sustain, SoundFile release, double sampleFrequency, double volume, double frequency)
             : base(sampleFrequency, volume, frequency)
@@ -60,7 +60,7 @@ namespace yatl
             this.sustain = sustain.GenerateSource();
             this.release = release.GenerateSource();
 
-            foreach (var source in new Source[] { this.attack, this.sustain, this.release }) {
+            foreach (var source in new Source[] { this.sustain, this.release }) {
                 source.Volume = (float)(volume * 0.4); // Fix jitter
                 source.Pitch = (float)(frequency / this.sampleFrequency);
             }
