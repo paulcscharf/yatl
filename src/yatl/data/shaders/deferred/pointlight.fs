@@ -47,6 +47,15 @@ void main()
 
 	float diffuse = dot(normalize(normal), normalize(diff));
 
+	if (diffuse <= 0)
+	{
+		discard;
+	}
+
+	float height = (position.z * 0.5);
+
+	float heightAlpha = 1 - height * height;
+
 	fragColor = p_color * p_lightIntensity
-		* diffuse * d * alpha;
+		* diffuse * d * alpha * heightAlpha;
 }
