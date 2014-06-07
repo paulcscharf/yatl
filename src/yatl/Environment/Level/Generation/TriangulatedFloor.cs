@@ -216,7 +216,7 @@ namespace yatl.Environment.Level.Generation
 
             for (int i = 0; i < this.vertices.Length; i++)
             {
-                vertices[i] = new WallVertex(new Vector3(this.vertices[i] + offset), new Vector3(0, 0, 1));
+                vertices[i] = new WallVertex(new Vector3(this.vertices[i] + offset), Vector3.UnitZ);
             }
 
             var id = surface.AddVertices(vertices);

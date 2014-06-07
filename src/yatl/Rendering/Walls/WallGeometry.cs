@@ -41,11 +41,23 @@ namespace yatl.Rendering.Walls
             var startNormal3D = Vector3.Cross(startTangent, startUp).Normalized();
             var endNormal3D = Vector3.Cross(endTangent, endUp).Normalized();
 
+            var normal00 = Vector3.UnitZ; // left bottom
+            var normal10 = Vector3.UnitZ; // right bottom
+            var normal01 = startNormal3D; // left top
+            var normal11 = endNormal3D; // right top
+
             this.surface.AddQuad(
-                new WallVertex(new Vector3(start.X, start.Y, 0), Vector3.UnitZ), // left bottom
-                new WallVertex(new Vector3(start.X, start.Y, Settings.Game.Level.WallHeight) - startNormal, startNormal3D), // left top
-                new WallVertex(new Vector3(end.X, end.Y, Settings.Game.Level.WallHeight) - endNormal, endNormal3D), // right top
-                new WallVertex(new Vector3(end.X, end.Y, 0), Vector3.UnitZ) // right bottom
+                new WallVertex(new Vector3(start.X, start.Y, 0),
+                    normal00, normal10, normal01, normal11, 0, 0), // left bottom
+
+                new WallVertex(new Vector3(start.X, start.Y, Settings.Game.Level.WallHeight) - startNormal,
+                    normal00, normal10, normal01, normal11, 0, 1), // left top
+
+                new WallVertex(new Vector3(end.X, end.Y, Settings.Game.Level.WallHeight) - endNormal,
+                    normal00, normal10, normal01, normal11, 1, 1), // right top
+
+                new WallVertex(new Vector3(end.X, end.Y, 0),
+                    normal00, normal10, normal01, normal11, 1, 0) // right bottom
                 );
         }
     }

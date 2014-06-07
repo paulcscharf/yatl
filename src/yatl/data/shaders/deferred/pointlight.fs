@@ -45,7 +45,6 @@ void main()
 
 	vec3 normal = getNormal(uv).xyz;
 
-
 	float diffuse = dot(normalize(normal), normalize(diff));
 
 	fragColor = p_color * p_lightIntensity
