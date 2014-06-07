@@ -113,7 +113,7 @@ namespace yatl
         public override IEnumerable<SoundEvent> Render(MusicParameters parameters, Instrument instrument)
         {
             int number = this.content.Length;
-            number -= Math.Max(1, (int)(number * (1 - parameters.Tension)));
+            //number = Math.Max(1, (int)(number * (1 - parameters.Tension)));
 
             foreach (var child in this.content.Take(number)) {
                 foreach (var soundEvent in child.Render(parameters, instrument)) {

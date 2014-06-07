@@ -37,21 +37,20 @@ namespace yatl
         }
     }
 
-    class ASRInstrument : Instrument
+    class SRInstrument : Instrument
     {
-        SoundFile attack, sustain, release;
+        SoundFile sustain, release;
 
-        public ASRInstrument(string attack, string sustain, string release, double sampleFrequency)
+        public SRInstrument(string sustain, string release, double sampleFrequency)
             : base(sampleFrequency)
         {
-            this.attack = SoundFile.FromOgg(attack);
             this.sustain = SoundFile.FromOgg(sustain);
             this.release = SoundFile.FromOgg(release);
         }
 
         public override Sound CreateSound(double volume, double frequency)
         {
-            return new ASRSound(this.attack, this.sustain, this.release, this.sampleFrequency, volume, frequency);
+            return new SRSound( this.sustain, this.release, this.sampleFrequency, volume, frequency);
         }
     }
 }

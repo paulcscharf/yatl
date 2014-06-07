@@ -1,5 +1,17 @@
 # Branching Musical Composition
 
+
+# Light subgraph
+light1 > light2, dark1: {
+2b4 a4 2fis4 a4 2g4 fis4 3e4,
+3g3    3d3      3e3      3a2
+},
+
+light2 > light1, dark1: {
+2b4 cis5 2a4 fis4 6a4,
+3g3      3d3      6a2
+},
+
 # Dark subraph
 dark1 > dark1, light1 : {
 d4 fis4 f4 cis4 e4 dis4 b3 d4 cis4 ais3 b3,
@@ -9,17 +21,10 @@ b4 d5 fis5 f5 cis5 e5 dis5 b4 d5 cis5 ais4,
 11b5,
 },
 
-# Light subgraph
-light1 > light1, dark1: {
+
+light10 > light10, dark1: {
 fis4 e4 cis4 d4 cis4 a3 b3 a3 d3 b3 cis4 a3,
 d4 2cis4 b3 2a3 g3 2fis3 g3 2a3,
 a3 2a3 fis3 2fis3 d3 2d3 e3 2e3
-},
-
-# Test
-A > B, C : c4 c4 g4 g4 a4 a4 2g4 f4 f4 e4 e4 d4 d4 2c4,
-B > A : {2c3 2e3 2f3 2e3 2d3 2c3 2g2 2c2,
-1c4 c4 g4 g4 a4 a4 2g4 1f4 f4 e4 e4 d4 d4 2c4},
-C > A : {2e3 2d3 2c3 2g2 2e3 2d3 2c2 2g2,
-1g4 g4 f4 f4 e4 e4 2d4 1g4 g4 f4 f4 e4 e4 2d4}
+}
 
