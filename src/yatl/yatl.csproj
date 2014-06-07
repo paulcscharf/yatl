@@ -202,7 +202,7 @@
     <None Include="data\gfx\sprites\particles.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Include="data\music\foo.bmc">
+    <None Include="data\music\DarkAndLight.bmc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Include="data\music\PianoC3.ogg">

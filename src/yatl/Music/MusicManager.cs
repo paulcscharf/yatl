@@ -42,14 +42,14 @@ namespace yatl
             AudioManager.Initialize();
             this.ambient = new OggStream("data/music/ambient1.ogg");
             this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
-            this.Violin = new ASRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-loop.ogg", 207.7);
+            this.Violin = new SRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-decay.ogg", 207.7);
 
-            string filename = "data/music/foo.bmc";
+            string filename = "data/music/DarkAndLight.bmc";
             Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
 
             this.ambient.IsLooped = true;
-            this.ambient.Play();
+            //this.ambient.Play();
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -90,7 +90,7 @@ namespace yatl
             double elapsedTime = args.ElapsedTimeInS * this.speed;
             this.time += elapsedTime;
 
-            this.ambient.Volume = (float)(tension * (1 - lightness));
+            this.ambient.Volume = (float)(.5 * tension * (1 - lightness));
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
@@ -104,7 +104,7 @@ namespace yatl
                 this.scheduleNextMotif();
             else {
                 // If current motif ends in less than 1 seconds, schedule next motif
-                if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
+                if (this.eventSchedule.Last.Value.StartTime - 2 < this.time)
                     this.scheduleNextMotif();
             }
 

@@ -44,19 +44,19 @@ namespace yatl
         {
             if (this.source == null)
                 throw new Exception("Can't stop sound that has not started.");
-            if (!this.source.FinishedPlaying && !this.source.Disposed)
-                source.Stop();
+            if (!this.source.Disposed)
+                if (!this.source.FinishedPlaying)
+                    source.Stop();
         }
     }
 
-    class ASRSound : Sound
+    class SRSound : Sound
     {
         Source attack, sustain, release;
 
-        public ASRSound(SoundFile attack, SoundFile sustain, SoundFile release, double sampleFrequency, double volume, double frequency)
+        public SRSound(SoundFile sustain, SoundFile release, double sampleFrequency, double volume, double frequency)
             : base(sampleFrequency, volume, frequency)
         {
-            this.attack = attack.GenerateSource();
             this.sustain = sustain.GenerateSource();
             this.release = release.GenerateSource();
 
@@ -68,7 +68,6 @@ namespace yatl
 
         public override void Play()
         {
-            //this.attack.Play();
             this.sustain.Repeating = true;
             this.sustain.Play();
         }
