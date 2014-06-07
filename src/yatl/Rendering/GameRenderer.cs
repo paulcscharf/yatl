@@ -83,7 +83,9 @@ namespace yatl.Rendering
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
 
-            this.surfaces.Walls.Render();
+            //this.surfaces.Walls.Render();
+            foreach (var surface in this.surfaces.LevelGeometryQueue)
+                surface.Render();
 
             GL.Disable(EnableCap.DepthTest);
 
@@ -147,6 +149,8 @@ namespace yatl.Rendering
             this.surfaces.ScreenFontSurface.Render();
 
             #endregion
+
+            this.surfaces.ClearQueues();
         }
 
         public void Resize(int width, int height)

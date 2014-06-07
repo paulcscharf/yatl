@@ -74,6 +74,8 @@ namespace yatl
 
         private void restartGame()
         {
+            if(this.gamestate != null)
+                this.gamestate.Dispose();
             this.gamestate = new GameState();
         }
 

@@ -26,6 +26,9 @@ namespace yatl.Environment.Level
             this.game = game;
 
             this.tilemap = generator.Generate();
+
+            foreach (var tile in this.tilemap)
+                tile.Info.InitGeometry(this.GetPosition(tile));
         }
 
         public Tile<TileInfo> GetTile(Vector2 position)
@@ -57,29 +60,16 @@ namespace yatl.Environment.Level
             return Settings.Game.Level.TileToPosition * new Vector2(tile.X, tile.Y);
         }
 
+        public void DisposeGeometry()
+        {
+            foreach (var tile in this.tilemap)
+                tile.Info.DisposeGeometry();
+        }
+
         public void Draw(SpriteManager sprites)
         {
-            // draw walls
-            {
-                //var lines = sprites.Lines;
-                //lines.LineWidth = 0.1f;
-                //lines.Color = Color.DimGray;
-
-                var walls = sprites.Wall;
-
-                foreach (var tile in this.tilemap)
-                {
-                    var position = this.GetPosition(tile);
-
-
-                    foreach (var wall in tile.Info.Walls)
-                    {
-                        //lines.DrawLine(position + wall.StartPoint, position + wall.EndPoint);
-                        walls.DrawWall(wall, position);
-                    }
-                    walls.DrawFloor(tile.Info.Floor, position);
-                }
-            }
+            foreach (var tile in this.tilemap)
+                tile.Info.Draw();
 
 
             if(this.game.DrawDebug)

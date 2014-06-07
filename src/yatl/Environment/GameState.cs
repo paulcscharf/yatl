@@ -97,5 +97,10 @@ namespace yatl.Environment
         {
             this.gameObjects.Add(gameObject);
         }
+
+        public void Dispose()
+        {
+            this.Level.DisposeGeometry();
+        }
     }
 }

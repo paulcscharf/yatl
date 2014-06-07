@@ -1,5 +1,6 @@
 
 using System;
+using System.Collections.Generic;
 using amulware.Graphics;
 using OpenTK;
 using yatl.Environment;
@@ -10,6 +11,10 @@ namespace yatl.Rendering
 {
     sealed class SurfaceManager
     {
+        public static SurfaceManager Instance { get; private set; }
+
+        private readonly ShaderManager shaders;
+
         private static Func<string, Texture> premultiplyTexture = file => new Texture(file, true);
 
         private SurfaceSetting[] gameSpriteSettings;
@@ -55,7 +60,9 @@ namespace yatl.Rendering
 
         public SurfaceManager(ShaderManager shaders, DeferredBuffer deferredBuffer)
         {
+            this.shaders = shaders;
             this.initialise(shaders, deferredBuffer);
+            SurfaceManager.Instance = this;
         }
 
         private void initialise(ShaderManager shaders, DeferredBuffer deferredBuffer)
@@ -203,6 +210,44 @@ namespace yatl.Rendering
                 );
 
             this.gameModelview.Matrix = Matrix4.LookAt(camera.Position, camera.Focus, upVector);
+        }
+
+        public IndexedSurface<WallVertex> MakeLevelGeometrySurface()
+        {
+            var surface = new IndexedSurface<WallVertex>
+            {
+                ClearOnRender = false,
+                IsStatic = true,
+            };
+            surface.AddSettings(
+                this.gameModelview,
+                this.gameProjection
+                );
+            this.shaders.Wall.UseOnSurface(surface);
+            return surface;
+        }
+
+        public void DisposeOfLevelGeometrySurface(IndexedSurface<WallVertex> surface)
+        {
+            var refresher = this.shaders.Wall as ShaderProgramRefresher;
+            if (refresher == null)
+                return;
+            refresher.RemoveFromSurface(surface);
+        }
+
+
+        private readonly List<Surface> levelGeoQueue = new List<Surface>();
+
+        public IEnumerable<Surface> LevelGeometryQueue { get { return this.levelGeoQueue; } } 
+
+        public void QueueLevelGeometry(IndexedSurface<WallVertex> surface)
+        {
+            this.levelGeoQueue.Add(surface);
+        }
+
+        public void ClearQueues()
+        {
+            this.levelGeoQueue.Clear();
         }
     }
 }

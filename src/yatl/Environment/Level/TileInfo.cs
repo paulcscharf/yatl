@@ -1,9 +1,12 @@
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
+using amulware.Graphics;
 using OpenTK;
 using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
+using yatl.Rendering;
+using yatl.Rendering.Walls;
 using Hex = yatl.Settings.Game.Level;
 
 namespace yatl.Environment.Level
@@ -16,6 +19,9 @@ namespace yatl.Environment.Level
 
         public TriangulatedFloor Floor { get; private set; }
 
+
+        private IndexedSurface<WallVertex> geometry;
+
         public TileInfo(GeneratingTileInfo info)
         {
             this.OpenSides = info.OpenSides;
@@ -24,6 +30,26 @@ namespace yatl.Environment.Level
                 .Select(w => w.Frozen).ToList().AsReadOnly();
 
             this.Floor = info.Floor;
+
+        }
+
+        public void InitGeometry(Vector2 offset)
+        {
+            this.DisposeGeometry();
+
+            this.geometry = SurfaceManager.Instance.MakeLevelGeometrySurface();
+            var geo = new WallGeometry(this.geometry);
+            foreach (var wall in this.Walls)
+                geo.DrawWall(wall, offset);
+            geo.DrawFloor(this.Floor, offset);
+        }
+
+        public void DisposeGeometry()
+        {
+            if (this.geometry == null)
+                return;
+            SurfaceManager.Instance.DisposeOfLevelGeometrySurface(this.geometry);
+            this.geometry = null;
         }
 
         public RayHitResult ShootRay(Ray ray)
@@ -64,6 +90,11 @@ namespace yatl.Environment.Level
             }
 
             return result;
+        }
+
+        public void Draw()
+        {
+            SurfaceManager.Instance.QueueLevelGeometry(this.geometry);
         }
     }
 }
