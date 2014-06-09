@@ -14,13 +14,15 @@ namespace yatl
     {
         public MusicParameters MusicParameters;
         public Instrument Instrument;
-        public bool ExtraOctave = false;
+        public double Density;
+        public double Volume;
 
-        public RenderParameters(MusicParameters musicParameters, Instrument instrument, bool ExtraOctave = false)
+        public RenderParameters(MusicParameters musicParameters, Instrument instrument, double Volume, double density)
         {
             this.MusicParameters = musicParameters;
             this.Instrument = instrument;
-            this.ExtraOctave = ExtraOctave;
+            this.Density = density;
+            this.Volume = Volume;
         }
     }
 
@@ -53,15 +55,14 @@ namespace yatl
 
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
         {
-            double volume = Math.Max(0.3, parameters.MusicParameters.Tension);
-
-            var start = new NoteOn(0, parameters.Instrument, this.Frequency, volume);
+            var start = new NoteOn(0, parameters.Instrument, this.Frequency, parameters.Volume);
             yield return start;
             var end = new NoteOff(this.Duration, start);
             yield return end;
 
-            if (parameters.ExtraOctave) {
-                var startOctave = new NoteOn(0, parameters.Instrument, this.Frequency * 2, volume);
+            // Extra octave depends on density
+            if (MusicManager.Random.NextDouble() < parameters.Density) {
+                var startOctave = new NoteOn(0, parameters.Instrument, this.Frequency * 2, parameters.Volume);
                 yield return startOctave;
                 var endOctave = new NoteOff(this.Duration, startOctave);
                 yield return endOctave;
@@ -134,8 +135,8 @@ namespace yatl
 
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
         {
-            int number = this.content.Length;
-            //number = Math.Max(1, (int)(number * (1 - parameters.Tension)));
+            // Number of voices depends on density
+            int number = Math.Max(1, (int)(this.content.Length * parameters.Density));
 
             foreach (var child in this.content.Take(number)) {
                 foreach (var soundEvent in child.Render(parameters)) {

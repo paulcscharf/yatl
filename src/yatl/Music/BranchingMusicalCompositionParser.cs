@@ -58,7 +58,9 @@ namespace yatl
         {
             string name = this.parseName();
             string[] successorNames = this.parseSuccessorNames();
-            Audible content = this.parseMusicObject();
+
+            // For now we force the toplevel object to be parallel
+            Parallel content = (Parallel) this.parseMusicObject();
 
             return new Motif(name, successorNames, content);
         }
@@ -153,9 +155,8 @@ namespace yatl
                     case '#':
                         this.parseComment();
                         break;
-                    //case '{':
-                    //return this.parseParallel();
-                    //break;
+                    case '{':
+                        return this.parseParallel();
                     default:
                         return this.parseSerial();
                 }
