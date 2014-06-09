@@ -99,7 +99,8 @@ namespace yatl
                 this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
             }
 
-            this.Schedule(this.currentMotif.Render(this.Parameters, this.Piano));
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, true);
+            this.Schedule(this.currentMotif.Render(parameters));
         }
 
         public void Update(UpdateEventArgs args)

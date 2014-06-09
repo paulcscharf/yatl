@@ -33,22 +33,22 @@ namespace yatl
 
     class NoteOn : SoundEvent
     {
-        public Note Note;
         public Instrument Instrument;
         public Sound Sound = null;
+        public double Frequency;
         public double Volume;
 
-        public NoteOn(double startTime, Note note, Instrument instrument, double volume)
+        public NoteOn(double startTime, Instrument instrument, double frequency, double volume)
             : base(startTime)
         {
-            this.Note = note;
             this.Volume = volume;
+            this.Frequency = frequency;
             this.Instrument = instrument;
         }
 
         public override void Execute()
         {
-            this.Sound = this.Instrument.CreateSound(this.Volume, this.Note.Frequency);
+            this.Sound = this.Instrument.CreateSound(this.Volume, this.Frequency);
             this.Sound.Play();
         }
     }
