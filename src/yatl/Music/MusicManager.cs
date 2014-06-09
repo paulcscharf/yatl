@@ -8,9 +8,7 @@ using yatl.Utilities;
 
 /* TODO
  * 
- * Should have:
  * Several types of speedups and slowdowns
- * Manually implement looping of buffers for ASR sounds
  * Several instruments for single note
  * More instrument samples
  * More frequencies in table
@@ -19,6 +17,7 @@ using yatl.Utilities;
  * 
  * We may want to have a seperate loop for generation, for the delay it causes in playing music
  * Why not pass MusicParameters to Update method?
+ * Implementing looping of buffers for ASR sounds is not reasonably doable
  * */
 
 namespace yatl
@@ -78,21 +77,31 @@ namespace yatl
 
         void scheduleNextMotif()
         {
-            string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
-
             if (this.currentMotif == null)
                 this.currentMotif = this.composition.Root;
-            else
+            else {
+                string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
+                if (this.Parameters.Lightness > .5) {
+                    tag = "light";
+                    if (this.currentMotif.Name.Contains("dark"))
+                        tag = "dusk";
+                }
+                else {
+                    tag = "dark";
+                    if (this.currentMotif.Name.Contains("light"))
+                        tag = "dusk";
+                }
                 this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
+            }
 
-            this.Schedule(this.currentMotif.Render(this.Parameters, this.Strings));
+            this.Schedule(this.currentMotif.Render(this.Parameters, this.Piano));
         }
 
         public void Update(UpdateEventArgs args)
         {
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
-            this.speed = .9 + .32 * tension;
+            this.speed = 1.9 + .32 * tension;
 
             double elapsedTime = args.ElapsedTimeInS * this.speed;
             this.time += elapsedTime;
@@ -111,7 +120,7 @@ namespace yatl
                 this.scheduleNextMotif();
             else {
                 // If current motif ends in less than 1 seconds, schedule next motif
-                if (this.eventSchedule.Last.Value.StartTime - 2 < this.time)
+                if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
                     this.scheduleNextMotif();
             }
 

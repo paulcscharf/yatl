@@ -50,7 +50,7 @@ namespace yatl
 
         public override Sound CreateSound(double volume, double frequency)
         {
-            return new SRSound( this.sustain, this.release, this.sampleFrequency, volume, frequency);
+            return new SRSound(this.sustain, this.release, this.sampleFrequency, volume, frequency);
         }
     }
 }

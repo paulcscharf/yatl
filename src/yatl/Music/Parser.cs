@@ -66,7 +66,7 @@ namespace yatl
             while (!EndOfStream)
             {
                 char c = (char) this.peek();
-                if (!char.IsLetterOrDigit(c))
+                if (!char.IsLetterOrDigit(c) && c != '_')
                 {
                     if (word.Length == 0)
                         throw parseError("Expected alphanumerical characters");
