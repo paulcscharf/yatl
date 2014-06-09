@@ -17,7 +17,7 @@ namespace yatl
     {
         public readonly string Name;
         public readonly double Frequency;
-        static Dictionary<string, double> nameFrequencyTable = new Dictionary<string, double>
+        public static Dictionary<string, double> NameFrequencyTable = new Dictionary<string, double>
         {
             {"_", 0},
 
@@ -98,6 +98,8 @@ namespace yatl
             {"a5", 880.0},
             {"ais5", 932.3},
             {"b5", 987.8},
+
+            {"fis6", 1480.0},
         };
 
         public Pitch(string name, double frequency)
@@ -128,7 +130,7 @@ namespace yatl
 
         public static Pitch FromString(string name)
         {
-            return new Pitch(name, nameFrequencyTable[name]);
+            return new Pitch(name, NameFrequencyTable[name]);
         }
     }
 }

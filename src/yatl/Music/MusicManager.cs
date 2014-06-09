@@ -8,6 +8,7 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
+ * Sustain for arpeggios
  * Several types of speedups and slowdowns
  * More frequencies in table
  * Automatically add octaves to melody or base
@@ -57,7 +58,8 @@ namespace yatl
         {
             AudioManager.Initialize();
             this.ambient = new OggStream("data/music/ambient1.ogg");
-            this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
+            //this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
+            this.Piano = new Piano();
             this.Violin = new SRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-decay.ogg", 207.7);
             //this.Strings = new SimpleInstrument("data/music/StringsC5.ogg", 523.3);
             this.Strings = new SRInstrument("data/music/StringsC5-sustain.ogg", "data/music/StringsC5-decay.ogg", 523.3);
