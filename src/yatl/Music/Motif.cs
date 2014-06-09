@@ -39,7 +39,7 @@ namespace yatl
                 }
 
                 // Select tones
-                var chord = arpeggioSpace.SelectRandom(6).ToList();
+                var chord = arpeggioSpace.SelectRandom(12).ToList();
                 chord.Sort();
                 double duration = basenote.Duration / (double) chord.Count;
                 arpeggios.AddRange(chord.Select(pitch => new Note(duration, pitch)));
