@@ -14,6 +14,7 @@ namespace yatl.Rendering
         public static SurfaceManager Instance { get; private set; }
 
         private readonly ShaderManager shaders;
+        private readonly DeferredBuffer deferredBuffer;
 
         private static Func<string, Texture> premultiplyTexture = file => new Texture(file, true);
 
@@ -61,6 +62,7 @@ namespace yatl.Rendering
         public SurfaceManager(ShaderManager shaders, DeferredBuffer deferredBuffer)
         {
             this.shaders = shaders;
+            this.deferredBuffer = deferredBuffer;
             this.initialise(shaders, deferredBuffer);
             SurfaceManager.Instance = this;
         }
@@ -173,8 +175,8 @@ namespace yatl.Rendering
 
         private void makeGameProjectionMatrix()
         {
-            const float zNear = 0.1f;
-            const float zFar = 256f;
+            const float zNear = 1f;
+            const float zFar = 512f;
             const float fovy = (float)Math.PI / 4;
 
             const float ratio = 16f / 9f;
@@ -235,6 +237,31 @@ namespace yatl.Rendering
             refresher.RemoveFromSurface(surface);
         }
 
+        public IndexedSurface<DeferredAmbientLightVertex> MakeAmbientLightSurface()
+        {
+            var surface = new IndexedSurface<DeferredAmbientLightVertex>
+            {
+                ClearOnRender = false,
+                IsStatic = true,
+            };
+            surface.AddSettings(
+                this.gameModelview,
+                this.gameProjection,
+                SurfaceBlendSetting.Add,
+                this.deferredBuffer
+                );
+            this.shaders.AmbientLight.UseOnSurface(surface);
+            return surface;
+        }
+
+        public void DisposeOfAmbientLightSurface(IndexedSurface<DeferredAmbientLightVertex> surface)
+        {
+            var refresher = this.shaders.AmbientLight as ShaderProgramRefresher;
+            if (refresher == null)
+                return;
+            refresher.RemoveFromSurface(surface);
+        }
+
 
         private readonly List<Surface> levelGeoQueue = new List<Surface>();
 
@@ -245,9 +272,19 @@ namespace yatl.Rendering
             this.levelGeoQueue.Add(surface);
         }
 
+        private readonly List<Surface> lightQueue = new List<Surface>();
+
+        public IEnumerable<Surface> LightQueue { get { return this.lightQueue; } }
+
+        public void QueueLight(IndexedSurface<DeferredAmbientLightVertex> surface)
+        {
+            this.lightQueue.Add(surface);
+        }
+
         public void ClearQueues()
         {
             this.levelGeoQueue.Clear();
+            this.lightQueue.Clear();
         }
     }
 }

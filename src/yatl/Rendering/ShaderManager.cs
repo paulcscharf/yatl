@@ -11,6 +11,7 @@ namespace yatl.Rendering
         public ISurfaceShader DebugDeferred { get; private set; }
 
         public ISurfaceShader PointLights { get; private set; }
+        public ISurfaceShader AmbientLight { get; private set; }
 
         public ShaderManager()
         {
@@ -25,6 +26,7 @@ namespace yatl.Rendering
             this.DebugDeferred = GraphicsHelper.LoadShaderProgram("data/shaders/post.vs", "data/shaders/post/debugDeferred.fs");
 
             this.PointLights = GraphicsHelper.LoadShaderProgram("data/shaders/deferred/pointlight");
+            this.AmbientLight = GraphicsHelper.LoadShaderProgram("data/shaders/deferred/ambient");
         }
     }
 }

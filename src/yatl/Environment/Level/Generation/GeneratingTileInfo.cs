@@ -16,7 +16,6 @@ namespace yatl.Environment.Level.Generation
             this.CorridorWidths = new float[7];
         }
 
-
         public Directions OpenSides { get; set; }
         public bool Visited { get; set; }
 
@@ -24,6 +23,8 @@ namespace yatl.Environment.Level.Generation
 
         public List<Wall> Walls { get; private set; }
         public TriangulatedFloor Floor { get; private set; }
+
+        public float Lightness { get; set; }
 
         private Dictionary<Direction, EdgeWallPair> edgeWalls;
 

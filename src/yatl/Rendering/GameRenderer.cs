@@ -122,8 +122,11 @@ namespace yatl.Rendering
 
             this.surfaces.PointLights.Render();
 
+            foreach (var surface in this.surfaces.LightQueue)
+                surface.Render();
 
             GL.Disable(EnableCap.CullFace);
+
             #endregion
 
             #region Draw particles

@@ -7,6 +7,7 @@ using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Rendering;
 using yatl.Rendering.Walls;
+using yatl.Utilities;
 using Hex = yatl.Settings.Game.Level;
 
 namespace yatl.Environment.Level
@@ -19,6 +20,9 @@ namespace yatl.Environment.Level
 
         public TriangulatedFloor Floor { get; private set; }
 
+        public float Lightness { get; private set; }
+
+        public Color AmbientColor { get; private set; }
 
         private IndexedSurface<WallVertex> geometry;
 
@@ -31,6 +35,8 @@ namespace yatl.Environment.Level
 
             this.Floor = info.Floor;
 
+            this.Lightness = info.Lightness;
+            this.AmbientColor = Color.White * info.Lightness;
         }
 
         public void InitGeometry(Vector2 offset)

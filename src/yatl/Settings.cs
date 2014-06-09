@@ -28,7 +28,7 @@ namespace yatl
 
                 public const float DefaultZoom = 1;
 
-                public const float OverviewZoom = 8f;
+                public const float OverviewZoom = 12f;
 
                 public const float FocusForce = 5f;
                 public const float PositionForce = 3f;
@@ -36,7 +36,7 @@ namespace yatl
 
             public static class Level
             {
-                public const int Radius = 10;
+                public const int Radius = 20;
 
                 private const float sqrtOfThree = 1.73205080757f;
 

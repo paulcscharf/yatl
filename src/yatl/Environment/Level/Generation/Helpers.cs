@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;
 using Direction = yatl.Environment.Tilemap.Hexagon.Direction;
@@ -17,6 +18,31 @@ namespace yatl.Environment.Level.Generation
             Direction.DownLeft,
             Direction.DownRight,
         };
+
+        public static void SetRandomBrightness(this IEnumerable<GeneratingTile> tiles)
+        {
+            foreach (var tile in tiles)
+                tile.Info.Lightness = GlobalRandom.NextFloat() < 0.1f ? 1 : 0;
+        }
+
+        public static void SmoothBrightnessConnected(this IEnumerable<GeneratingTile> tiles)
+        {
+            foreach (var tile in tiles)
+            {
+                var sum = tile.Info.Lightness;
+                int count = 1;
+                foreach (var dir in tile.Info.OpenSides.Enumerate())
+                {
+                    var neighbour = tile.Neighbour(dir);
+                    if (neighbour.IsValid)
+                    {
+                        sum += neighbour.Info.Lightness;
+                        count++;
+                    }
+                }
+                tile.Info.Lightness = sum / count;
+            }
+        }
 
         public static void MakeFloors(this IEnumerable<GeneratingTile> tiles)
         {

@@ -84,9 +84,11 @@ namespace yatl.Environment.Level.Generation
 
             #endregion
 
+            var centerTile = new GeneratingTile(tempMap, 0, 0);
+
             #region open walls
 
-            new GeneratingTile(tempMap, 0, 0).OpenRandomSpanningTree(this.MinCorridorWidth, this.MaxCorridorWidth);
+            centerTile.OpenRandomSpanningTree(this.MinCorridorWidth, this.MaxCorridorWidth);
 
             timer.WriteStepToConsole("Opened random spanning tree .. {0}");
 
@@ -111,6 +113,22 @@ namespace yatl.Environment.Level.Generation
             tiles.MakeFloors();
 
             timer.WriteStepToConsole("Generated level floors ....... {0}");
+
+            tiles.SetRandomBrightness();
+            centerTile.Info.Lightness = 1;
+            foreach (var dir in centerTile.Info.OpenSides.Enumerate())
+            {
+                var neighbour = centerTile.Neighbour(dir);
+                if (neighbour.IsValid)
+                {
+                    neighbour.Info.Lightness = 0.8f;
+                }
+            }
+            tiles.SmoothBrightnessConnected();
+            tiles.SmoothBrightnessConnected();
+            tiles.SmoothBrightnessConnected();
+
+            timer.WriteStepToConsole("Generated level lightness .... {0}");
 
             #endregion
 

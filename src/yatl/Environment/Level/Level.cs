@@ -1,9 +1,11 @@
 using System;
+using System.Linq;
 using amulware.Graphics;
 using OpenTK;
 using yatl.Environment.Level.Generation;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Rendering;
+using yatl.Rendering.Deferred;
 using yatl.Utilities;
 using Direction = yatl.Environment.Tilemap.Hexagon.Direction;
 
@@ -21,6 +23,8 @@ namespace yatl.Environment.Level
         private readonly GameState game;
         private readonly Tilemap<TileInfo> tilemap;
 
+        private IndexedSurface<DeferredAmbientLightVertex> ambientLightSurface;
+
         public Level(GameState game, LevelGenerator generator)
         {
             this.game = game;
@@ -29,6 +33,60 @@ namespace yatl.Environment.Level
 
             foreach (var tile in this.tilemap)
                 tile.Info.InitGeometry(this.GetPosition(tile));
+
+            this.createAmbient();
+        }
+
+        private void createAmbient()
+        {
+            var ambientTiles = new Tilemap<ushort>(this.tilemap.Radius + 1);
+
+            var vertices = new DeferredAmbientLightVertex[ambientTiles.Count];
+
+            ushort index = 0;
+
+            foreach (var tile in ambientTiles)
+            {
+                float z = 0;
+                var argb = Color.White;
+                if (this.tilemap.IsValidTile(tile))
+                {
+                    z = Settings.Game.Level.WallHeight;
+                    argb = this.tilemap[tile].AmbientColor;
+                }
+
+                vertices[index] = new DeferredAmbientLightVertex(this.GetPosition(tile).WithZ(z), argb);
+                ambientTiles[tile] = index;
+
+                index++;
+            }
+
+            var halfDirs = new[]
+            {
+                Direction.Left,
+                Direction.DownLeft,
+                //Direction.DownRight
+            };
+
+            var indices = new ushort[(ambientTiles.Count - 1) * 6];
+
+            var i = 0;
+
+            // ReSharper disable AccessToForEachVariableInClosure
+            foreach (var tile in ambientTiles)
+                foreach (var ns in halfDirs
+                    .Select(d => new { N1 = tile.Neighbour(d), N2 = tile.Neighbour(d + 1) })
+                    .Where(ns => ambientTiles.IsValidTile(ns.N1) && ambientTiles.IsValidTile(ns.N2)))
+                {
+                    indices[i++] = tile.Info;
+                    indices[i++] = ns.N2.Info;
+                    indices[i++] = ns.N1.Info;
+                }
+            // ReSharper restore AccessToForEachVariableInClosure
+
+            this.ambientLightSurface = SurfaceManager.Instance.MakeAmbientLightSurface();
+            this.ambientLightSurface.AddVertices(vertices);
+            this.ambientLightSurface.AddIndices(indices);
         }
 
         public Tile<TileInfo> GetTile(Vector2 position)
@@ -60,10 +118,16 @@ namespace yatl.Environment.Level
             return Settings.Game.Level.TileToPosition * new Vector2(tile.X, tile.Y);
         }
 
+        public Vector2 GetPosition(ITile tile)
+        {
+            return Settings.Game.Level.TileToPosition * new Vector2(tile.X, tile.Y);
+        }
+
         public void DisposeGeometry()
         {
             foreach (var tile in this.tilemap)
                 tile.Info.DisposeGeometry();
+            SurfaceManager.Instance.DisposeOfAmbientLightSurface(this.ambientLightSurface);
         }
 
         public void Draw(SpriteManager sprites)
@@ -71,6 +135,7 @@ namespace yatl.Environment.Level
             foreach (var tile in this.tilemap)
                 tile.Info.Draw();
 
+            SurfaceManager.Instance.QueueLight(this.ambientLightSurface);
 
             if(this.game.DrawDebug)
             {

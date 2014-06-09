@@ -11,6 +11,11 @@ namespace yatl.Environment.Tilemap.Hexagon
 
         public int Radius { get { return this.radius; } }
 
+        public int Count
+        {
+            get { return 3 * this.radius * (this.radius + 1) + 1; }
+        }
+
         /* Layout of array:
          * (radius 1)
          * 
