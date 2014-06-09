@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using yatl.Environment.Tilemap.Hexagon;
 using yatl.Utilities;
@@ -120,13 +120,11 @@ namespace yatl.Environment.Level.Generation
             {
                 var neighbour = centerTile.Neighbour(dir);
                 if (neighbour.IsValid)
-                {
                     neighbour.Info.Lightness = 0.8f;
-                }
             }
             tiles.SmoothBrightnessConnected();
             tiles.SmoothBrightnessConnected();
-            tiles.SmoothBrightnessConnected();
+            //tiles.SmoothBrightnessConnected();
 
             timer.WriteStepToConsole("Generated level lightness .... {0}");
 
