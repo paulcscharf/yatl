@@ -13,7 +13,7 @@ using System.Collections.Generic;
 
 namespace yatl
 {
-    class Pitch
+    class Pitch : IComparable
     {
         public readonly string Name;
         public readonly double Frequency;
@@ -104,6 +104,21 @@ namespace yatl
         {
             this.Name = name;
             this.Frequency = frequency;
+        }
+
+        public Pitch NextOctave()
+        {
+            return new Pitch("exact frequency: " + this.Frequency.ToString(), this.Frequency * 2.0);
+        }
+
+        public Pitch PreviousOctave()
+        {
+            return new Pitch("exact frequency: " + this.Frequency.ToString(), this.Frequency / 2.0);
+        }
+
+        public int CompareTo(object o)
+        {
+            return ((Pitch)o).Frequency <= this.Frequency ? 1 : -1;
         }
 
         public override string ToString()

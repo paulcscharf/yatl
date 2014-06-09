@@ -17,7 +17,7 @@ light2 > light1, light3 : {
 }
 
 light3 > light2, light4 : {
-2b4 a4 2fis4 a4 2g4 fis4 {3fis4, 3dis4},
+2b4 a4 2fis4 a4 2g4 fis4 3fis4,
 3g3    3d3      3e3      3b2
 }
 

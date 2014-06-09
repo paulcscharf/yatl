@@ -41,16 +41,16 @@ namespace yatl
     /// </summary>
     class Note : Audible
     {
-        Pitch pitch;
+        public Pitch Pitch;
         double duration;
 
         public override double Duration { get { return this.duration; } }
-        public double Frequency { get { return this.pitch.Frequency; } }
+        public double Frequency { get { return this.Pitch.Frequency; } }
 
-        public Note(int duration, Pitch pitch)
+        public Note(double duration, Pitch pitch)
         {
             this.duration = duration;
-            this.pitch = pitch;
+            this.Pitch = pitch;
         }
 
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
@@ -71,7 +71,7 @@ namespace yatl
 
         public override string ToString()
         {
-            return this.Duration.ToString() + " " + this.pitch.ToString();
+            return this.Duration.ToString() + " " + this.Pitch.ToString();
         }
     }
 
@@ -80,19 +80,19 @@ namespace yatl
     /// </summary>
     class Serial : Audible
     {
-        Audible[] content;
-        public override double Duration { get { return this.content.Sum(o => o.Duration); } }
+        public Note[] Content;
+        public override double Duration { get { return this.Content.Sum(o => o.Duration); } }
 
         public Serial(Audible[] content)
         {
-            this.content = content;
+            this.Content = Array.ConvertAll(content, item => (Note)item);
         }
 
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
         {
             double time = 0;
 
-            foreach (var child in this.content) {
+            foreach (var child in this.Content) {
                 foreach (var soundEvent in child.Render(parameters)) {
                     soundEvent.AddOffset(time);
                     yield return soundEvent;
@@ -101,9 +101,19 @@ namespace yatl
             }
         }
 
+        public IEnumerable<Note> GetRange(double start, double end)
+        {
+            double time = 0;
+            foreach (var note in this.Content) {
+                if (time >= start && time <= end)
+                    yield return note;
+                time += note.Duration;
+            }
+        }
+
         public override string ToString()
         {
-            return string.Join(" ", this.content.Select(obj => obj.ToString()));
+            return string.Join(" ", this.Content.Select(obj => obj.ToString()));
         }
     }
 
@@ -112,7 +122,7 @@ namespace yatl
     /// </summary>
     class Parallel : Audible
     {
-        Audible[] content;
+        public Serial[] Content;
         double durationMultiplier;
         double innerDuration;
 
@@ -130,15 +140,15 @@ namespace yatl
 
             this.durationMultiplier = durationMultiplier;
             this.innerDuration = duration;
-            this.content = content;
+            this.Content = Array.ConvertAll(content, item => (Serial)item);
         }
 
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
         {
             // Number of voices depends on density
-            int number = Math.Max(1, (int)(this.content.Length * parameters.Density));
+            int number = Math.Max(1, (int)(this.Content.Length * parameters.Density));
 
-            foreach (var child in this.content.Take(number)) {
+            foreach (var child in this.Content.Take(number)) {
                 foreach (var soundEvent in child.Render(parameters)) {
                     soundEvent.MultiplyOffset(this.durationMultiplier);
                     yield return soundEvent;
@@ -148,7 +158,7 @@ namespace yatl
 
         public override string ToString()
         {
-            return this.durationMultiplier.ToString() + "{" + string.Join(",", this.content.Select(obj => obj.ToString())) + "}";
+            return this.durationMultiplier.ToString() + "{" + string.Join(",", this.Content.Select(obj => obj.ToString())) + "}";
         }
     }
 }

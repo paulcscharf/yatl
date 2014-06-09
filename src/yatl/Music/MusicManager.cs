@@ -26,7 +26,7 @@ using yatl.Utilities;
  * 
  * IDEAS
  * arpeggio algorithm: generate an arpeggio set from octaves, sort by frequency, schedule them according to some pattern
- * need to specify octaves, arpeggio density and arpeggio pattern
+ * need to specify octaves, arpeggio density and arpeggio pattern (in terms of up/down, i.e. a bitstring)
  * 
  * rubato algorithm: start of measure must be slow and soft, speeding up linearly till the end, then fallback abruptly
  * could be implemented by introducing rubato soundevents
