@@ -6,15 +6,20 @@ using Cireon.Audio;
 using yatl.Environment;
 using yatl.Utilities;
 
-/* TODO
- * 
+/* 
+ * SHOULD HAVE
  * Several types of speedups and slowdowns
- * Several instruments for single note
- * More instrument samples
  * More frequencies in table
+ * Automatically add octaves to melody or base
+ * Automatically add more tones on the chord (with arpeggio's)
+ * "Opbouw" when staying in a subgraph
+ * Automatic asyncopes
+ * 
+ * COULD HAVE
+ * More instrument samples
+ * Several instruments for single note
  * 
  * NOTES
- * 
  * We may want to have a seperate loop for generation, for the delay it causes in playing music
  * Why not pass MusicParameters to Update method?
  * Implementing looping of buffers for ASR sounds is not reasonably doable
