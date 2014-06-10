@@ -109,7 +109,7 @@ namespace yatl
             }
 
             RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 0.5, 1);
-            parameters.Density = this.Parameters.Tension; // TEMP
+            parameters.Density = 1;
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
@@ -128,6 +128,7 @@ namespace yatl
                 var nextEvent = this.eventSchedule.First.Value;
                 this.eventSchedule.RemoveFirst();
                 nextEvent.Execute();
+                Console.WriteLine(nextEvent);
             }
 
             // Schedule soundevents

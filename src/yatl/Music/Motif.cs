@@ -39,7 +39,7 @@ namespace yatl
                 }
 
                 // Select tones
-                var chord = arpeggioSpace.SelectRandom(6).ToList();
+                var chord = arpeggioSpace.SelectRandom(3).ToList();
                 chord.Sort();
                 double duration = basenote.Duration / (double) chord.Count;
                 arpeggios.AddRange(chord.Select(pitch => new Note(duration, pitch)));
@@ -49,8 +49,8 @@ namespace yatl
             }
 
             // First render the arpeggio notes
-            foreach(var e in (new Serial(arpeggios.ToArray())).Render(parameters))
-                yield return e;
+            //foreach(var e in (new Serial(arpeggios.ToArray())).Render(parameters))
+            //    yield return e;
 
             // Then render the other notes
             foreach (var e in voices.Render(parameters))

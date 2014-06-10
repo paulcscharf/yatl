@@ -61,12 +61,12 @@ namespace yatl
             yield return end;
 
             // Extra octave depends on density
-            if (MusicManager.Random.NextDouble() < parameters.Density) {
-                var startOctave = new NoteOn(0, parameters.Instrument, this.Frequency * 2, parameters.Volume);
-                yield return startOctave;
-                var endOctave = new NoteOff(this.Duration, startOctave);
-                yield return endOctave;
-            }
+            //if (MusicManager.Random.NextDouble() < parameters.Density) {
+            //    var startOctave = new NoteOn(0, parameters.Instrument, this.Frequency * 2, parameters.Volume);
+            //    yield return startOctave;
+            //    var endOctave = new NoteOff(this.Duration, startOctave);
+            //    yield return endOctave;
+            //}
         }
 
         public override string ToString()
