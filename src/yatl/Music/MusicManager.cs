@@ -8,6 +8,7 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
+ * Sustain for arpeggios
  * Several types of speedups and slowdowns
  * More frequencies in table
  * Automatically add octaves to melody or base
@@ -23,6 +24,15 @@ using yatl.Utilities;
  * We may want to have a seperate loop for generation, for the delay it causes in playing music
  * Why not pass MusicParameters to Update method?
  * Implementing looping of buffers for ASR sounds is not reasonably doable
+ * 
+ * IDEAS
+ * arpeggio algorithm: generate an arpeggio set from octaves, sort by frequency, schedule them according to some pattern
+ * need to specify octaves, arpeggio density and arpeggio pattern (in terms of up/down, i.e. a bitstring)
+ * 
+ * rubato algorithm: start of measure must be slow and soft, speeding up linearly till the end, then fallback abruptly
+ * could be implemented by introducing rubato soundevents
+ * need to specify volume and speed interval
+ * 
  * */
 
 namespace yatl
@@ -35,7 +45,7 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
-        Random random;
+        public static Random Random = new Random();
 
         public Instrument Piano;
         public Instrument Violin;
@@ -46,11 +56,10 @@ namespace yatl
 
         public MusicManager()
         {
-            this.random = new Random();
-
             AudioManager.Initialize();
             this.ambient = new OggStream("data/music/ambient1.ogg");
-            this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
+            //this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
+            this.Piano = new Piano();
             this.Violin = new SRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-decay.ogg", 207.7);
             //this.Strings = new SimpleInstrument("data/music/StringsC5.ogg", 523.3);
             this.Strings = new SRInstrument("data/music/StringsC5-sustain.ogg", "data/music/StringsC5-decay.ogg", 523.3);
@@ -99,7 +108,8 @@ namespace yatl
                 this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
             }
 
-            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, true);
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 0.5, 1);
+            parameters.Density = this.Parameters.Tension; // TEMP
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
@@ -107,7 +117,6 @@ namespace yatl
         {
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
-            this.speed = 1.9 + .32 * tension;
 
             double elapsedTime = args.ElapsedTimeInS * this.speed;
             this.time += elapsedTime;

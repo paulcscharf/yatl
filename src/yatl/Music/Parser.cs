@@ -54,6 +54,10 @@ namespace yatl
             int c = this.reader.Read();
             if (c == -1)
                 throw this.parseError("Unexpected end of file.");
+            if (c == '\n') {
+                this.column = 0;
+                this.line++;
+            }
             return (char) c;
         }
 

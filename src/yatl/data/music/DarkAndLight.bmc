@@ -7,35 +7,36 @@
 # Light subgraph
 light1 > light2, light4 : {
 2b4 a4 2fis4 a4 2g4 fis4 3d4,
-3g3    3d3      3e3      3b2
-},
+3g3    3d3      3e3      3b2,
+3d3    3a2      3b2      3fis2
+}
 
 light2 > light1, light3 : {
 2b4 cis5 2a4 fis4 6a4,
 3g3      3d3      6a2
-},
+}
 
 light3 > light2, light4 : {
-2b4 a4 2fis4 a4 2g4 fis4 {3fis4, 3dis4},
+2b4 a4 2fis4 a4 2g4 fis4 3fis4,
 3g3    3d3      3e3      3b2
-},
+}
 
 light4 > light1, light3 : {
 2g4 fis4 2d4 fis4 6e4,
 3e3      3b3      6a2
-},
+}
 
 dusk1 > light1, dark1 : {
 6b3,
 6d4,
 6fis4
-},
+}
 
 # Dark subraph
 dark1 > dark1, dark2 : {
 3fis4 3fis4 3fis4 3fis4,
 3b4 3ais4 3b4 3ais4
-},
+}
 
 dark2 > dark1, dark2 : {
 d4 fis4 f4 cis4 e4 dis4 b3 d4 cis4 ais3 b3,
@@ -43,13 +44,13 @@ fis3 a3 2gis3 g3 2fis3 fis3 2e3 d3,
 b3 d3 2cis3 3b3 a3 ais3 fis3 b3
 #b4 d5 fis5 f5 cis5 e5 dis5 b4 d5 cis5 ais4,
 #11b5,
-},
+}
 
 #light2b > light1: {
 #2b4 cis5 2a4 d4 3e4 {3dis4 3e4 3cis4 6b3,
 #                     3fis4 3g4 3e4   6d4},
 #3g3      3d3    3g2  3b2   3g3 3fis3 6fis3
-#},
+#}
 
 #light10 > light10, dark1: {
 #fis4 e4 cis4 d4 cis4 a3 b3 a3 d3 b3 cis4 a3,
