@@ -31,7 +31,7 @@ namespace yatl.Rendering
                 GL.DeleteRenderbuffer(this.depthHandle);
             }
 
-            this.positionTexture = makeTexture(w, h, PixelInternalFormat.Rgba16f);
+            this.positionTexture = makeTexture(w, h, PixelInternalFormat.Rgba32f);
             this.normalTexture = makeTexture(w, h, PixelInternalFormat.Rgb);
 
             this.positionUniform.Texture = this.positionTexture;
