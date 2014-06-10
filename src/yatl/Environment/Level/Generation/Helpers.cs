@@ -22,7 +22,7 @@ namespace yatl.Environment.Level.Generation
         public static void SetRandomBrightness(this IEnumerable<GeneratingTile> tiles)
         {
             foreach (var tile in tiles)
-                tile.Info.Lightness = GlobalRandom.NextFloat() < 0.1f ? 1 : 0;
+                tile.Info.Lightness = GlobalRandom.NextFloat() < 0.1f ? 0.5f : 0;
         }
 
         public static void SmoothBrightnessConnected(this IEnumerable<GeneratingTile> tiles)

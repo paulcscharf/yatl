@@ -114,17 +114,21 @@ namespace yatl.Environment.Level.Generation
 
             timer.WriteStepToConsole("Generated level floors ....... {0}");
 
+            #endregion
+
+            #region light level
+
             tiles.SetRandomBrightness();
-            centerTile.Info.Lightness = 1;
+            centerTile.Info.Lightness = 0.5f;
             foreach (var dir in centerTile.Info.OpenSides.Enumerate())
             {
                 var neighbour = centerTile.Neighbour(dir);
                 if (neighbour.IsValid)
-                    neighbour.Info.Lightness = 0.8f;
+                    neighbour.Info.Lightness = 0.4f;
             }
             tiles.SmoothBrightnessConnected();
             tiles.SmoothBrightnessConnected();
-            //tiles.SmoothBrightnessConnected();
+            tiles.SmoothBrightnessConnected();
 
             timer.WriteStepToConsole("Generated level lightness .... {0}");
 
