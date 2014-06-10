@@ -70,6 +70,8 @@ namespace yatl
 
             this.ambient.IsLooped = true;
             //this.ambient.Play();
+
+            this.Parameters = new MusicParameters(0.5f, 0.5f);
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)

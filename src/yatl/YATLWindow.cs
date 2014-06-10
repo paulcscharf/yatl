@@ -1,5 +1,9 @@
 using System;
+using System.ComponentModel;
+using System.Diagnostics;
+using System.Threading;
 using amulware.Graphics;
+using Cireon.Audio;
 using OpenTK;
 using OpenTK.Graphics;
 using OpenTK.Graphics.OpenGL;
@@ -15,6 +19,7 @@ namespace yatl
         private GameRenderer renderer;
         private GameState gamestate;
         private MusicManager musicManager;
+        private Thread musicThread;
 
         public YATLWindow(int glMajor, int glMinor)
             : base(Settings.General.DefaultWindowWidth,
@@ -37,7 +42,26 @@ namespace yatl
 
             this.musicManager = new MusicManager();
 
+            this.musicThread = new Thread(this.updateMusic);
+
             this.gamestate = new GameState();
+
+            this.musicThread.Start();
+        }
+
+        private void updateMusic()
+        {
+            var args = new UpdateEventArgs(0);
+            var timer = Stopwatch.StartNew();
+            while (true)
+            {
+                args = new UpdateEventArgs(args, timer.Elapsed.TotalSeconds);
+                this.musicManager.Update(args);
+                
+                Thread.Sleep(TimeSpan.FromMilliseconds(2));
+            }
+
+
         }
 
         protected override void OnResize(EventArgs e)
@@ -69,7 +93,7 @@ namespace yatl
 
             this.musicManager.Parameters = this.gamestate.MusicParameters;
 
-            this.musicManager.Update(e);
+            //this.musicManager.Update(e);
         }
 
         private void restartGame()
@@ -89,6 +113,14 @@ namespace yatl
             this.renderer.FinalizeFrame();
             
             this.SwapBuffers();
+        }
+
+        protected override void OnClosing(CancelEventArgs e)
+        {
+            this.musicThread.Abort();
+            AudioManager.Instance.Dispose();
+
+            base.OnClosing(e);
         }
     }
 }
