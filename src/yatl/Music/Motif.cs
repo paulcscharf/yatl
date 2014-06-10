@@ -20,18 +20,27 @@ namespace yatl
             this.voices = voices;
         }
 
-        public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
+        public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start = 0)
         {
             // First generate arpeggios
-            var arpeggios = new List<Note>();
+            // Then render the other notes
+            //return voices.Render(parameters);
+            return this.GenerateArpeggios(parameters).Concat(voices.Render(parameters, start));
+        }
+
+        public IEnumerable<SoundEvent> GenerateArpeggios(RenderParameters parameters)
+        {
             double start = 0;
             foreach (var basenote in this.voices.Content[1].Content) {
                 double end = start + basenote.Duration;
+                yield return new LiftSustain(start); // Lift sustain before each chord
 
                 // Gather arpeggio set
+                var arpeggio = new List<Note>();
                 var arpeggioSpace = new List<Pitch>();
                 foreach (var voice in this.voices.Content) {
-                    foreach (var pitch in voice.GetRange(start, end).Select(note => note.Pitch)) {
+                    //foreach (var pitch in voice.GetRange(start, end).Select(note => note.Pitch)) {
+                    foreach (var pitch in voice.GetPosition(start).Select(note => note.Pitch)) {
                         arpeggioSpace.Add(pitch);
                         arpeggioSpace.Add(pitch.NextOctave());
                         arpeggioSpace.Add(pitch.PreviousOctave());
@@ -39,22 +48,17 @@ namespace yatl
                 }
 
                 // Select tones
-                var chord = arpeggioSpace.SelectRandom(3).ToList();
-                chord.Sort();
-                double duration = basenote.Duration / (double) chord.Count;
-                arpeggios.AddRange(chord.Select(pitch => new Note(duration, pitch)));
-                var arpeggio = chord.Select(pitch => new Note(duration, pitch));
+                var up = arpeggioSpace.SelectRandom(6).OrderBy(o => o.Frequency).ToList();
+                var down = arpeggioSpace.SelectRandom(6).OrderByDescending(o => o.Frequency).ToList();
+                double duration = basenote.Duration / (double) (up.Count + down.Count);
+                arpeggio.AddRange(up.Select(pitch => new Note(duration, pitch)));
+                arpeggio.AddRange(down.Select(pitch => new Note(duration, pitch)));
+
+                foreach(var e in (new Serial(arpeggio.ToArray())).Render(parameters, start))
+                    yield return e;
 
                 start = end;
             }
-
-            // First render the arpeggio notes
-            //foreach(var e in (new Serial(arpeggios.ToArray())).Render(parameters))
-            //    yield return e;
-
-            // Then render the other notes
-            foreach (var e in voices.Render(parameters))
-                yield return e;
         }
 
         public override double Duration { get { return this.voices.Duration; } }

@@ -8,8 +8,9 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
- * Sustain for arpeggios
+ * Sustain for arpeggios (maybe by adding sustain soundevents)
  * Several types of speedups and slowdowns
+ * Broken chords
  * More frequencies in table
  * Automatically add octaves to melody or base
  * Automatically add more tones on the chord (with arpeggio's)
@@ -45,7 +46,9 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
+
         public static Random Random = new Random();
+        public static List<Sound> SustainSet = new List<Sound>();
 
         public Instrument Piano;
         public Instrument Violin;

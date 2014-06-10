@@ -65,7 +65,23 @@ namespace yatl
 
         public override void Execute()
         {
-            this.noteOn.Sound.Stop();
+            MusicManager.SustainSet.Add(this.noteOn.Sound);
+        }
+    }
+
+    class LiftSustain : SoundEvent
+    {
+        public LiftSustain(double startTime)
+            : base(startTime)
+        {
+        }
+
+        public override void Execute()
+        {
+            foreach (var sound in MusicManager.SustainSet) {
+                sound.Stop();
+            }
+            MusicManager.SustainSet.Clear();
         }
     }
 }

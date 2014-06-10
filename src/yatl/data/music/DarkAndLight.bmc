@@ -12,18 +12,21 @@ light1 > light2, light4 : {
 }
 
 light2 > light1, light3 : {
-2b4 cis5 2a4 fis4 6a4,
-3g3      3d3      6a2
+2b4 cis5 2a4 fis4 3a4 3a4,
+3g3      3d3      3a2 3a2,
+3d3      3fis3    3e2 3e2
 }
 
 light3 > light2, light4 : {
 2b4 a4 2fis4 a4 2g4 fis4 3fis4,
-3g3    3d3      3e3      3b2
+3g3    3d3      3e3      3b2,
+3d3    3a3      3b3      3dis2
 }
 
 light4 > light1, light3 : {
-2g4 fis4 2d4 fis4 6e4,
-3e3      3b3      6a2
+2g4 fis4 2d4 fis4 3e4 3e4,
+3e3      3b3      3a2 3a2,
+3b3      3fis3    3cis2 3a2
 }
 
 dusk1 > light1, dark1 : {
