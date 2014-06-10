@@ -25,7 +25,9 @@ namespace yatl
             // First generate arpeggios
             // Then render the other notes
             //return voices.Render(parameters);
-            return this.GenerateArpeggios(parameters).Concat(voices.Render(parameters, start));
+            yield return new StartRubato(start);
+            foreach (var e in this.GenerateArpeggios(parameters).Concat(voices.Render(parameters, start)))
+                yield return e;
         }
 
         public IEnumerable<SoundEvent> GenerateArpeggios(RenderParameters parameters)

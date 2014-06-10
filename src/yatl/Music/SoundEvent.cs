@@ -84,4 +84,18 @@ namespace yatl
             MusicManager.SustainSet.Clear();
         }
     }
+
+    class StartRubato : SoundEvent
+    {
+        public StartRubato(double startTime)
+            : base(startTime)
+        {
+        }
+
+        public override void Execute()
+        {
+            MusicManager.Acceleration = 0.05;
+            MusicManager.Speed = 1;
+        }
+    }
 }

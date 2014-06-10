@@ -8,7 +8,6 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
- * Sustain for arpeggios (maybe by adding sustain soundevents)
  * Several types of speedups and slowdowns
  * Broken chords
  * More frequencies in table
@@ -41,7 +40,6 @@ namespace yatl
     sealed class MusicManager
     {
         double time = 0;
-        double speed = 1;
 
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
@@ -49,6 +47,8 @@ namespace yatl
 
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
+        public static double Speed = 1;
+        public static double Acceleration = 1;
 
         public Instrument Piano;
         public Instrument Violin;
@@ -120,11 +120,13 @@ namespace yatl
 
         public void Update(UpdateEventArgs args)
         {
+            Speed += args.ElapsedTimeInS * Acceleration;
+            double elapsedTime = args.ElapsedTimeInS * Speed;
+            this.time += elapsedTime;
+
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
 
-            double elapsedTime = args.ElapsedTimeInS * this.speed;
-            this.time += elapsedTime;
 
             this.ambient.Volume = (float)(.5 * tension * (1 - lightness));
 
