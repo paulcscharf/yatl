@@ -1,50 +1,19 @@
 # Light and Dark: a branching musical composition
 #
 # There are two subgraphs featuring light and dark motifs
-# They are highly interconnected through motifs which are tagged 'dusk'
-
-# Light subgraph
-light1 > light2, dusk1: {
-2b4 a4 2fis4 a4 2g4 fis4 3d4,
-3g3    3d3      3e3      3b2,
-3d3    3a2      3b2      3fis2
-}
-
-light2 > light3, dusk1 : {
-2b4 cis5 2a4 fis4 3a4 3a4,
-3g3      3d3      3a2 3cis2,
-3d3      3fis3    3e2 3e3
-}
-
-light3 > light4, dusk1 : {
-2b4 a4 2fis4 a4 2g4 fis4 3fis4,
-3g3    3d3      3e3      3b2,
-3d3    3a3      3b3      3dis2
-}
-
-light4 > light1, dusk1: {
-2g4 fis4 2d4 fis4 3e4 3e4,
-3e3      3b3      3a2 3a2,
-3b3      3fis3    3cis2 3a2
-}
-
-dusk1 > light1, dark1 : {
-3b3 3b3,
-3d4 3d4,
-3fis4 3fis4
-}
+# They are highly interconnected through motifs which are tagged 'goto_dark'
 
 # Dark subraph
-dark2 > dark1, dusk1 : {
+dark1 > dark2, goto_light1 : {
+3fis4 3fis4,
+3d3 3d3,
+3b3 3ais3
+}
+
+dark2 > dark1, goto_light1 : {
 3fis4 2f4 cis4 3e4 2dis4 b3 3d4   2cis4 ais3, #3b3 3b3,
 3a3   3gis3    3g3 3fis3    3fis3 3e3,        #3d3 3d3,
 3d3   3cis3    3b3 3b3      3a3   3ais3      #3b3 3b3
-}
-
-dark1 > dark2, dusk1 : {
-3fis4 3fis4 3fis4 3fis4,
-3d3 3d3 3d3 3d3,
-3b3 3ais3 3b3 3ais3
 }
 
 dark3 > dark3 : {
@@ -54,6 +23,48 @@ b3 d3 2cis3 3b3 a3 ais3 fis3 b3
 }
 #b4 d5 fis5 f5 cis5 e5 dis5 b4 d5 cis5 ais4,
 #11b5,
+
+# Transition motifs
+goto_light1 > light1: {
+3fis3,
+3b2,
+3d3,
+1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4
+}
+
+# Light subgraph
+light1 > light2, goto_dark1: {
+2b4 a4 2fis4 a4 2g4 fis4 3d4,
+3g3    3d3      3e3      3b2,
+3d3    3a2      3b2      3fis2
+}
+
+light2 > light3, goto_dark1 : {
+2b4 cis5 2a4 fis4 3a4 3a4,
+3g3      3d3      3a2 3cis2,
+3d3      3fis3    3e2 3e3
+}
+
+light3 > light4, goto_dark1 : {
+2b4 a4 2fis4 a4 2g4 fis4 3fis4,
+3g3    3d3      3e3      3b2,
+3d3    3a3      3b3      3dis2
+}
+
+light4 > light1, goto_dark1: {
+2g4 fis4 2d4 fis4 3e4 3e4,
+3e3      3b3      3a2 3a2,
+3b3      3fis3    3cis2 3a2
+}
+
+# Transition motifs
+goto_dark1 > light1, dark1 : {
+3b3 3b3,
+3d4 3d4,
+3fis4 3fis4
+}
+
+
 
 #light2b > light1: {
 #2b4 cis5 2a4 d4 3e4 {3dis4 3e4 3cis4 6b3,

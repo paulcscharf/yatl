@@ -8,6 +8,7 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
+ * Use higher octaves when light
  * Several types of speedups and slowdowns
  * Broken chords
  * More frequencies in table
@@ -101,16 +102,6 @@ namespace yatl
                 this.currentMotif = this.composition.Root;
             else {
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
-                if (this.Parameters.Lightness > .5) {
-                    tag = "light";
-                    if (this.currentMotif.Name.Contains("dark"))
-                        tag = "dusk";
-                }
-                else {
-                    tag = "dark";
-                    if (this.currentMotif.Name.Contains("light"))
-                        tag = "dusk";
-                }
                 this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
             }
 

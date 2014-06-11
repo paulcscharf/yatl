@@ -133,7 +133,7 @@ namespace yatl
 
         public override double Duration { get { return this.innerDuration * this.durationMultiplier; } }
 
-        public Parallel(Audible[] content, int durationMultiplier = 1)
+        public Parallel(Audible[] content, double durationMultiplier = 1)
         {
             if (content.Length == 0)
                 throw new Exception("No empty content allowed.");

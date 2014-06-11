@@ -17,8 +17,8 @@ namespace yatl
 
     abstract class Parser
     {
-        int line = 0;
-        int column = 0;
+        int line = 1;
+        int column = 1;
         StreamReader reader;
 
         public bool EndOfStream
@@ -55,7 +55,7 @@ namespace yatl
             if (c == -1)
                 throw this.parseError("Unexpected end of file.");
             if (c == '\n') {
-                this.column = 0;
+                this.column = 1;
                 this.line++;
             }
             return (char) c;
@@ -88,13 +88,13 @@ namespace yatl
         /// <summary>
         /// Parse sequence of alpha numberic characters
         /// </summary>
-        protected string parseInteger()
+        protected string parseDouble()
         {
             StringBuilder word = new StringBuilder();
             while (!EndOfStream)
             {
                 char c = (char) this.peek();
-                if (!char.IsDigit(c))
+                if (!char.IsDigit(c) && c != '.')
                 {
                     if (word.Length == 0)
                         throw parseError("Expected numerical characters");
