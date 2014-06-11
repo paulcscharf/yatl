@@ -29,7 +29,8 @@ goto_light1 > light1: {
 3fis3,
 3b2,
 3d3,
-1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4
+1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4,
+1.5_ .25b3 .25cis6 .25d6 .25e6 .25fis6 .25a6
 }
 
 # Light subgraph
