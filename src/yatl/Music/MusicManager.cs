@@ -120,9 +120,10 @@ namespace yatl
 
         public void Update(UpdateEventArgs args)
         {
-            Speed += args.ElapsedTimeInS * Acceleration;
+            Speed = Math.Min(1.5, Speed + args.ElapsedTimeInS * Acceleration);
             double elapsedTime = args.ElapsedTimeInS * Speed;
             this.time += elapsedTime;
+            //Speed = Math.Sin(time) * Math.Sin(time) + .5;
 
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;

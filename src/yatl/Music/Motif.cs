@@ -25,7 +25,6 @@ namespace yatl
             // First generate arpeggios
             // Then render the other notes
             //return voices.Render(parameters);
-            yield return new StartRubato(start);
             foreach (var e in this.GenerateArpeggios(parameters).Concat(voices.Render(parameters, start)))
                 yield return e;
         }
@@ -35,6 +34,7 @@ namespace yatl
             double start = 0;
             foreach (var basenote in this.voices.Content[1].Content) {
                 double end = start + basenote.Duration;
+                yield return new StartRubato(start); // Rubato for each chord
                 yield return new LiftSustain(start); // Lift sustain before each chord
 
                 // Gather arpeggio set

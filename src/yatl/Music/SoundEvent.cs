@@ -94,8 +94,8 @@ namespace yatl
 
         public override void Execute()
         {
-            MusicManager.Acceleration = 0.05;
-            MusicManager.Speed = 1;
+            MusicManager.Acceleration = 0.9;
+            MusicManager.Speed = 0.75;
         }
     }
 }
