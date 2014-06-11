@@ -49,6 +49,7 @@ namespace yatl
         public static List<Sound> SustainSet = new List<Sound>();
         public static double Speed = 1;
         public static double Acceleration = 1;
+        public static double Volume = 1;
 
         public Instrument Piano;
         public Instrument Violin;
@@ -113,14 +114,15 @@ namespace yatl
                 this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
             }
 
-            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 0.5, 1);
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 1);
             parameters.Density = 1;
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
         public void Update(UpdateEventArgs args)
         {
-            Speed = Math.Min(1.5, Speed + args.ElapsedTimeInS * Acceleration);
+            Speed = Math.Min(1.2, Speed + args.ElapsedTimeInS * Acceleration);
+            Volume = 2 * (1.4 - Speed);
             double elapsedTime = args.ElapsedTimeInS * Speed;
             this.time += elapsedTime;
             //Speed = Math.Sin(time) * Math.Sin(time) + .5;

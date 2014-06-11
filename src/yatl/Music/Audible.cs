@@ -15,14 +15,12 @@ namespace yatl
         public MusicParameters MusicParameters;
         public Instrument Instrument;
         public double Density;
-        public double Volume;
 
-        public RenderParameters(MusicParameters musicParameters, Instrument instrument, double Volume, double density)
+        public RenderParameters(MusicParameters musicParameters, Instrument instrument, double density)
         {
             this.MusicParameters = musicParameters;
             this.Instrument = instrument;
             this.Density = density;
-            this.Volume = Volume;
         }
     }
 
@@ -55,7 +53,7 @@ namespace yatl
 
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start)
         {
-            var on = new NoteOn(start, parameters.Instrument, this.Frequency, parameters.Volume);
+            var on = new NoteOn(start, parameters.Instrument, this.Frequency);
             yield return on;
             var off = new NoteOff(start + this.Duration, on);
             yield return off;

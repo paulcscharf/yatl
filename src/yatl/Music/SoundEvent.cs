@@ -36,19 +36,17 @@ namespace yatl
         public Instrument Instrument;
         public Sound Sound = null;
         public double Frequency;
-        public double Volume;
 
-        public NoteOn(double startTime, Instrument instrument, double frequency, double volume)
+        public NoteOn(double startTime, Instrument instrument, double frequency)
             : base(startTime)
         {
-            this.Volume = volume;
             this.Frequency = frequency;
             this.Instrument = instrument;
         }
 
         public override void Execute()
         {
-            this.Sound = this.Instrument.CreateSound(this.Volume, this.Frequency);
+            this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency);
             this.Sound.Play();
         }
     }
@@ -94,8 +92,8 @@ namespace yatl
 
         public override void Execute()
         {
-            MusicManager.Acceleration = 0.9;
-            MusicManager.Speed = 0.75;
+            MusicManager.Acceleration = 1.0;
+            MusicManager.Speed = 0.50;
         }
     }
 }
