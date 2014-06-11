@@ -12,8 +12,8 @@ light1 > light2, dusk1: {
 
 light2 > light3, dusk1 : {
 2b4 cis5 2a4 fis4 3a4 3a4,
-3g3      3d3      3a2 3a2,
-3d3      3fis3    3e2 3e2
+3g3      3d3      3a2 3cis2,
+3d3      3fis3    3e2 3e3
 }
 
 light3 > light4, dusk1 : {

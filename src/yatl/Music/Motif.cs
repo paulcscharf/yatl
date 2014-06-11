@@ -34,7 +34,6 @@ namespace yatl
             double start = 0;
             foreach (var basenote in this.voices.Content[1].Content) {
                 double end = start + basenote.Duration;
-                yield return new StartRubato(start - 0.1); // Some articulation just before each chord
                 yield return new LiftSustain(start); // Lift sustain before each chord
 
                 // Gather arpeggio set
@@ -60,6 +59,7 @@ namespace yatl
                     yield return e;
 
                 start = end;
+                yield return new StartRubato(start - 0.1); // Some articulation just before the next chord
             }
         }
 

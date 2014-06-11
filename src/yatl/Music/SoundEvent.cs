@@ -29,6 +29,11 @@ namespace yatl
         }
 
         public abstract void Execute();
+
+        public override string ToString()
+        {
+            return base.ToString() + ": " + this.StartTime;
+        }
     }
 
     class NoteOn : SoundEvent
@@ -48,6 +53,11 @@ namespace yatl
         {
             this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency);
             this.Sound.Play();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + ", " + this.Frequency;
         }
     }
 
