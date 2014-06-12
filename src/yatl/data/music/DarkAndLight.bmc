@@ -4,28 +4,47 @@
 # They are highly interconnected through motifs which are tagged 'goto_dark'
 
 # Dark subraph
-dark1 > dark2, goto_light1 : {
+dark2a > dark2b, goto_light1a : {
+3fis4 2f4 cis4,
+3a3   3gis3,
+3d3   3cis3   
+}
+
+dark2b > dark1a, goto_light1b : {
+3e4 2dis4 b3 3d4   2cis4 ais3, #3b3 3b3
+3g3 3fis3    3fis3 3e3,        #3d3 3d3
+3b3 3b3      3a3   3ais3      #3b3 3b3
+}
+
+dark1a > dark1b, goto_light1a : {
 3fis4 3fis4,
 3d3 3d3,
 3b3 3ais3
 }
 
-dark2 > dark1, goto_light1 : {
-3fis4 2f4 cis4 3e4 2dis4 b3 3d4   2cis4 ais3, #3b3 3b3,
-3a3   3gis3    3g3 3fis3    3fis3 3e3,        #3d3 3d3,
-3d3   3cis3    3b3 3b3      3a3   3ais3      #3b3 3b3
+dark1b > dark2a, goto_light1a : {
+3fis4 3fis4,
+3d3 3d3,
+3b3 3ais3
 }
 
-dark3 > dark3 : {
-d4 fis4 f4 cis4 e4 dis4 b3 d4 cis4 ais3 b3,
-fis3 a3 2gis3 g3 2fis3 fis3 2e3 d3,
-b3 d3 2cis3 3b3 a3 ais3 fis3 b3
-}
+
+#dark3 > dark3 : {
+#d4 fis4 f4 cis4 e4 dis4 b3 d4 cis4 ais3 b3,
+#fis3 a3 2gis3 g3 2fis3 fis3 2e3 d3,
+#b3 d3 2cis3 3b3 a3 ais3 fis3 b3
+#}
 #b4 d5 fis5 f5 cis5 e5 dis5 b4 d5 cis5 ais4,
 #11b5,
 
 # Transition motifs
-goto_light1 > light1: {
+goto_light1a > goto_light1b: {
+3fis3,
+3b2,
+3d3
+}
+
+goto_light1b > light1: {
 3fis3,
 3b2,
 3d3,
@@ -59,7 +78,7 @@ light4 > light1, goto_dark1: {
 }
 
 # Transition motifs
-goto_dark1 > light1, dark1 : {
+goto_dark1 > light1, dark1a : {
 3b3 3b3,
 3d4 3d4,
 3fis4 3fis4
