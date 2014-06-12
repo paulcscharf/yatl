@@ -8,12 +8,9 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
- * Use higher octaves when light
- * Several types of speedups and slowdowns
- * Broken chords
- * More frequencies in table
+ * Use higher octaves when light, either hardcoded or procedural
  * Automatically add octaves to melody or base
- * Automatically add more tones on the chord (with arpeggio's)
+ * Broken chords
  * "Opbouw" when staying in a subgraph
  * Automatic asyncopes
  * 
