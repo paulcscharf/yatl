@@ -1,31 +1,94 @@
 # Light and Dark: a branching musical composition
 #
 # There are two subgraphs featuring light and dark motifs
-# They are highly interconnected through motifs which are tagged 'goto_dark'
+# They are highly interconnected through motifs which are tagged 'goto_'
 
-# Dark subraph
-dark2a > dark2b, goto_light1a : {
+### DARK SUBRAPH ###
+dark1a > dark1b, goto_light1b : {
+3fis4,
+3d3,
+3b3,
+3b2   
+}
+dark1b > dark2a, goto_light1a : {
+3fis4,
+3d3,
+3ais3,
+3fis2
+}
+dark1c > dark1d, goto_light1b : {
+3fis4,
+3d3,
+3b3,
+3b2   
+}
+dark1d > dark2a, goto_light1a : {
+3fis4,
+3d3,
+3ais3,
+3fis2
+}
+
+
+goto_light1a > goto_light1b, dark1a: {
+3fis3,
+3b2,
+3d3
+}
+goto_light1b > light1, dark1a: {
+3fis3,
+3b2,
+3d3,
+1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4,
+1.5_ .25b3 .25cis6 .25d6 .25e6 .25fis6 .25a6
+}
+
+
+dark2a > dark2b, goto_light1b : {
+3fis4,
+3d3,
+3b3,
+3b2   
+}
+dark2b > dark2c, goto_light1a : {
+3fis4,
+3d3,
+3ais3,
+3fis2
+}
+dark2c > dark2d, goto_light2 : {
+3fis4,
+3d3,
+3b3,
+3g2
+}
+dark2d > dark1a, goto_light1a : {
+3fis4,
+3d4,
+3ais3,
+3fis2
+}
+
+
+goto_light2 > dark1a, light1 : {
+3fis4 3e4,
+3d3 3cis4,
+3b3 3a3,
+3g2 3a2
+}
+
+### SWEEPLINE :)
+
+dark3a > dark3b, goto_light1a : {
 3fis4 2f4 cis4,
 3a3   3gis3,
 3d3   3cis3   
 }
 
-dark2b > dark1a, goto_light1b : {
+dark3b > dark1a, goto_light1b : {
 3e4 2dis4 b3 3d4   2cis4 ais3, #3b3 3b3
 3g3 3fis3    3fis3 3e3,        #3d3 3d3
 3b3 3b3      3a3   3ais3      #3b3 3b3
-}
-
-dark1a > dark1b, goto_light1a : {
-3fis4 3fis4,
-3d3 3d3,
-3b3 3ais3
-}
-
-dark1b > dark2a, goto_light1a : {
-3fis4 3fis4,
-3d3 3d3,
-3b3 3ais3
 }
 
 
@@ -37,20 +100,6 @@ dark1b > dark2a, goto_light1a : {
 #b4 d5 fis5 f5 cis5 e5 dis5 b4 d5 cis5 ais4,
 #11b5,
 
-# Transition motifs
-goto_light1a > goto_light1b: {
-3fis3,
-3b2,
-3d3
-}
-
-goto_light1b > light1: {
-3fis3,
-3b2,
-3d3,
-1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4,
-1.5_ .25b3 .25cis6 .25d6 .25e6 .25fis6 .25a6
-}
 
 # Light subgraph
 light1 > light2, goto_dark1: {
