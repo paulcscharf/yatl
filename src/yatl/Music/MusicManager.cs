@@ -10,13 +10,14 @@ using yatl.Utilities;
  * SHOULD HAVE
  * Use higher octaves when light, either hardcoded or procedural
  * Automatically add octaves to melody or base
- * Broken chords
  * "Opbouw" when staying in a subgraph
- * Automatic asyncopes
  * 
  * COULD HAVE
  * More instrument samples
  * Several instruments for single note
+ * Broken chords
+ * Don't randomly walk through graph, but consider form also
+ * Automatic asyncopes
  * 
  * NOTES
  * We may want to have a seperate loop for generation, for the delay it causes in playing music
@@ -27,8 +28,8 @@ using yatl.Utilities;
  * arpeggio algorithm: generate an arpeggio set from octaves, sort by frequency, schedule them according to some pattern
  * need to specify octaves, arpeggio density and arpeggio pattern (in terms of up/down, i.e. a bitstring)
  * 
- * rubato algorithm: start of measure must be slow and soft, speeding up linearly till the end, then fallback abruptly
- * could be implemented by introducing rubato soundevents
+ * rubato algorithm: start of measure must be slow and loud, changing linearly till threshold
+ * At the end, fallback abruptly just before the next motif
  * need to specify volume and speed interval
  * 
  * */
@@ -99,7 +100,10 @@ namespace yatl
                 this.currentMotif = this.composition.Root;
             else {
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
-                this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
+                var choiceSpace = this.currentMotif.Successors.Where(o => o.Name.Contains(tag));
+                if (choiceSpace.Count() == 0)
+                    choiceSpace = this.currentMotif.Successors;
+                this.currentMotif = choiceSpace.RandomElement();
             }
 
             RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 1);
