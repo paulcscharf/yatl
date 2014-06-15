@@ -12,6 +12,13 @@ namespace yatl.Environment
 {
     sealed class GameState
     {
+        public enum GameOverState
+        {
+            Undetermined = 0,
+            Lost = 1,
+            Won = 2,
+        }
+
         private double time;
         private float timeF;
         public float Time { get { return this.timeF; } }
@@ -29,6 +36,10 @@ namespace yatl.Environment
 
         public Camera Camera { get; private set; }
 
+        private GameOverState gameOverState;
+
+        public GameOverState State { get { return this.gameOverState; } }
+
         public GameState()
         {
             this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
@@ -37,6 +48,12 @@ namespace yatl.Environment
             this.Camera = new Camera(this.Player);
 
             this.musicSettings = new MusicSettingsHud();
+
+            foreach (var tile in this.Level.Tilemap)
+            {
+                if (tile.Radius > 2)
+                    new Monster(this, this.Level.GetPosition(tile));
+            }
         }
 
         public void Update(UpdateEventArgs args)
@@ -91,6 +108,17 @@ namespace yatl.Environment
             }
 
             this.musicSettings.Draw(sprites);
+
+            if (this.gameOverState != GameOverState.Undetermined)
+            {
+                bool won = this.gameOverState == GameOverState.Won;
+                var text = won
+                    ? "You found the light!"
+                    : "Your light was extinguished...";
+                sprites.ScreenText.Height = 1.5f;
+                sprites.ScreenText.Color = won ? Color.Black : Color.White;
+                sprites.ScreenText.DrawString(new Vector2(0, 9), text, 0.5f, 0.5f);
+            }
         }
 
         public void AddObject(GameObject gameObject)
@@ -101,6 +129,11 @@ namespace yatl.Environment
         public void Dispose()
         {
             this.Level.DisposeGeometry();
+        }
+
+        public void GameOver(bool won)
+        {
+            this.gameOverState = GameOverState.Won;
         }
     }
 }

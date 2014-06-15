@@ -23,6 +23,8 @@ namespace yatl.Environment.Level
         private readonly GameState game;
         private readonly Tilemap<TileInfo> tilemap;
 
+        public Tilemap<TileInfo> Tilemap { get { return this.tilemap; } }
+
         private IndexedSurface<DeferredAmbientLightVertex> ambientLightSurface;
 
         public Level(GameState game, LevelGenerator generator)
@@ -87,6 +89,31 @@ namespace yatl.Environment.Level
             this.ambientLightSurface = SurfaceManager.Instance.MakeAmbientLightSurface();
             this.ambientLightSurface.AddVertices(vertices);
             this.ambientLightSurface.AddIndices(indices);
+        }
+
+        public TiledRayHitResult ShootRay(Ray ray)
+        {
+            return this.ShootRay(ray, this.GetTile(ray.Start));
+        }
+
+        public TiledRayHitResult ShootRay(Ray ray, Tile<TileInfo> startTile)
+        {
+            var tile = startTile;
+            var endTile = this.GetTile(ray.Start + ray.Direction);
+            while (true)
+            {
+                var offset = this.GetPosition(tile);
+                var rayLocal = new Ray(ray.Start - offset, ray.Direction);
+                var result = tile.Info.ShootRay(rayLocal);
+                if (result.RayFactor < 1)
+                    return result.OnTile(tile, offset);
+
+                if (tile == endTile)
+                    return result.OnTile(tile, offset);
+
+                tile = tile.Neighbour(
+                    tile.Info.GetOutDirection(rayLocal));
+            }
         }
 
         public Tile<TileInfo> GetTile(Vector2 position)

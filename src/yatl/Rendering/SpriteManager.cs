@@ -8,6 +8,8 @@ namespace yatl.Rendering
 {
     sealed class SpriteManager
     {
+        public static SpriteManager Instance { get; private set; }
+
         public FontGeometry ScreenText { get; private set; }
         public FontGeometry GameText { get; private set; }
 
@@ -34,6 +36,7 @@ namespace yatl.Rendering
         public SpriteManager(SurfaceManager surfaces)
         {
             this.initialise(surfaces);
+            SpriteManager.Instance = this;
         }
 
         private void initialise(SurfaceManager surfaces)

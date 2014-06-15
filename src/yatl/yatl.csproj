@@ -73,6 +73,7 @@
     <Compile Include="Environment\Level\RayHitResult.cs" />
     <Compile Include="Environment\Level\TileInfo.cs" />
     <Compile Include="Environment\Level\Wall.cs" />
+    <Compile Include="Environment\Monster.cs" />
     <Compile Include="Environment\MusicParameters.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />

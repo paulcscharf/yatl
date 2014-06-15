@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.Remoting.Messaging;
 using OpenTK;
 
 namespace yatl.Environment.Tilemap.Hexagon
@@ -75,6 +76,16 @@ namespace yatl.Environment.Tilemap.Hexagon
         public bool Equals(Tile<TTileInfo> other)
         {
             return this.x == other.x && this.y == other.y && this.tilemap == other.tilemap;
+        }
+
+        public static bool operator ==(Tile<TTileInfo> t1, Tile<TTileInfo> t2)
+        {
+            return t1.Equals(t2);
+        }
+
+        public static bool operator !=(Tile<TTileInfo> t1, Tile<TTileInfo> t2)
+        {
+            return !(t1 == t2);
         }
     }
 }

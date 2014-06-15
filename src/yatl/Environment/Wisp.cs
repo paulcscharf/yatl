@@ -29,6 +29,11 @@ namespace yatl.Environment
             this.velocity += acceleration * Settings.Game.Wisp.Acceleration * e.ElapsedTimeF;
 
             base.Update(e);
+
+            if (this.Tile.Radius == this.game.Level.Tilemap.Radius)
+            {
+                this.game.GameOver(true);
+            }
         }
 
         public override void Draw(SpriteManager sprites)
@@ -41,7 +46,7 @@ namespace yatl.Environment
                 geo.Color = new Color(Color.Green, 0);
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
-            sprites.PointLight.Draw(this.position.WithZ(1), Color.IndianRed, 3, 8);
+            sprites.PointLight.Draw(this.position.WithZ(1.5f), Color.LightYellow, 1f, 15);
 
             base.Draw(sprites);
         }

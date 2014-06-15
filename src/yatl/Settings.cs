@@ -21,6 +21,19 @@ namespace yatl
                 public const float Acceleration = 25f;
             }
 
+            public static class Enemy
+            {
+                public const float FrictionCoefficient = 0.5f;
+                public const float Acceleration = 7f;
+
+                public const float ViewDistance = 20;
+
+                public const float ViewDistanceSquared = ViewDistance * ViewDistance;
+
+                public const float MinScanInterval = 0.1f;
+                public const float MaxScanInterval = 0.3f;
+            }
+
             public static class Camera
             {
                 public readonly static Vector3 FocusOffset = new Vector3(0, -2, 0);

@@ -34,6 +34,12 @@ namespace yatl.Environment
 
         private void setTile(Tile<TileInfo> tile)
         {
+            if (!tile.IsValid)
+            {
+                throw new ArgumentException("Tile not valid.", "tile");
+            }
+                
+
             this.tile = tile;
             this.tileCenter = this.game.Level.GetPosition(tile);
         }
@@ -45,6 +51,8 @@ namespace yatl.Environment
                 return;
 
             var step = this.velocity * e.ElapsedTimeF;
+
+            Vector2 lastStepDir = Vector2.Zero;
 
             // update position (tests collision recursively)
             for (int i = 0; i < 5; i++)
@@ -67,10 +75,13 @@ namespace yatl.Environment
                     rayResult = rayResult.WithNewPoint(point - this.tileCenter);
                 }
 
+                lastStepDir = this.tileCenter + rayResult.Point - this.position;
+
                 this.position = this.tileCenter + rayResult.Point;
 
                 if (!rayResult.Hit)
                     break;
+
 
                 this.position += rayResult.Normal * 0.01f;
 
@@ -78,6 +89,9 @@ namespace yatl.Environment
 
                 step -= projected;
             }
+
+            this.velocity = lastStepDir.LengthSquared > 0 ?
+                this.velocity.Length * lastStepDir.Normalized() : Vector2.Zero;
 
             float slowDownFactor = 1 - this.frictionCoefficient * e.ElapsedTimeF;
             this.velocity *= slowDownFactor < 0 ? 0 : slowDownFactor;
@@ -93,9 +107,10 @@ namespace yatl.Environment
                 >= fromTileCenterAbs.Y)
                 return false;
 
-            this.setTile(this.tile.Neighbour(
-                Utilities.Direction.Of(newPositionRelative).Hexagonal()
-                ));
+            var newTile = this.tile.Neighbour(
+                Utilities.Direction.Of(newPositionRelative).Hexagonal());
+
+            this.setTile(newTile);
 
             return true;
         }

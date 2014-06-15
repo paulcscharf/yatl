@@ -57,5 +57,5 @@ void main()
 	float heightAlpha = 1 - height * height;
 
 	fragColor = p_color * p_lightIntensity
-		* diffuse * d * alpha * heightAlpha;
+		* diffuse * d * d * alpha * heightAlpha;
 }
