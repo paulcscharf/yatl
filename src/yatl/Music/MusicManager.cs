@@ -8,17 +8,16 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
- * Sustain for arpeggios
- * Several types of speedups and slowdowns
- * More frequencies in table
+ * Use higher octaves when light, either hardcoded or procedural
  * Automatically add octaves to melody or base
- * Automatically add more tones on the chord (with arpeggio's)
  * "Opbouw" when staying in a subgraph
- * Automatic asyncopes
  * 
  * COULD HAVE
  * More instrument samples
  * Several instruments for single note
+ * Broken chords
+ * Don't randomly walk through graph, but consider form also
+ * Automatic asyncopes
  * 
  * NOTES
  * We may want to have a seperate loop for generation, for the delay it causes in playing music
@@ -29,8 +28,8 @@ using yatl.Utilities;
  * arpeggio algorithm: generate an arpeggio set from octaves, sort by frequency, schedule them according to some pattern
  * need to specify octaves, arpeggio density and arpeggio pattern (in terms of up/down, i.e. a bitstring)
  * 
- * rubato algorithm: start of measure must be slow and soft, speeding up linearly till the end, then fallback abruptly
- * could be implemented by introducing rubato soundevents
+ * rubato algorithm: start of measure must be slow and loud, changing linearly till threshold
+ * At the end, fallback abruptly just before the next motif
  * need to specify volume and speed interval
  * 
  * */
@@ -40,12 +39,16 @@ namespace yatl
     sealed class MusicManager
     {
         double time = 0;
-        double speed = 1;
 
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
+
         public static Random Random = new Random();
+        public static List<Sound> SustainSet = new List<Sound>();
+        public static double Speed = 1;
+        public static double Acceleration = 1;
+        public static double Volume = 1;
 
         public Instrument Piano;
         public Instrument Violin;
@@ -97,31 +100,28 @@ namespace yatl
                 this.currentMotif = this.composition.Root;
             else {
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
-                if (this.Parameters.Lightness > .5) {
-                    tag = "light";
-                    if (this.currentMotif.Name.Contains("dark"))
-                        tag = "dusk";
-                }
-                else {
-                    tag = "dark";
-                    if (this.currentMotif.Name.Contains("light"))
-                        tag = "dusk";
-                }
-                this.currentMotif = this.currentMotif.Successors.Where(o => o.Name.Contains(tag)).RandomElement();
+                var choiceSpace = this.currentMotif.Successors.Where(o => o.Name.Contains(tag));
+                if (choiceSpace.Count() == 0)
+                    choiceSpace = this.currentMotif.Successors;
+                this.currentMotif = choiceSpace.RandomElement();
             }
 
-            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 0.5, 1);
-            parameters.Density = this.Parameters.Tension; // TEMP
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 1);
+            parameters.Density = 1;
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
         public void Update(UpdateEventArgs args)
         {
+            Speed = Math.Min(1.2, Speed + args.ElapsedTimeInS * Acceleration);
+            Volume = 2 * (1.4 - Speed);
+            double elapsedTime = args.ElapsedTimeInS * Speed;
+            this.time += elapsedTime;
+            //Speed = Math.Sin(time) * Math.Sin(time) + .5;
+
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
 
-            double elapsedTime = args.ElapsedTimeInS * this.speed;
-            this.time += elapsedTime;
 
             this.ambient.Volume = (float)(.5 * tension * (1 - lightness));
 
@@ -129,6 +129,7 @@ namespace yatl
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
                 var nextEvent = this.eventSchedule.First.Value;
                 this.eventSchedule.RemoveFirst();
+                Console.WriteLine(nextEvent);
                 nextEvent.Execute();
             }
 

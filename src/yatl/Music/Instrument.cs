@@ -37,8 +37,12 @@ namespace yatl
 
         public override Sound CreateSound(double volume, double frequency)
         {
-            int octave = (int)Math.Round(Math.Log(frequency / this.baseFrequencies[0], 2)) + 1;
-            return new SimpleSound(this.samples[octave - 1], this.baseFrequencies[octave - 1], volume, frequency);
+            if (frequency > 0) {
+                int octave = (int)Math.Round(Math.Log(frequency / this.baseFrequencies[0], 2)) + 1;
+                return new SimpleSound(this.samples[octave - 1], this.baseFrequencies[octave - 1], volume, frequency);
+            }
+            else
+                return new SimpleSound(this.samples[0], this.baseFrequencies[0], volume, frequency);
         }
     }
 

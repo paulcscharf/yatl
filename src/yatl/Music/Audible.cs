@@ -15,14 +15,12 @@ namespace yatl
         public MusicParameters MusicParameters;
         public Instrument Instrument;
         public double Density;
-        public double Volume;
 
-        public RenderParameters(MusicParameters musicParameters, Instrument instrument, double Volume, double density)
+        public RenderParameters(MusicParameters musicParameters, Instrument instrument, double density)
         {
             this.MusicParameters = musicParameters;
             this.Instrument = instrument;
             this.Density = density;
-            this.Volume = Volume;
         }
     }
 
@@ -33,7 +31,7 @@ namespace yatl
     {
         public abstract double Duration { get; }
 
-        public abstract IEnumerable<SoundEvent> Render(RenderParameters parameters);
+        public abstract IEnumerable<SoundEvent> Render(RenderParameters parameters, double start = 0);
     }
 
     /// <summary>
@@ -53,12 +51,12 @@ namespace yatl
             this.Pitch = pitch;
         }
 
-        public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
+        public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start)
         {
-            var start = new NoteOn(0, parameters.Instrument, this.Frequency, parameters.Volume);
-            yield return start;
-            var end = new NoteOff(this.Duration, start);
-            yield return end;
+            var on = new NoteOn(start, parameters.Instrument, this.Frequency);
+            yield return on;
+            var off = new NoteOff(start + this.Duration, on);
+            yield return off;
 
             // Extra octave depends on density
             //if (MusicManager.Random.NextDouble() < parameters.Density) {
@@ -88,16 +86,13 @@ namespace yatl
             this.Content = Array.ConvertAll(content, item => (Note)item);
         }
 
-        public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
+        public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start = 0)
         {
-            double time = 0;
-
             foreach (var child in this.Content) {
-                foreach (var soundEvent in child.Render(parameters)) {
-                    soundEvent.AddOffset(time);
+                foreach (var soundEvent in child.Render(parameters, start)) {
                     yield return soundEvent;
                 }
-                time += child.Duration;
+                start += child.Duration;
             }
         }
 
@@ -106,6 +101,16 @@ namespace yatl
             double time = 0;
             foreach (var note in this.Content) {
                 if (time >= start && time <= end)
+                    yield return note;
+                time += note.Duration;
+            }
+        }
+
+        public IEnumerable<Note> GetPosition(double position)
+        {
+            double time = 0;
+            foreach (var note in this.Content) {
+                if (time == position)
                     yield return note;
                 time += note.Duration;
             }
@@ -128,7 +133,7 @@ namespace yatl
 
         public override double Duration { get { return this.innerDuration * this.durationMultiplier; } }
 
-        public Parallel(Audible[] content, int durationMultiplier = 1)
+        public Parallel(Audible[] content, double durationMultiplier = 1)
         {
             if (content.Length == 0)
                 throw new Exception("No empty content allowed.");
@@ -143,13 +148,13 @@ namespace yatl
             this.Content = Array.ConvertAll(content, item => (Serial)item);
         }
 
-        public override IEnumerable<SoundEvent> Render(RenderParameters parameters)
+        public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start = 0)
         {
             // Number of voices depends on density
             int number = Math.Max(1, (int)(this.Content.Length * parameters.Density));
 
             foreach (var child in this.Content.Take(number)) {
-                foreach (var soundEvent in child.Render(parameters)) {
+                foreach (var soundEvent in child.Render(parameters, start)) {
                     soundEvent.MultiplyOffset(this.durationMultiplier);
                     yield return soundEvent;
                 }

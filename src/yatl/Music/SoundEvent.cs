@@ -29,6 +29,11 @@ namespace yatl
         }
 
         public abstract void Execute();
+
+        public override string ToString()
+        {
+            return base.ToString() + ": " + this.StartTime;
+        }
     }
 
     class NoteOn : SoundEvent
@@ -36,20 +41,23 @@ namespace yatl
         public Instrument Instrument;
         public Sound Sound = null;
         public double Frequency;
-        public double Volume;
 
-        public NoteOn(double startTime, Instrument instrument, double frequency, double volume)
+        public NoteOn(double startTime, Instrument instrument, double frequency)
             : base(startTime)
         {
-            this.Volume = volume;
             this.Frequency = frequency;
             this.Instrument = instrument;
         }
 
         public override void Execute()
         {
-            this.Sound = this.Instrument.CreateSound(this.Volume, this.Frequency);
+            this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency);
             this.Sound.Play();
+        }
+
+        public override string ToString()
+        {
+            return base.ToString() + ", " + this.Frequency;
         }
     }
 
@@ -65,7 +73,37 @@ namespace yatl
 
         public override void Execute()
         {
-            this.noteOn.Sound.Stop();
+            MusicManager.SustainSet.Add(this.noteOn.Sound);
+        }
+    }
+
+    class LiftSustain : SoundEvent
+    {
+        public LiftSustain(double startTime)
+            : base(startTime)
+        {
+        }
+
+        public override void Execute()
+        {
+            foreach (var sound in MusicManager.SustainSet) {
+                sound.Stop();
+            }
+            MusicManager.SustainSet.Clear();
+        }
+    }
+
+    class StartRubato : SoundEvent
+    {
+        public StartRubato(double startTime)
+            : base(startTime)
+        {
+        }
+
+        public override void Execute()
+        {
+            MusicManager.Acceleration = 1.0;
+            MusicManager.Speed = 0.50;
         }
     }
 }

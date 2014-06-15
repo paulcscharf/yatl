@@ -192,7 +192,7 @@ namespace yatl
                         if (duration.Length == 0)
                             parallel = this.parseParallel();
                         else {
-                            parallel = this.parseParallel(int.Parse(duration));
+                            parallel = this.parseParallel(double.Parse(duration));
                             duration = "";
                         }
                         content.Add(parallel);
@@ -205,10 +205,10 @@ namespace yatl
                         // Return
                         return new Serial(content.ToArray());
                     default:
-                        if (char.IsDigit(c)) {
+                        if (char.IsDigit(c) || c == '.') {
                             // Must be part of duration,
                             // because notes don't start with a digit
-                            duration = this.parseInteger();
+                            duration = this.parseDouble();
                         }
                         else {
                             pitchName = this.parseWord();
@@ -220,7 +220,7 @@ namespace yatl
                                 if (duration.Length == 0)
                                     note = new Note(1, pitch);
                                 else {
-                                    note = new Note(int.Parse(duration), pitch);
+                                    note = new Note(double.Parse(duration), pitch);
                                     duration = "";
                                 }
                                 content.Add(note);
@@ -236,7 +236,7 @@ namespace yatl
         /// <summary>
         /// Read and return things
         /// </summary>
-        Parallel parseParallel(int durationMultiplier = 1)
+        Parallel parseParallel(double durationMultiplier = 1)
         {
             var content = new List<Audible>();
 
