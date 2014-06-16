@@ -118,17 +118,16 @@ namespace yatl.Environment.Level.Generation
 
             #region light level
 
-            tiles.SetRandomBrightness();
-            centerTile.Info.Lightness = 0.5f;
-            foreach (var dir in centerTile.Info.OpenSides.Enumerate())
-            {
-                var neighbour = centerTile.Neighbour(dir);
-                if (neighbour.IsValid)
-                    neighbour.Info.Lightness = 0.4f;
-            }
-            tiles.SmoothBrightnessConnected();
-            tiles.SmoothBrightnessConnected();
-            tiles.SmoothBrightnessConnected();
+            var lightBuffer1 = new Tilemap<float>(this.Radius);
+            var lightBuffer2 = new Tilemap<float>(this.Radius);
+
+            lightBuffer1.SetRandom();
+            lightBuffer1[0, 0] = 0.5f;
+            lightBuffer1.DilateTo(tempMap, lightBuffer2);
+            lightBuffer2.SmoothTo(tempMap, lightBuffer1);
+            lightBuffer1.SmoothTo(tempMap, lightBuffer2);
+
+            lightBuffer2.SetBrightness(tempMap);
 
             timer.WriteStepToConsole("Generated level lightness .... {0}");
 

@@ -51,7 +51,7 @@ namespace yatl.Environment.Tilemap.Hexagon
 
         public bool IsValid
         {
-            get { return this.tilemap.IsValidTile(this); }
+            get { return this.tilemap != null && this.tilemap.IsValidTile(this); }
         }
 
         public Tile<TTileInfo> Neighbour(Direction direction)

@@ -19,28 +19,56 @@ namespace yatl.Environment.Level.Generation
             Direction.DownRight,
         };
 
-        public static void SetRandomBrightness(this IEnumerable<GeneratingTile> tiles)
+        public static void SetRandom(this Tilemap<float> tilemap)
         {
-            foreach (var tile in tiles)
-                tile.Info.Lightness = GlobalRandom.NextFloat() < 0.1f ? 0.5f : 0;
+            
+            foreach (var tile in tilemap.SelectRandom(tilemap.Count / 15))
+            {
+                tilemap[tile] = 0.5f;
+            }
         }
 
-        public static void SmoothBrightnessConnected(this IEnumerable<GeneratingTile> tiles)
+        public static void DilateTo(this Tilemap<float> tilemap, Tilemap<GeneratingTileInfo> level, Tilemap<float> outTilemap)
         {
-            foreach (var tile in tiles)
+            foreach (var tile in tilemap)
             {
-                var sum = tile.Info.Lightness;
-                int count = 1;
-                foreach (var dir in tile.Info.OpenSides.Enumerate())
+                var max = tile.Info;
+                foreach (var dir in level[tile].OpenSides.Enumerate())
                 {
                     var neighbour = tile.Neighbour(dir);
                     if (neighbour.IsValid)
                     {
-                        sum += neighbour.Info.Lightness;
+                        max = Math.Max(max, neighbour.Info);
+                    }
+                }
+                outTilemap[tile] = max;
+            }
+        }
+
+        public static void SmoothTo(this Tilemap<float> tilemap, Tilemap<GeneratingTileInfo> level, Tilemap<float> outTilemap)
+        {
+            foreach (var tile in tilemap)
+            {
+                var sum = tile.Info;
+                int count = 1;
+                foreach (var dir in level[tile].OpenSides.Enumerate())
+                {
+                    var neighbour = tile.Neighbour(dir);
+                    if (neighbour.IsValid)
+                    {
+                        sum += neighbour.Info;
                         count++;
                     }
                 }
-                tile.Info.Lightness = sum / count;
+                outTilemap[tile] = sum / count;
+            }
+        }
+
+        public static void SetBrightness(this Tilemap<float> brightness, Tilemap<GeneratingTileInfo> level)
+        {
+            foreach (var tile in brightness)
+            {
+                level[tile].Lightness = tile.Info;
             }
         }
 

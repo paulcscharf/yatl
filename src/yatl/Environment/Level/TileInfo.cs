@@ -27,6 +27,8 @@ namespace yatl.Environment.Level
 
         public Color AmbientColor { get; private set; }
 
+        public List<Monster> Monsters { get; private set; }
+
         private IndexedSurface<WallVertex> geometry;
 
         public TileInfo(GeneratingTileInfo info)
@@ -40,6 +42,8 @@ namespace yatl.Environment.Level
 
             this.Lightness = info.Lightness;
             this.AmbientColor = Color.White * info.Lightness;
+
+            this.Monsters = new List<Monster>();
         }
 
         public void InitGeometry(Vector2 offset)

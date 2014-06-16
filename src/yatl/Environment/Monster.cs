@@ -1,6 +1,9 @@
-﻿using amulware.Graphics;
+using System;
+using System.Linq;
+using amulware.Graphics;
 using OpenTK;
 using yatl.Environment.Level;
+using yatl.Environment.Tilemap.Hexagon;
 using yatl.Rendering;
 using yatl.Utilities;
 
@@ -64,7 +67,43 @@ namespace yatl.Environment
 
             }
 
+            foreach (var monster in this.Tile.Info.Monsters)
+            {
+                if(monster == this)
+                    continue;
+                var diff = monster.position - this.position;
+                var dSquared = diff.LengthSquared;
+                if(dSquared == 0)
+                    continue;
+                const float radius = 1f;
+                if (dSquared < radius * radius)
+                {
+                    var d = (float)Math.Sqrt(dSquared);
+                    var normalDiff = diff / d;
+                    var f = 1 - d;
+                    f *= f;
+                    this.velocity -= 100 * normalDiff * f * e.ElapsedTimeF;
+
+                    if (this.game.DrawDebug)
+                    {
+                        var lines = SpriteManager.Instance.Lines;
+                        lines.Color = Color.Red;
+                        lines.LineWidth = 0.1f;
+                        lines.DrawLine(this.position, this.position + diff / d);   
+                    }
+                }
+            }
+
             base.Update(e);
+        }
+
+        protected override void setTile(Tile<TileInfo> tile)
+        {
+            if(this.Tile.IsValid)
+                this.Tile.Info.Monsters.Remove(this);
+            base.setTile(tile);
+
+            this.Tile.Info.Monsters.Add(this);
         }
 
         public override void Draw(SpriteManager sprites)

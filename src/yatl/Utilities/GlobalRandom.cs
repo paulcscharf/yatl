@@ -74,7 +74,12 @@ namespace yatl.Utilities
         /// <returns></returns>
         public static bool NextBool()
         {
-            return GlobalRandom.Next(2) == 1;
+            return GlobalRandom.NextBool(0.5);
+        }
+
+        public static bool NextBool(double probability)
+        {
+            return GlobalRandom.NextDouble() < probability;
         }
 
         /// <summary>

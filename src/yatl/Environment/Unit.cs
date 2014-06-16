@@ -32,7 +32,7 @@ namespace yatl.Environment
             this.setTile(game.Level.GetTile(position));
         }
 
-        private void setTile(Tile<TileInfo> tile)
+        protected virtual void setTile(Tile<TileInfo> tile)
         {
             if (!tile.IsValid)
             {

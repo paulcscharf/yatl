@@ -23,8 +23,8 @@ namespace yatl
 
             public static class Enemy
             {
-                public const float FrictionCoefficient = 0.5f;
-                public const float Acceleration = 7f;
+                public const float FrictionCoefficient = 1.5f;
+                public const float Acceleration = 17f;
 
                 public const float ViewDistance = 20;
 
