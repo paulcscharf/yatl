@@ -125,9 +125,9 @@ namespace yatl.Environment.Level.Generation
             lightBuffer1[0, 0] = 0.5f;
             lightBuffer1.DilateTo(tempMap, lightBuffer2);
             lightBuffer2.SmoothTo(tempMap, lightBuffer1);
-            lightBuffer1.SmoothTo(tempMap, lightBuffer2);
+            //lightBuffer1.SmoothTo(tempMap, lightBuffer2);
 
-            lightBuffer2.SetBrightness(tempMap);
+            lightBuffer1.SetBrightness(tempMap);
 
             timer.WriteStepToConsole("Generated level lightness .... {0}");
 
