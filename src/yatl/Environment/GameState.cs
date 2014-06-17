@@ -42,6 +42,8 @@ namespace yatl.Environment
 
         public GameOverState State { get { return this.gameOverState; } }
 
+        public int MonstersCloseToPlayer { get; set; }
+
         public GameState()
         {
             this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
@@ -74,6 +76,8 @@ namespace yatl.Environment
 
             if (InputManager.IsKeyHit(Key.F3))
                 this.DrawDebug = !this.DrawDebug;
+
+            this.MonstersCloseToPlayer = 0;
 
             #region Update Game Objects
 
@@ -140,7 +144,7 @@ namespace yatl.Environment
 
         public void GameOver(bool won)
         {
-            this.gameOverState = GameOverState.Won;
+            this.gameOverState = won ? GameOverState.Won : GameOverState.Lost;
         }
     }
 }

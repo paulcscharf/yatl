@@ -17,6 +17,8 @@ namespace yatl.Environment
         private Vector2 lastKnownPlayerPosition;
         private float losePlayerTime;
 
+        private float nextHitTime;
+
         public Monster(GameState game, Vector2 position)
             : base(game, position, Settings.Game.Enemy.FrictionCoefficient)
         {
@@ -121,6 +123,12 @@ namespace yatl.Environment
                         this.velocity -= 100 * normalDiff * f * e.ElapsedTimeF;
                     }
                 }
+            }
+
+            if (this.nextHitTime <= this.game.Time && toPlayer.LengthSquared < Settings.Game.Enemy.HitDistanceSquared)
+            {
+                this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
+                this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
             }
 
             base.Update(e);

@@ -10,10 +10,15 @@ namespace yatl.Environment
     {
         private readonly ControlScheme controls;
 
+        private float health;
+        private float healStartTime;
+
         public Wisp(GameState game, Vector2 position)
             : base(game, position, Settings.Game.Wisp.FrictionCoefficient)
         {
             this.controls = new ControlScheme();
+            this.health = Settings.Game.Wisp.MaxHealth * 0.1f;
+            this.healStartTime = -1000;
         }
 
         public override void Update(GameUpdateEventArgs e)
@@ -30,10 +35,28 @@ namespace yatl.Environment
 
             base.Update(e);
 
-            if (this.Tile.Radius == this.game.Level.Tilemap.Radius)
+            if (this.healStartTime <= this.game.Time)
+            {
+                this.health = Math.Min(Settings.Game.Wisp.MaxHealth, this.health + e.ElapsedTimeF * Settings.Game.Wisp.HealSpeed);
+            }
+
+            if (this.game.State != GameState.GameOverState.Undetermined)
+                return;
+
+            if (this.health <= 0)
+            {
+                this.game.GameOver(false);
+            }
+            else if (this.Tile.Radius == this.game.Level.Tilemap.Radius)
             {
                 this.game.GameOver(true);
             }
+        }
+
+        public void Damage(float damage)
+        {
+            this.health -= damage;
+            this.healStartTime = this.game.Time + 1;
         }
 
         public override void Draw(SpriteManager sprites)
@@ -46,7 +69,12 @@ namespace yatl.Environment
                 geo.Color = new Color(Color.Green, 0);
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
-            sprites.PointLight.Draw(this.position.WithZ(1.5f), Color.LightYellow, 1f, 15);
+
+            var healthPercentage = Math.Max(0, this.health / Settings.Game.Wisp.MaxHealth);
+
+            var light = GlobalRandom.NextFloat(healthPercentage * healthPercentage, healthPercentage);
+
+            sprites.PointLight.Draw(this.position.WithZ(1.5f), Color.LightYellow, 1f, 15 * light);
 
             base.Draw(sprites);
         }
