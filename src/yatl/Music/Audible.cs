@@ -151,7 +151,7 @@ namespace yatl
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start = 0)
         {
             // Number of voices depends on density
-            int number = Math.Max(1, (int)(this.Content.Length * parameters.Density));
+            int number = Math.Max(2, (int)(this.Content.Length * parameters.Density));
 
             foreach (var child in this.Content.Take(number)) {
                 foreach (var soundEvent in child.Render(parameters, start)) {

@@ -119,13 +119,15 @@ namespace yatl
             this.time += elapsedTime;
             //Speed = Math.Sin(time) * Math.Sin(time) + .5;
 
-            double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
+            double tension = 0;
+            if (lightness > 0.5)
+                tension = this.Parameters.Tension;
 
-            MaxSpeed = 0.7  + 0.5 * tension;
-            MinSpeed = 0.7 + 0.2 * tension;
+            MaxSpeed = 0.8 + 0.5 * tension;
+            MinSpeed = 0.7;// +0.2 * tension;
             Volume = 0.5 + tension;
-            this.ambient.Volume = (float)(.5 * tension * (1 - lightness));
+            this.ambient.Volume = (float)(0.5 * tension * (1 - lightness));
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {

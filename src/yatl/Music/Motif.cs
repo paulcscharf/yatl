@@ -49,7 +49,7 @@ namespace yatl
                 }
 
                 // Select tones
-                int density = (int) (3 * parameters.Density) + 1;
+                int density = (int) (2 * parameters.Density) + 1;
                 Console.WriteLine("density: " + density.ToString());
                 //int[] pattern = new int[] { 1, 0 }; // 1 = up, 0 = down
                 var pattern = Enumerable.Range(0, density).Select(i => GlobalRandom.Next(2));
