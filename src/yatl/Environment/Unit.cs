@@ -22,6 +22,7 @@ namespace yatl.Environment
         public Tile<TileInfo> Tile { get { return this.tile; } }
 
         private Vector2 tileCenter;
+        public Vector2 TileCenter { get { return this.tileCenter; } }
 
         public Unit(GameState game, Vector2 position, float frictionCoefficient = 10)
             : base(game)

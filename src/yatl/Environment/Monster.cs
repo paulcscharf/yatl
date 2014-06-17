@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Linq;
 using amulware.Graphics;
 using OpenTK;
@@ -80,7 +80,7 @@ namespace yatl.Environment
                 {
                     var d = (float)Math.Sqrt(dSquared);
                     var normalDiff = diff / d;
-                    var f = 1 - d;
+                    var f = radius - d;
                     f *= f;
                     this.velocity -= 100 * normalDiff * f * e.ElapsedTimeF;
 
@@ -92,6 +92,18 @@ namespace yatl.Environment
                         lines.DrawLine(this.position, this.position + diff / d);   
                     }
                 }
+            }
+
+            var tileBrightness = this.Tile.Info.Lightness;
+
+            if (tileBrightness > 0.2)
+            {
+                var diff = this.TileCenter - this.position;
+                var d = diff.Length;
+                var normalDiff = diff / d;
+                var f = Settings.Game.Level.HexagonSide - d;
+                f *= f;
+                this.velocity -= 80 * normalDiff * f * e.ElapsedTimeF;
             }
 
             base.Update(e);
