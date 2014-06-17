@@ -49,20 +49,27 @@ namespace yatl
                 }
 
                 // Select tones
-                int density = 6;
-                int[] pattern = new int[] { 1, 0 }; // 1 = up, 0 = down
-                double duration = basenote.Duration / (double) (density * pattern.Length);
+                int density = (int) (3 * parameters.Density) + 1;
+                Console.WriteLine("density: " + density.ToString());
+                //int[] pattern = new int[] { 1, 0 }; // 1 = up, 0 = down
+                var pattern = Enumerable.Range(0, density).Select(i => GlobalRandom.Next(2));
+                Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o=>o.ToString())));
+                //var pattern = Enumerable.Range(0, 1).SelectRandom(2);
 
                 foreach(var direction in pattern)
                 {
+                    int numberOfTones = Enumerable.Range(2, 2).RandomElement() * density;
+                    double duration = basenote.Duration / (double) (numberOfTones * pattern.Count());
+
                     List<Pitch> stroke;
                     if (direction == 0) 
-                        stroke = arpeggioSpace.SelectRandom(density).OrderByDescending(o => o.Frequency).ToList();
+                        stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderByDescending(o => o.Frequency).ToList();
                     else
-                        stroke = arpeggioSpace.SelectRandom(density).OrderBy(o => o.Frequency).ToList();
+                        stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderBy(o => o.Frequency).ToList();
                     arpeggio.AddRange(stroke.Select(pitch => new Note(duration, pitch)));
                     // Hack to prevent double notes at the end of a stroke
-                    arpeggioSpace.Remove(stroke.Last());
+                    //arpeggioSpace.Remove(stroke.Last());
+                    //arpeggioSpace.Add(stroke.First());
                 }
 
                 foreach(var e in (new Serial(arpeggio.ToArray())).Render(parameters, start))

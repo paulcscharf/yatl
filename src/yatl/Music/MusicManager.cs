@@ -47,6 +47,8 @@ namespace yatl
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
         public static double Speed = 1;
+        public static double MaxSpeed = 1;
+        public static double MinSpeed = 1;
         public static double Acceleration = 1;
         public static double Volume = 1;
 
@@ -106,15 +108,13 @@ namespace yatl
                 this.currentMotif = choiceSpace.RandomElement();
             }
 
-            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 1);
-            parameters.Density = 1;
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, this.Parameters.Tension);
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
         public void Update(UpdateEventArgs args)
         {
-            Speed = Math.Min(1.2, Speed + args.ElapsedTimeInS * Acceleration);
-            Volume = 2 * (1.4 - Speed);
+            Speed = Math.Min(MaxSpeed, Speed + args.ElapsedTimeInS * Acceleration);
             double elapsedTime = args.ElapsedTimeInS * Speed;
             this.time += elapsedTime;
             //Speed = Math.Sin(time) * Math.Sin(time) + .5;
@@ -122,7 +122,9 @@ namespace yatl
             double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
 
-
+            MaxSpeed = 0.7  + 0.5 * tension;
+            MinSpeed = 0.7 + 0.2 * tension;
+            Volume = 0.5 + tension;
             this.ambient.Volume = (float)(.5 * tension * (1 - lightness));
 
             // Play soundevents
