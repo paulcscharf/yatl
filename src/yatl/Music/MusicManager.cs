@@ -129,7 +129,7 @@ namespace yatl
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
                 var nextEvent = this.eventSchedule.First.Value;
                 this.eventSchedule.RemoveFirst();
-                Console.WriteLine(nextEvent);
+                //Console.WriteLine(nextEvent);
                 nextEvent.Execute();
             }
 
