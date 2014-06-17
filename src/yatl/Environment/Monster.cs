@@ -28,7 +28,7 @@ namespace yatl.Environment
         public override void Update(GameUpdateEventArgs e)
         {
             var toPlayer = this.game.Player.Position - this.position;
-
+            var toPlayerDSquared = toPlayer.LengthSquared;
 
             if (this.nextVisibleCheck == 0)
                 this.nextVisibleCheck = this.game.Time +
@@ -36,7 +36,7 @@ namespace yatl.Environment
             if (this.nextVisibleCheck < this.game.Time)
             {
                 this.nextVisibleCheck = 0;
-                if (toPlayer.LengthSquared < Settings.Game.Enemy.ViewDistanceSquared)
+                if (toPlayerDSquared < Settings.Game.Enemy.ViewDistanceSquared)
                 {
                     var result = this.game.Level.ShootRay(new Ray(this.position, toPlayer), this.Tile);
                     this.seesPlayer = !result.Results.Hit;
@@ -125,10 +125,15 @@ namespace yatl.Environment
                 }
             }
 
-            if (this.nextHitTime <= this.game.Time && toPlayer.LengthSquared < Settings.Game.Enemy.HitDistanceSquared)
+            if (this.nextHitTime <= this.game.Time && toPlayerDSquared < Settings.Game.Enemy.HitDistanceSquared)
             {
                 this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
                 this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
+            }
+
+            if (toPlayerDSquared < Settings.Game.Enemy.ContributeToTensionDistanceSquared)
+            {
+                this.game.MonstersCloseToPlayer++;
             }
 
             base.Update(e);

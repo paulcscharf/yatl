@@ -41,6 +41,11 @@ namespace yatl
                 public const float HitDamage = 20;
                 public const float HitDistance = 1;
                 public const float HitDistanceSquared = HitDistance * HitDistance;
+
+                public const float ContributeToTensionDistance = 25;
+
+                public const float ContributeToTensionDistanceSquared =
+                    ContributeToTensionDistance * ContributeToTensionDistance;
             }
 
             public static class Camera
