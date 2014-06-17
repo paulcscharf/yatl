@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using amulware.Graphics;
 using OpenTK;
@@ -101,16 +101,26 @@ namespace yatl.Environment
                 }
             }
 
-            var tileBrightness = this.Tile.Info.Lightness;
-
-            if (tileBrightness > 0.2)
+            foreach (var tile in this.Tile.Info.OpenSides.Enumerate()
+                .Select(d => this.Tile.Neighbour(d)).Append(this.Tile))
             {
-                var diff = this.TileCenter - this.position;
-                var d = diff.Length;
-                var normalDiff = diff / d;
-                var f = Settings.Game.Level.HexagonSide - d;
-                f *= f;
-                this.velocity -= 80 * normalDiff * f * e.ElapsedTimeF;
+                var info = tile.Info;
+
+                if (info.Lightness > 0.2)
+                {
+                    var tilePosition = this.game.Level.GetPosition(tile);
+
+                    var diff = tilePosition - this.position;
+                    var d = diff.Length;
+                    const float radius = Settings.Game.Level.HexagonSide * 1.1f;
+                    if (d < radius)
+                    {
+                        var normalDiff = diff / d;
+                        var f = radius - d;
+                        f *= f;
+                        this.velocity -= 100 * normalDiff * f * e.ElapsedTimeF;
+                    }
+                }
             }
 
             base.Update(e);
