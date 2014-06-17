@@ -19,6 +19,10 @@ namespace yatl
             {
                 public const float FrictionCoefficient = 3f;
                 public const float Acceleration = 25f;
+
+                public const float HealSpeed = 40;
+                public const float HealDelay = 1;
+                public const float MaxHealth = 100;
             }
 
             public static class Enemy
@@ -32,6 +36,16 @@ namespace yatl
 
                 public const float MinScanInterval = 0.1f;
                 public const float MaxScanInterval = 0.3f;
+
+                public const float HitInterval = 1;
+                public const float HitDamage = 20;
+                public const float HitDistance = 1;
+                public const float HitDistanceSquared = HitDistance * HitDistance;
+
+                public const float ContributeToTensionDistance = 25;
+
+                public const float ContributeToTensionDistanceSquared =
+                    ContributeToTensionDistance * ContributeToTensionDistance;
             }
 
             public static class Camera

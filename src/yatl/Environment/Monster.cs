@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Linq;
 using amulware.Graphics;
 using OpenTK;
@@ -17,6 +17,8 @@ namespace yatl.Environment
         private Vector2 lastKnownPlayerPosition;
         private float losePlayerTime;
 
+        private float nextHitTime;
+
         public Monster(GameState game, Vector2 position)
             : base(game, position, Settings.Game.Enemy.FrictionCoefficient)
         {
@@ -26,7 +28,7 @@ namespace yatl.Environment
         public override void Update(GameUpdateEventArgs e)
         {
             var toPlayer = this.game.Player.Position - this.position;
-
+            var toPlayerDSquared = toPlayer.LengthSquared;
 
             if (this.nextVisibleCheck == 0)
                 this.nextVisibleCheck = this.game.Time +
@@ -34,7 +36,7 @@ namespace yatl.Environment
             if (this.nextVisibleCheck < this.game.Time)
             {
                 this.nextVisibleCheck = 0;
-                if (toPlayer.LengthSquared < Settings.Game.Enemy.ViewDistanceSquared)
+                if (toPlayerDSquared < Settings.Game.Enemy.ViewDistanceSquared)
                 {
                     var result = this.game.Level.ShootRay(new Ray(this.position, toPlayer), this.Tile);
                     this.seesPlayer = !result.Results.Hit;
@@ -101,16 +103,37 @@ namespace yatl.Environment
                 }
             }
 
-            var tileBrightness = this.Tile.Info.Lightness;
-
-            if (tileBrightness > 0.2)
+            foreach (var tile in this.Tile.Info.OpenSides.Enumerate()
+                .Select(d => this.Tile.Neighbour(d)).Append(this.Tile))
             {
-                var diff = this.TileCenter - this.position;
-                var d = diff.Length;
-                var normalDiff = diff / d;
-                var f = Settings.Game.Level.HexagonSide - d;
-                f *= f;
-                this.velocity -= 80 * normalDiff * f * e.ElapsedTimeF;
+                var info = tile.Info;
+
+                if (info.Lightness > 0.2)
+                {
+                    var tilePosition = this.game.Level.GetPosition(tile);
+
+                    var diff = tilePosition - this.position;
+                    var d = diff.Length;
+                    const float radius = Settings.Game.Level.HexagonSide * 1.1f;
+                    if (d < radius)
+                    {
+                        var normalDiff = diff / d;
+                        var f = radius - d;
+                        f *= f;
+                        this.velocity -= 100 * normalDiff * f * e.ElapsedTimeF;
+                    }
+                }
+            }
+
+            if (this.nextHitTime <= this.game.Time && toPlayerDSquared < Settings.Game.Enemy.HitDistanceSquared)
+            {
+                this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
+                this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
+            }
+
+            if (toPlayerDSquared < Settings.Game.Enemy.ContributeToTensionDistanceSquared)
+            {
+                this.game.MonstersCloseToPlayer++;
             }
 
             base.Update(e);
