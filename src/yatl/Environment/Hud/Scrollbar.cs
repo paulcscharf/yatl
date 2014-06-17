@@ -35,7 +35,11 @@ namespace yatl.Environment.Hud
             this.increase = increase;
         }
 
-        public float Value { get { return this.value; } }
+        public float Value
+        {
+            get { return this.value; }
+            set { this.value = GameMath.Clamp(value, 0, 1); }
+        }
 
         public void Update(GameUpdateEventArgs e)
         {

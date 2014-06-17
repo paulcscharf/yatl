@@ -1,4 +1,4 @@
-﻿using amulware.Graphics;
+using amulware.Graphics;
 using OpenTK;
 using OpenTK.Input;
 using yatl.Input;
@@ -8,6 +8,7 @@ namespace yatl.Environment.Hud
 {
     sealed class MusicSettingsHud
     {
+        private readonly GameState game;
         private readonly Scrollbar lightnessBar;
         private readonly Scrollbar tensionBar;
 
@@ -15,8 +16,9 @@ namespace yatl.Environment.Hud
 
         public MusicParameters Parameters { get; private set; }
 
-        public MusicSettingsHud()
+        public MusicSettingsHud(GameState game)
         {
+            this.game = game;
             this.lightnessBar = new Scrollbar(new Vector3(-16, 2, 0), 0.6f, this.change,
                 KeyboardKeyAction.FromKey(Key.Number1), KeyboardKeyAction.FromKey(Key.Number2));
 
@@ -35,6 +37,11 @@ namespace yatl.Environment.Hud
         {
             this.lightnessBar.Update(e);
             this.tensionBar.Update(e);
+
+            var light = this.game.Player.Tile.Info.Lightness * 2;
+            if (light != this.lightnessBar.Value)
+                this.changed = true;
+            this.lightnessBar.Value = light;
 
             if (this.changed)
             {

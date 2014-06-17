@@ -48,7 +48,7 @@ namespace yatl.Environment
 
             this.Camera = new Camera(this.Player);
 
-            this.musicSettings = new MusicSettingsHud();
+            this.musicSettings = new MusicSettingsHud(this);
 
             foreach (var tile in this.Level.Tilemap)
             {
