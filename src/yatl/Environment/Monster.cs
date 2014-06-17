@@ -49,6 +49,10 @@ namespace yatl.Environment
                         lines.DrawLine(this.position, result.GlobalPoint);
                     }
                 }
+                else
+                {
+                    this.seesPlayer = false;
+                }
             }
 
             if (this.seesPlayer)
