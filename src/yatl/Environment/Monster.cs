@@ -51,13 +51,20 @@ namespace yatl.Environment
 
             if (this.seesPlayer)
             {
-                this.chasing = true;
+                if (!this.chasing)
+                {
+                    this.game.ChasingEnemies.Add(this);
+                    this.chasing = true;
+                }
                 this.lastKnownPlayerPosition = this.game.Player.Position;
                 this.losePlayerTime = this.game.Time + 1;
             }
 
-            if (this.losePlayerTime < this.game.Time)
+            if (this.chasing && this.losePlayerTime < this.game.Time)
+            {
+                this.game.ChasingEnemies.Remove(this);
                 this.chasing = false;
+            }
 
             if (this.chasing)
             {

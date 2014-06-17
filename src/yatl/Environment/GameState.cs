@@ -31,6 +31,7 @@ namespace yatl.Environment
 
         private readonly List<GameObject> gameObjects = new List<GameObject>();
 
+        public HashSet<Monster> ChasingEnemies { get; private set; } 
 
         private readonly MusicSettingsHud musicSettings;
         public MusicParameters MusicParameters { get { return this.musicSettings.Parameters; } }
@@ -49,6 +50,8 @@ namespace yatl.Environment
             this.Camera = new Camera(this.Player);
 
             this.musicSettings = new MusicSettingsHud(this);
+
+            this.ChasingEnemies = new HashSet<Monster>();
 
             foreach (var tile in this.Level.Tilemap)
             {

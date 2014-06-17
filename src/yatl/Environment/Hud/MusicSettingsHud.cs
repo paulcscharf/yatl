@@ -1,3 +1,4 @@
+using System;
 using amulware.Graphics;
 using OpenTK;
 using OpenTK.Input;
@@ -42,6 +43,12 @@ namespace yatl.Environment.Hud
             if (light != this.lightnessBar.Value)
                 this.changed = true;
             this.lightnessBar.Value = light;
+
+            var chasingCount = this.game.ChasingEnemies.Count;
+            var tension = 1 - (float)Math.Pow(1.3, -chasingCount);
+            if (tension != this.tensionBar.Value)
+                this.changed = true;
+            this.tensionBar.Value = tension;
 
             if (this.changed)
             {
