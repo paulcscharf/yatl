@@ -35,7 +35,7 @@ namespace yatl.Environment
 
             base.Update(e);
 
-            if (this.healStartTime <= this.game.Time)
+            if (this.game.State != GameState.GameOverState.Lost && this.healStartTime <= this.game.Time)
             {
                 this.health = Math.Min(Settings.Game.Wisp.MaxHealth, this.health + e.ElapsedTimeF * Settings.Game.Wisp.HealSpeed);
             }
@@ -55,7 +55,7 @@ namespace yatl.Environment
 
         public void Damage(float damage)
         {
-            this.health -= damage;
+            this.health = Math.Max(0, this.health - damage);
             this.healStartTime = this.game.Time + 1;
         }
 
@@ -70,11 +70,11 @@ namespace yatl.Environment
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
 
-            var healthPercentage = Math.Max(0, this.health / Settings.Game.Wisp.MaxHealth);
+            var healthPercentage = this.health / Settings.Game.Wisp.MaxHealth;
 
             var light = GlobalRandom.NextFloat(healthPercentage * healthPercentage, healthPercentage);
 
-            sprites.PointLight.Draw(this.position.WithZ(1.5f), Color.LightYellow, 1f, 15 * light);
+            sprites.PointLight.Draw(this.position.WithZ(1.5f), Color.LightYellow, 1f, 5 + 10 * light);
 
             base.Draw(sprites);
         }
