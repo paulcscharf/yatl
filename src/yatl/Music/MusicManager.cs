@@ -12,7 +12,6 @@ using yatl.Utilities;
  * Make transition to dark faster
  * Make tension go up when reaching finish
  * Wav files
- * Automatically add octaves to melody or base
  * Use higher octaves when light, either hardcoded or procedural
  * 
  * COULD HAVE
@@ -24,17 +23,8 @@ using yatl.Utilities;
  * "Opbouw" when staying in a subgraph
  * 
  * NOTES
- * We may want to have a seperate loop for generation, for the delay it causes in playing music
  * Why not pass MusicParameters to Update method?
  * Implementing looping of buffers for ASR sounds is not reasonably doable
- * 
- * IDEAS
- * arpeggio algorithm: generate an arpeggio set from octaves, sort by frequency, schedule them according to some pattern
- * need to specify octaves, arpeggio density and arpeggio pattern (in terms of up/down, i.e. a bitstring)
- * 
- * rubato algorithm: start of measure must be slow and loud, changing linearly till threshold
- * At the end, fallback abruptly just before the next motif
- * need to specify volume and speed interval
  * 
  * */
 
@@ -112,7 +102,7 @@ namespace yatl
                 this.currentMotif = choiceSpace.RandomElement();
             }
 
-            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, this.Parameters.Tension);
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano);
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
@@ -132,8 +122,8 @@ namespace yatl
             Volume = 0.5 + tension;
             this.ambient.Volume = (float)(0.25 * (tension + 1 - lightness));
 
-            if (this.ambient.Ready)
-                this.ambient.Play();
+            //if (this.ambient.Ready)
+                //this.ambient.Play();
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {

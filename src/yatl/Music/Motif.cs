@@ -40,7 +40,6 @@ namespace yatl
                 var arpeggio = new List<Note>();
                 var arpeggioSpace = new List<Pitch>();
                 foreach (var voice in this.voices.Content) {
-                    //foreach (var pitch in voice.GetRange(start, end).Select(note => note.Pitch)) {
                     foreach (var pitch in voice.GetPosition(start).Select(note => note.Pitch)) {
                         arpeggioSpace.Add(pitch);
                         arpeggioSpace.Add(pitch.NextOctave());
@@ -49,30 +48,40 @@ namespace yatl
                 }
 
                 // Select tones
-                int density = (int) (2 * parameters.Density) + 1;
+                int density = (int)Math.Round(2 * parameters.MusicParameters.Tension + 1);
                 Console.WriteLine("density: " + density.ToString());
-                //int[] pattern = new int[] { 1, 0 }; // 1 = up, 0 = down
-                var pattern = Enumerable.Range(0, density).Select(i => GlobalRandom.Next(2));
-                Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o=>o.ToString())));
-                //var pattern = Enumerable.Range(0, 1).SelectRandom(2);
 
-                foreach(var direction in pattern)
-                {
-                    int numberOfTones = Enumerable.Range(2, 2).RandomElement() * density;
-                    double duration = basenote.Duration / (double) (numberOfTones * pattern.Count());
+                IEnumerable<int> pattern;// = Enumerable.Range(0, density).Select(i => GlobalRandom.Next(2));
+                if (density == 1)
+                    pattern = new int[] { 1, 1 };
+                else if (density == 2)
+                    pattern = new int[] { 1, 0 };
+                else {
+                    pattern = new int[] { 1, 0, 1 };
+                    density = 2;
+                }
+                Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o => o.ToString())));
+
+                foreach (var direction in pattern) {
+                    //int numberOfTones = Enumerable.Range(2, 2).RandomElement() * density;
+                    int numberOfTones = 3 * density;
+                    double duration = basenote.Duration / (double)(numberOfTones * pattern.Count());
+                    Console.WriteLine("duration: " + duration.ToString());
 
                     List<Pitch> stroke;
-                    if (direction == 0) 
+                    if (direction == 0)
                         stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderByDescending(o => o.Frequency).ToList();
                     else
                         stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderBy(o => o.Frequency).ToList();
+
+                    Console.WriteLine("stroke: " + string.Join(", ", stroke.Select(o => o.ToString())));
                     arpeggio.AddRange(stroke.Select(pitch => new Note(duration, pitch)));
                     // Hack to prevent double notes at the end of a stroke
-                    //arpeggioSpace.Remove(stroke.Last());
+                    arpeggioSpace.Remove(stroke.Last());
                     //arpeggioSpace.Add(stroke.First());
                 }
 
-                foreach(var e in (new Serial(arpeggio.ToArray())).Render(parameters, start))
+                foreach (var e in (new Serial(arpeggio.ToArray())).Render(parameters, start))
                     yield return e;
 
                 start = end;
