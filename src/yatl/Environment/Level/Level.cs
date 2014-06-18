@@ -32,11 +32,34 @@ namespace yatl.Environment.Level
             this.game = game;
 
             this.tilemap = generator.Generate();
-
             foreach (var tile in this.tilemap)
                 tile.Info.InitGeometry(this.GetPosition(tile));
 
             this.createAmbient();
+        }
+
+        public void GrowCrystals()
+        {
+
+            foreach (var tile in this.tilemap)
+            {
+                var tilePosition = this.GetPosition(tile);
+
+                var crystalCount = (int)(tile.Info.Lightness * 2 * GlobalRandom.NextFloat(4, 5.5f));
+
+                for (int i = 0; i < crystalCount; i++)
+                {
+                    var dir = GameMath.Vector2FromRotation(GlobalRandom.Angle(), Settings.Game.Level.HexagonSide);
+                    var result = tile.Info.ShootRay(new Ray(Vector2.Zero, dir));
+                    var position = result.Hit
+                        ? result.Point * GlobalRandom.NextFloat(0.8f, 0.9f)
+                        : dir * GlobalRandom.NextFloat(0.3f, 0.8f);
+
+                    new Crystal(game, tilePosition + position);
+
+                }
+            }
+
         }
 
         private void createAmbient()

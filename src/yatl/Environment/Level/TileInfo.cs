@@ -41,7 +41,7 @@ namespace yatl.Environment.Level
             this.Floor = info.Floor;
 
             this.Lightness = info.Lightness;
-            this.AmbientColor = Color.White * info.Lightness;
+            this.AmbientColor = Color.White * (info.Lightness * 0.5f);
 
             this.Monsters = new List<Monster>();
         }

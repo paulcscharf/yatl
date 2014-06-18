@@ -47,6 +47,8 @@ namespace yatl.Environment
         public GameState()
         {
             this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
+            this.Level.GrowCrystals();
+
             this.Player = new Wisp(this, Vector2.Zero);
 
             this.Camera = new Camera(this.Player);

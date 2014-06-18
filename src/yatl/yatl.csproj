@@ -64,6 +64,7 @@
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
     <Compile Include="Environment\Hud\MusicSettingsHud.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
+    <Compile Include="Environment\Crystal.cs" />
     <Compile Include="Environment\Level\Generation\GeneratingTileInfo.cs" />
     <Compile Include="Environment\Level\Generation\Helpers.cs" />
     <Compile Include="Environment\Level\Generation\TriangulatedFloor.cs" />
