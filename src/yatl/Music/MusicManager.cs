@@ -37,6 +37,7 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
+        public bool Finishing = true;
 
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
@@ -93,8 +94,14 @@ namespace yatl
         void scheduleNextMotif()
         {
             if (this.currentMotif == null)
-                this.currentMotif = this.composition.Root;
+                this.currentMotif = this.composition.Motifs["light1a"];
             else {
+                if (this.Finishing) {
+                    var finish = this.currentMotif.Successors.Where(o => o.Name.Contains("finish")).ToList();
+                    if (finish.Count() != 0)
+                        this.currentMotif = finish[0];
+                }
+
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
                 var choiceSpace = this.currentMotif.Successors.Where(o => o.Name.Contains(tag));
                 if (choiceSpace.Count() == 0)
@@ -114,11 +121,11 @@ namespace yatl
 
             double lightness = this.Parameters.Lightness;
             double tension = 0;
-            if (lightness < 0.5)
+            if (this.currentMotif != null && !this.currentMotif.Name.Contains("light"))
                 tension = this.Parameters.Tension;
 
             MaxSpeed = 1 + 0.5 * tension;
-            MinSpeed = 0.3;// +0.2 * tension;
+            MinSpeed = 0.4;// +0.2 * tension;
             Volume = 0.5 + tension;
             this.ambient.Volume = (float)(0.25 * (tension + 1 - lightness));
 
@@ -134,12 +141,14 @@ namespace yatl
             }
 
             // Schedule soundevents
-            if (this.eventSchedule.Count == 0)
-                this.scheduleNextMotif();
-            else {
-                // If current motif ends in less than 1 seconds, schedule next motif
-                if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
+            if (this.currentMotif == null || this.currentMotif.Name != "finish") {
+                if (this.eventSchedule.Count == 0)
                     this.scheduleNextMotif();
+                else {
+                    // If current motif ends in less than 1 seconds, schedule next motif
+                    if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
+                        this.scheduleNextMotif();
+                }
             }
 
             AudioManager.Instance.Update((float)elapsedTime);

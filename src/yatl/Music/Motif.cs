@@ -74,6 +74,11 @@ namespace yatl
                     else
                         stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderBy(o => o.Frequency).ToList();
 
+                    for(int i = 1 ; i < stroke.Count;i++) {
+                        if (stroke[i].Frequency == stroke[i-1].Frequency)
+                            stroke[i] = Pitch.FromString("_");
+                    }
+
                     Console.WriteLine("stroke: " + string.Join(", ", stroke.Select(o => o.ToString())));
                     arpeggio.AddRange(stroke.Select(pitch => new Note(duration, pitch)));
                     // Hack to prevent double notes at the end of a stroke
