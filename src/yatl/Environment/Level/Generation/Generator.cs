@@ -124,6 +124,8 @@ namespace yatl.Environment.Level.Generation
             lightBuffer1.SetRandom();
             lightBuffer1[0, 0] = 0.5f;
             lightBuffer1.DilateTo(tempMap, lightBuffer2);
+            foreach (var tile in lightBuffer2.Where(t => t.Radius == this.Radius))
+                lightBuffer2[tile] = 1f;
             lightBuffer2.SmoothTo(tempMap, lightBuffer1);
             //lightBuffer1.SmoothTo(tempMap, lightBuffer2);
 
