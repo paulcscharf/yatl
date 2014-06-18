@@ -8,9 +8,12 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
- * Use higher octaves when light, either hardcoded or procedural
+ * Musicparameters should change smoothly
+ * Make transition to dark faster
+ * Make tension go up when reaching finish
+ * Wav files
  * Automatically add octaves to melody or base
- * "Opbouw" when staying in a subgraph
+ * Use higher octaves when light, either hardcoded or procedural
  * 
  * COULD HAVE
  * More instrument samples
@@ -18,6 +21,7 @@ using yatl.Utilities;
  * Broken chords
  * Don't randomly walk through graph, but consider form also
  * Automatic asyncopes
+ * "Opbouw" when staying in a subgraph
  * 
  * NOTES
  * We may want to have a seperate loop for generation, for the delay it causes in playing music
@@ -74,9 +78,9 @@ namespace yatl
             this.composition = new BranchingMusicalComposition(filename);
 
             this.ambient.IsLooped = true;
-            //this.ambient.Play();
+            this.ambient.Prepare();
 
-            this.Parameters = new MusicParameters(0.5f, 0.5f);
+            this.Parameters = new MusicParameters(1f, 0f);
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -117,17 +121,19 @@ namespace yatl
             Speed = Math.Min(MaxSpeed, Speed + args.ElapsedTimeInS * Acceleration);
             double elapsedTime = args.ElapsedTimeInS * Speed;
             this.time += elapsedTime;
-            //Speed = Math.Sin(time) * Math.Sin(time) + .5;
 
             double lightness = this.Parameters.Lightness;
             double tension = 0;
-            if (lightness > 0.5)
+            if (lightness < 0.5)
                 tension = this.Parameters.Tension;
 
-            MaxSpeed = 0.8 + 0.5 * tension;
-            MinSpeed = 0.7;// +0.2 * tension;
+            MaxSpeed = 1 + 0.5 * tension;
+            MinSpeed = 0.3;// +0.2 * tension;
             Volume = 0.5 + tension;
-            this.ambient.Volume = (float)(0.5 * tension * (1 - lightness));
+            this.ambient.Volume = (float)(0.25 * (tension + 1 - lightness));
+
+            if (this.ambient.Ready)
+                this.ambient.Play();
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {

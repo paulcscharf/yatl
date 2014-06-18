@@ -103,7 +103,6 @@ namespace yatl
         public override void Execute()
         {
             MusicManager.Speed = MusicManager.MinSpeed;
-            //MusicManager.Speed = MusicManager.MaxSpeed;
         }
     }
 }

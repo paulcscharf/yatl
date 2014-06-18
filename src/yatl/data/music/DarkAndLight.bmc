@@ -84,11 +84,12 @@ goto_light1b > light1a, dark1a: {
 3b2, 
 3d3,
 1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4,
-1.5_ .25b3 .25cis6 .25d6 .25e6 .25fis6 .25a6
+#1.5_ .25b3 .25cis6 .25d6 .25e6 .25fis6 .25a6
 }
 
-dark2a > dark2b_light              : { 3fis4, 3d3, 3b3, 3gis2 }
-dark2b_light > dark2c, goto_light2 : { 3e4, 3cis4, 3a3, 3a2 }
+dark2a > dark2b_light              : { 3fis4, 3d3, 3b3, 3g2 }
+dark2b_light > dark2c, goto_light2 : { 3fis4, 3d3, 3b3, 3gis2 }
+#dark2b_light > dark2c, goto_light2 : { 3e4, 3cis4, 3a3, 3a2 }
 dark2c > dark2d                    : { 3cis4, 3e3, 3ais3, 3g2 }
 dark2d > dark1a, dark3a, light1a   : { 3cis4, 3d3, 3fis3, 3b2 }
 
