@@ -14,13 +14,11 @@ namespace yatl
     {
         public MusicParameters MusicParameters;
         public Instrument Instrument;
-        public double Density;
 
-        public RenderParameters(MusicParameters musicParameters, Instrument instrument, double density)
+        public RenderParameters(MusicParameters musicParameters, Instrument instrument)
         {
             this.MusicParameters = musicParameters;
             this.Instrument = instrument;
-            this.Density = density;
         }
     }
 
@@ -151,7 +149,7 @@ namespace yatl
         public override IEnumerable<SoundEvent> Render(RenderParameters parameters, double start = 0)
         {
             // Number of voices depends on density
-            int number = Math.Max(1, (int)(this.Content.Length * parameters.Density));
+            int number = Math.Max(2, (int)Math.Round(this.Content.Length * parameters.MusicParameters.Tension));
 
             foreach (var child in this.Content.Take(number)) {
                 foreach (var soundEvent in child.Render(parameters, start)) {

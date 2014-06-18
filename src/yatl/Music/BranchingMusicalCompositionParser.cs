@@ -14,7 +14,7 @@ namespace yatl
         /// <summary>
         /// Parse entire stream and return root motif
         /// </summary>
-        public Motif ParseFile()
+        public Dictionary<string, Motif> ParseFile()
         {
             // Parse motifs into a dictionary
             var motifs = new Dictionary<string, Motif>();
@@ -48,7 +48,7 @@ namespace yatl
                 Console.WriteLine(motif.ToString());
             }
 
-            return root;
+            return motifs;
         }
 
         /// <summary>

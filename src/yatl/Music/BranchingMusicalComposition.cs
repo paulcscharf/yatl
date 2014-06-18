@@ -10,14 +10,14 @@ namespace yatl
 {
     class BranchingMusicalComposition
     {
-        public readonly Motif Root;
+        public readonly Dictionary<string, Motif> Motifs = new Dictionary<string, Motif>();
 
         public BranchingMusicalComposition(string filename)
         {
             // Parse file and return a composition
             using (var reader = new StreamReader(filename)) {
                 var parser = new BranchingMusicalCompositionParser(reader);
-                this.Root = parser.ParseFile();
+                this.Motifs = parser.ParseFile();
             }
             Console.WriteLine("Succesfully parsed " + filename);
         }

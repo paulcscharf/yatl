@@ -8,9 +8,11 @@ using yatl.Utilities;
 
 /* 
  * SHOULD HAVE
+ * Musicparameters should change smoothly
+ * Make transition to dark faster
+ * Make tension go up when reaching finish
+ * Wav files
  * Use higher octaves when light, either hardcoded or procedural
- * Automatically add octaves to melody or base
- * "Opbouw" when staying in a subgraph
  * 
  * COULD HAVE
  * More instrument samples
@@ -18,19 +20,11 @@ using yatl.Utilities;
  * Broken chords
  * Don't randomly walk through graph, but consider form also
  * Automatic asyncopes
+ * "Opbouw" when staying in a subgraph
  * 
  * NOTES
- * We may want to have a seperate loop for generation, for the delay it causes in playing music
  * Why not pass MusicParameters to Update method?
  * Implementing looping of buffers for ASR sounds is not reasonably doable
- * 
- * IDEAS
- * arpeggio algorithm: generate an arpeggio set from octaves, sort by frequency, schedule them according to some pattern
- * need to specify octaves, arpeggio density and arpeggio pattern (in terms of up/down, i.e. a bitstring)
- * 
- * rubato algorithm: start of measure must be slow and loud, changing linearly till threshold
- * At the end, fallback abruptly just before the next motif
- * need to specify volume and speed interval
  * 
  * */
 
@@ -43,10 +37,13 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
+        public bool Finishing = true;
 
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
         public static double Speed = 1;
+        public static double MaxSpeed = 1;
+        public static double MinSpeed = 1;
         public static double Acceleration = 1;
         public static double Volume = 1;
 
@@ -72,9 +69,9 @@ namespace yatl
             this.composition = new BranchingMusicalComposition(filename);
 
             this.ambient.IsLooped = true;
-            //this.ambient.Play();
+            this.ambient.Prepare();
 
-            this.Parameters = new MusicParameters(0.5f, 0.5f);
+            this.Parameters = new MusicParameters(1f, 0f);
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -97,8 +94,14 @@ namespace yatl
         void scheduleNextMotif()
         {
             if (this.currentMotif == null)
-                this.currentMotif = this.composition.Root;
+                this.currentMotif = this.composition.Motifs["light1a"];
             else {
+                if (this.Finishing) {
+                    var finish = this.currentMotif.Successors.Where(o => o.Name.Contains("finish")).ToList();
+                    if (finish.Count() != 0)
+                        this.currentMotif = finish[0];
+                }
+
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
                 var choiceSpace = this.currentMotif.Successors.Where(o => o.Name.Contains(tag));
                 if (choiceSpace.Count() == 0)
@@ -106,24 +109,28 @@ namespace yatl
                 this.currentMotif = choiceSpace.RandomElement();
             }
 
-            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano, 1);
-            parameters.Density = 1;
+            RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano);
             this.Schedule(this.currentMotif.Render(parameters));
         }
 
         public void Update(UpdateEventArgs args)
         {
-            Speed = Math.Min(1.2, Speed + args.ElapsedTimeInS * Acceleration);
-            Volume = 2 * (1.4 - Speed);
+            Speed = Math.Min(MaxSpeed, Speed + args.ElapsedTimeInS * Acceleration);
             double elapsedTime = args.ElapsedTimeInS * Speed;
             this.time += elapsedTime;
-            //Speed = Math.Sin(time) * Math.Sin(time) + .5;
 
-            double tension = this.Parameters.Tension;
             double lightness = this.Parameters.Lightness;
+            double tension = 0;
+            if (this.currentMotif != null && !this.currentMotif.Name.Contains("light"))
+                tension = this.Parameters.Tension;
 
+            MaxSpeed = 1 + 0.5 * tension;
+            MinSpeed = 0.4;// +0.2 * tension;
+            Volume = 0.5 + tension;
+            this.ambient.Volume = (float)(0.25 * (tension + 1 - lightness));
 
-            this.ambient.Volume = (float)(.5 * tension * (1 - lightness));
+            //if (this.ambient.Ready)
+                //this.ambient.Play();
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
@@ -134,12 +141,14 @@ namespace yatl
             }
 
             // Schedule soundevents
-            if (this.eventSchedule.Count == 0)
-                this.scheduleNextMotif();
-            else {
-                // If current motif ends in less than 1 seconds, schedule next motif
-                if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
+            if (this.currentMotif == null || this.currentMotif.Name != "finish") {
+                if (this.eventSchedule.Count == 0)
                     this.scheduleNextMotif();
+                else {
+                    // If current motif ends in less than 1 seconds, schedule next motif
+                    if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
+                        this.scheduleNextMotif();
+                }
             }
 
             AudioManager.Instance.Update((float)elapsedTime);
