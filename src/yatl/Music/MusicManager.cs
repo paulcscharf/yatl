@@ -37,7 +37,7 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
-        public bool Finishing = true;
+        public bool Finishing = false;
 
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
@@ -121,7 +121,7 @@ namespace yatl
 
             double lightness = this.Parameters.Lightness;
             double tension = 0;
-            if (this.currentMotif != null && !this.currentMotif.Name.Contains("light"))
+            if (this.currentMotif != null && (this.currentMotif.Name.Contains("dark") || this.currentMotif.Name.Contains("finish")))
                 tension = this.Parameters.Tension;
 
             MaxSpeed = 1 + 0.5 * tension;

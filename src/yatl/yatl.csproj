@@ -145,25 +145,25 @@
     <Content Include="data\music\ambient1.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb1.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb1.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb2.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb2.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb3.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb3.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb4.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb4.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb5.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb5.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb6.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb6.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="data\music\piano\Piano.mf.Gb7.ogg">
+    <Content Include="data\music\piano\Piano.mf.Gb7.wav">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\music\SlowstringsC4.ogg">
