@@ -46,6 +46,7 @@ namespace yatl
         public static double MinSpeed = 1;
         public static double Acceleration = 1;
         public static double Volume = 1;
+        public static double OutOfTune = 5;
 
         public Instrument Piano;
         public Instrument Violin;
@@ -123,6 +124,8 @@ namespace yatl
             double tension = 0;
             if (this.currentMotif != null && (this.currentMotif.Name.Contains("dark") || this.currentMotif.Name.Contains("win")))
                 tension = this.Parameters.Tension;
+
+            OutOfTune = tension * 5;
 
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;

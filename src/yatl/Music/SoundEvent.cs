@@ -51,7 +51,8 @@ namespace yatl
 
         public override void Execute()
         {
-            this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency);
+            double outOfTune = this.Frequency > 0 ? MusicManager.OutOfTune : 0;
+            this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency + outOfTune);
             this.Sound.Play();
         }
 
