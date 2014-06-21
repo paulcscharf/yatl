@@ -37,7 +37,7 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
-        public bool Winning = true;
+        public bool Winning = false;
 
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
@@ -46,7 +46,7 @@ namespace yatl
         public static double MinSpeed = 1;
         public static double Acceleration = 1;
         public static double Volume = 1;
-        public static double OutOfTune = 5;
+        public static double OutOfTune = 0;
 
         public Instrument Piano;
         public Instrument Violin;
@@ -125,7 +125,7 @@ namespace yatl
             if (this.currentMotif != null && (this.currentMotif.Name.Contains("dark") || this.currentMotif.Name.Contains("win")))
                 tension = this.Parameters.Tension;
 
-            OutOfTune = tension * 5;
+            //OutOfTune = tension * 5;
 
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;

@@ -37,60 +37,69 @@ namespace yatl
                 yield return new LiftSustain(start); // Lift sustain before each chord
 
                 // Gather arpeggio set
-                var arpeggio = new List<Note>();
                 var arpeggioSpace = new List<Pitch>();
                 foreach (var voice in this.voices.Content) {
                     foreach (var pitch in voice.GetPosition(start).Select(note => note.Pitch)) {
-                        arpeggioSpace.Add(pitch);
-                        arpeggioSpace.Add(pitch.NextOctave());
-                        arpeggioSpace.Add(pitch.PreviousOctave());
+                        if (pitch.Frequency > 0) {
+                            arpeggioSpace.Add(pitch);
+                            arpeggioSpace.Add(pitch.NextOctave());
+                            arpeggioSpace.Add(pitch.PreviousOctave());
+                        }
                     }
                 }
+                arpeggioSpace = arpeggioSpace.OrderBy(o => o.Frequency).ToList();
+
+                int density = (int)Math.Round(2 * parameters.MusicParameters.Tension + 1);
+
+                IEnumerable<int> pattern;
+                int tonesPerChord;
+                if (density == 1) {
+                    pattern = new int[] { 1 };
+                    tonesPerChord = 3;
+                }
+                else if (density == 2) {
+                    pattern = new int[] { 1, -1 };
+                    tonesPerChord = 6;
+                }
+                else {
+                    pattern = new int[] { 1, -1, 1 };
+                    tonesPerChord = 12;
+                }
+                int tonesPerStroke = tonesPerChord / pattern.Count();
+                double duration = basenote.Duration / (double)(tonesPerChord);
+
+                Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o => o.ToString())));
+                Console.WriteLine("duration: " + duration.ToString());
 
                 // Select tones
-                int density = (int)Math.Round(2 * parameters.MusicParameters.Tension + 1);
-                Console.WriteLine("density: " + density.ToString());
+                IEnumerable<Note> arpeggio = this.SelectArpeggioSequence(arpeggioSpace, pattern, tonesPerStroke, duration);
 
-                IEnumerable<int> pattern;// = Enumerable.Range(0, density).Select(i => GlobalRandom.Next(2));
-                if (density == 1)
-                    pattern = new int[] { 1, 1 };
-                else if (density == 2)
-                    pattern = new int[] { 1, 0 };
-                else {
-                    pattern = new int[] { 1, 0, 1 };
-                    density = 2;
-                }
-                Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o => o.ToString())));
-
-                foreach (var direction in pattern) {
-                    //int numberOfTones = Enumerable.Range(2, 2).RandomElement() * density;
-                    int numberOfTones = 3 * density;
-                    double duration = basenote.Duration / (double)(numberOfTones * pattern.Count());
-                    Console.WriteLine("duration: " + duration.ToString());
-
-                    List<Pitch> stroke;
-                    if (direction == 0)
-                        stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderByDescending(o => o.Frequency).ToList();
-                    else
-                        stroke = arpeggioSpace.SelectRandom(numberOfTones).OrderBy(o => o.Frequency).ToList();
-
-                    for(int i = 1 ; i < stroke.Count;i++) {
-                        if (stroke[i].Frequency == stroke[i-1].Frequency)
-                            stroke[i] = Pitch.FromString("_");
-                    }
-
-                    Console.WriteLine("stroke: " + string.Join(", ", stroke.Select(o => o.ToString())));
-                    arpeggio.AddRange(stroke.Select(pitch => new Note(duration, pitch)));
-                    // Hack to prevent double notes at the end of a stroke
-                    arpeggioSpace.Remove(stroke.Last());
-                    //arpeggioSpace.Add(stroke.First());
-                }
-
+                // Render and yield arpeggio
                 foreach (var e in (new Serial(arpeggio.ToArray())).Render(parameters, start))
                     yield return e;
 
                 start = end;
                 yield return new StartRubato(start - 0.1); // Some articulation just before the next chord
+            }
+        }
+
+        public IEnumerable<Note> SelectArpeggioSequence(List<Pitch> arpeggioSpace, IEnumerable<int> pattern, int tonesPerStroke, double duration)
+        {
+            int index = 0;
+
+            foreach (var direction in pattern) {
+                for (int i = 0; i < tonesPerStroke; i++) {
+                    yield return new Note(duration, arpeggioSpace[index]);
+                    index += direction;
+
+                    // With a certain probability, skip a tone
+                    int tonesToGenerate = tonesPerStroke - (i + 1);
+                    int remainingArpeggioSpace = direction == 1 ? arpeggioSpace.Count - index : index;
+                    int slack = remainingArpeggioSpace - tonesToGenerate;
+                    double pSkip = (double)slack / (double)remainingArpeggioSpace;
+                    if (MusicManager.Random.NextDouble() < pSkip)
+                        index += direction;
+                }
             }
         }
 
