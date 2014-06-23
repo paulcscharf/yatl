@@ -173,6 +173,8 @@ namespace yatl
             List<Func<bool>> events;
             lock (outOfTuneEventListLock)
             {
+                if (outOfTuneEvents.Count == 0)
+                    return false;
                 events = outOfTuneEvents;
                 outOfTuneEvents = new List<Func<bool>>();
             }
