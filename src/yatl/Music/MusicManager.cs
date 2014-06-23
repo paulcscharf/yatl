@@ -97,10 +97,15 @@ namespace yatl
             if (this.currentMotif == null)
                 this.currentMotif = this.composition.Motifs["light1a"];
             else {
-                if (this.Winning) {
+                if (this.Parameters.GameOverState == GameState.GameOverState.Won) {
                     var win = this.currentMotif.Successors.Where(o => o.Name.Contains("win")).ToList();
                     if (win.Count() != 0)
                         this.currentMotif = win[0];
+                }
+                else if (this.Parameters.GameOverState == GameState.GameOverState.Lost) {
+                    var lose = this.currentMotif.Successors.Where(o => o.Name.Contains("lose")).ToList();
+                    if (lose.Count() != 0)
+                        this.currentMotif = lose[0];
                 }
 
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
@@ -122,11 +127,14 @@ namespace yatl
 
             double lightness = this.Parameters.Lightness;
             double tension = 0;
-            if (this.currentMotif != null && (this.currentMotif.Name.Contains("dark") || this.currentMotif.Name.Contains("win")))
+            if (this.currentMotif != null && this.currentMotif.Name.Contains("dark"))
                 tension = this.Parameters.Tension;
+            if (this.Parameters.GameOverState == GameState.GameOverState.Won)
+                tension = 1;
 
             //OutOfTune = tension * 5;
-            OutOfTune = (1 - this.Parameters.Health) * 5;
+            //OutOfTune = (1 - this.Parameters.Health) * 5;
+            OutOfTune = this.Parameters.Health == 1 ? 0 : 3;
 
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;
@@ -145,7 +153,7 @@ namespace yatl
             }
 
             // Schedule soundevents
-            if (this.currentMotif == null || this.currentMotif.Name != "win") {
+            if (this.currentMotif == null || (this.currentMotif.Name != "win" && this.currentMotif.Name != "lose")) {
                 if (this.eventSchedule.Count == 0)
                     this.scheduleNextMotif();
                 else {
