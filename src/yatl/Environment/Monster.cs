@@ -18,6 +18,8 @@ namespace yatl.Environment
         private float losePlayerTime;
 
         private float nextHitTime;
+        private bool waitingToBite;
+        private bool biteNextFrame;
 
         private float nextBlinkToggle;
         private bool blinking;
@@ -141,10 +143,29 @@ namespace yatl.Environment
             #endregion
 
             #region bite
-            if (this.nextHitTime <= this.game.Time && toPlayerDSquared < Settings.Game.Enemy.HitDistanceSquared)
+            if (this.waitingToBite)
             {
-                this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
-                this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
+                if (this.biteNextFrame)
+                {
+                    this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
+                    this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
+                    this.biteNextFrame = false;
+                    this.waitingToBite = false;
+                }
+                else
+                {
+                    if (toPlayerDSquared > Settings.Game.Enemy.HitDistanceSquared)
+                        this.waitingToBite = false;
+                }
+            }
+
+            if (!this.waitingToBite &&
+                this.nextHitTime <= this.game.Time &&
+                toPlayerDSquared < Settings.Game.Enemy.HitDistanceSquared)
+            {
+                //this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
+                //this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
+                this.scheduleBite();
             }
             #endregion
 
@@ -173,6 +194,23 @@ namespace yatl.Environment
             }
 
             base.Update(e);
+        }
+
+        private void scheduleBite()
+        {
+            this.waitingToBite = true;
+            this.biteNextFrame = false;
+            MusicManager. AddOutOfTuneEvent(
+                this.biteAsync
+                );
+        }
+
+        private bool biteAsync()
+        {
+            if (!this.waitingToBite)
+                return false;
+            this.biteNextFrame = true;
+            return true;
         }
 
         protected override void setTile(Tile<TileInfo> tile)

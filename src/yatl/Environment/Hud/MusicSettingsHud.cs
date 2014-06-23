@@ -20,19 +20,15 @@ namespace yatl.Environment.Hud
         public MusicSettingsHud(GameState game)
         {
             this.game = game;
-            this.lightnessBar = new Scrollbar(new Vector3(-16, 2, 0), 0.6f, this.change,
+            this.lightnessBar = new Scrollbar(new Vector3(-16, 2, 0), 0.6f, f => { },
                 KeyboardKeyAction.FromKey(Key.Number1), KeyboardKeyAction.FromKey(Key.Number2));
 
-            this.tensionBar = new Scrollbar(new Vector3(-16, 4.5f, 0), 0.8f, this.change,
+            this.tensionBar = new Scrollbar(new Vector3(-16, 4.5f, 0), 0.8f, f => { },
                 KeyboardKeyAction.FromKey(Key.Number3), KeyboardKeyAction.FromKey(Key.Number4));
 
-            this.healthBar = new Scrollbar(new Vector3(-16, 7f, 0), 0.8f, this.change,
+            this.healthBar = new Scrollbar(new Vector3(-16, 7f, 0), 0.8f, f => { },
                 KeyboardKeyAction.FromKey(Key.Number5), KeyboardKeyAction.FromKey(Key.Number6));
 
-        }
-
-        private void change(float f)
-        {
         }
 
         public void Update(GameUpdateEventArgs e)
@@ -46,6 +42,10 @@ namespace yatl.Environment.Hud
             var chasingCount = this.game.ChasingEnemies.Count;
             var nearCount = this.game.MonstersCloseToPlayer;
             var tension = 1 - (float)Math.Pow(1.2, -nearCount) * (float)Math.Pow(1.5, -chasingCount);
+
+            if (this.game.State == GameState.GameOverState.Won)
+                tension = 1;
+
             this.tensionBar.Value = tension;
 
             this.healthBar.Value = this.game.Player.HealthPercentage;

@@ -156,5 +156,27 @@ namespace yatl
 
             AudioManager.Instance.Update((float)elapsedTime);
         }
+
+        private static readonly object outOfTuneEventListLock = new object();
+        private static List<Func<bool>> outOfTuneEvents = new List<Func<bool>>(); 
+
+        public static void AddOutOfTuneEvent(Func<bool> @event)
+        {
+            lock (outOfTuneEventListLock)
+            {
+                outOfTuneEvents.Add(@event);
+            }
+        }
+
+        private bool tryPlayOutOfTune()
+        {
+            List<Func<bool>> events;
+            lock (outOfTuneEventListLock)
+            {
+                events = outOfTuneEvents;
+                outOfTuneEvents = new List<Func<bool>>();
+            }
+            return events.Aggregate(false, (current, e) => current || e());
+        }
     }
 }
