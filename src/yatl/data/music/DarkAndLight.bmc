@@ -119,10 +119,15 @@ dark3c > dark1a, dark3a, light1a, win, lose : {
 3b3      3a3   3ais3       #3b3 3b3
 }
 
-win > win : {
-2b4 cis5 2a4 d3 2g4 a4 3dis4   2g4 a4 2ais4 a4 3g4 3g4 3f4   3e4 3d4,
-3g2      3d2    3e2    3b2     3e2    3g2      3g2 3g2 3ais2 3c2 3d2,
-3d3      3fis3  3b3    3fis3   3b3    3d3      3c3 3b3 3d3   3g3 3fis3,
-2b5 cis6 2a5 d4 2g5 a5 3dis5   2g5 a5 2ais5 a5 3g5 3g5 3f5   3e5 3d5
+win > light1a : {
+2b4 cis5 2a4 d3 2g4 a4 3d4   3f4   3e4 3d4,
+3g2      3d2    3e2    3b2     3ais2 3c2 3d2,
+3d3      3fis3  3b3    3fis3   3d3   3g3 3fis3,
+2b5 cis6 2a5 d4 2g5 a5 3d5   3f5   3e5 3d5
 }
-lose > lose : { 3fis4, 3b2, 3ais3, 3d3 }
+lose > light1a : { 3fis4 3_, 3b2 3_, 3ais3 3_, 3d3 3_ }
+
+#2g4 a4 2ais4 a4 3g4 3g4 
+#3e2    3g2      3g2 3g2 
+#3b3    3d3      3c3 3b3 
+#2g5 a5 2ais5 a5 3g5 3g5 

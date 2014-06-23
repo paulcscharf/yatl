@@ -99,13 +99,17 @@ namespace yatl
             else {
                 if (this.Parameters.GameOverState == GameState.GameOverState.Won) {
                     var win = this.currentMotif.Successors.Where(o => o.Name.Contains("win")).ToList();
-                    if (win.Count() != 0)
+                    if (win.Count() != 0) {
                         this.currentMotif = win[0];
+                        goto Rendering;
+                    }
                 }
                 else if (this.Parameters.GameOverState == GameState.GameOverState.Lost) {
                     var lose = this.currentMotif.Successors.Where(o => o.Name.Contains("lose")).ToList();
-                    if (lose.Count() != 0)
+                    if (lose.Count() != 0) {
                         this.currentMotif = lose[0];
+                        goto Rendering;
+                    }
                 }
 
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
@@ -114,7 +118,7 @@ namespace yatl
                     choiceSpace = this.currentMotif.Successors;
                 this.currentMotif = choiceSpace.RandomElement();
             }
-
+        Rendering:
             RenderParameters parameters = new RenderParameters(this.Parameters, this.Piano);
             this.Schedule(this.currentMotif.Render(parameters));
         }
@@ -142,7 +146,7 @@ namespace yatl
             this.ambient.Volume = (float)(0.25 * (tension + 1 - lightness));
 
             //if (this.ambient.Ready)
-                //this.ambient.Play();
+            //this.ambient.Play();
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
@@ -153,15 +157,9 @@ namespace yatl
             }
 
             // Schedule soundevents
-            if (this.currentMotif == null || (this.currentMotif.Name != "win" && this.currentMotif.Name != "lose")) {
-                if (this.eventSchedule.Count == 0)
-                    this.scheduleNextMotif();
-                else {
-                    // If current motif ends in less than 1 seconds, schedule next motif
-                    if (this.eventSchedule.Last.Value.StartTime - 1 < this.time)
-                        this.scheduleNextMotif();
-                }
-            }
+            // If current motif ends in less than 1 seconds, schedule next motif
+            if (this.eventSchedule.Count == 0 || this.eventSchedule.Last.Value.StartTime - 1 < this.time)
+                this.scheduleNextMotif();
 
             AudioManager.Instance.Update((float)elapsedTime);
         }
