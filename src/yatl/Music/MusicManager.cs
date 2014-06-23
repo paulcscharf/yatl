@@ -126,6 +126,7 @@ namespace yatl
                 tension = this.Parameters.Tension;
 
             //OutOfTune = tension * 5;
+            OutOfTune = (1 - this.Parameters.Health) * 5;
 
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;
