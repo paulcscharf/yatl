@@ -81,7 +81,11 @@ namespace yatl.Environment
 
             sprites.PointLight.Draw(this.position.WithZ(1.5f), Color.LightYellow, 1f, 5 + 10 * light);
 
-            base.Draw(sprites);
+
+            var blink = sprites.Blink;
+
+            blink.Color = Color.LightYellow.WithAlpha(0.5f) * 0.3f;
+            blink.DrawSprite(this.position.WithZ(1.5f), 0, 1 + light * 2);
         }
     }
 }
