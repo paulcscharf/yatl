@@ -19,6 +19,9 @@ namespace yatl.Environment
 
         private float nextHitTime;
 
+        private float nextBlinkToggle;
+        private bool blinking;
+
         public Monster(GameState game, Vector2 position)
             : base(game, position, Settings.Game.Enemy.FrictionCoefficient)
         {
@@ -30,6 +33,7 @@ namespace yatl.Environment
             var toPlayer = this.game.Player.Position - this.position;
             var toPlayerDSquared = toPlayer.LengthSquared;
 
+            #region check player visibility
             if (this.nextVisibleCheck == 0)
                 this.nextVisibleCheck = this.game.Time +
                     GlobalRandom.NextFloat(Settings.Game.Enemy.MinScanInterval, Settings.Game.Enemy.MaxScanInterval);
@@ -71,7 +75,9 @@ namespace yatl.Environment
                 this.game.ChasingEnemies.Remove(this);
                 this.chasing = false;
             }
+            #endregion
 
+            #region chase
             if (this.chasing)
             {
                 var toKnownPlayerPosition = this.lastKnownPlayerPosition - this.position;
@@ -79,7 +85,9 @@ namespace yatl.Environment
                     * Settings.Game.Enemy.Acceleration * e.ElapsedTimeF;
 
             }
+            #endregion
 
+            #region monster-monster collision
             foreach (var monster in this.Tile.Info.Monsters)
             {
                 if(monster == this)
@@ -106,7 +114,9 @@ namespace yatl.Environment
                     }
                 }
             }
+            #endregion
 
+            #region fear of light
             foreach (var tile in this.Tile.Info.OpenSides.Enumerate()
                 .Select(d => this.Tile.Neighbour(d)).Append(this.Tile))
             {
@@ -128,12 +138,34 @@ namespace yatl.Environment
                     }
                 }
             }
+            #endregion
 
+            #region bite
             if (this.nextHitTime <= this.game.Time && toPlayerDSquared < Settings.Game.Enemy.HitDistanceSquared)
             {
                 this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
                 this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
             }
+            #endregion
+
+            #region blinking
+            if (this.nextBlinkToggle < this.game.Time)
+            {
+                this.blinking = !this.blinking;
+                if (this.blinking)
+                {
+                    this.nextBlinkToggle = this.game.Time +
+                        (GlobalRandom.NextBool(0.1f) ? GlobalRandom.NextFloat(0.1f, 1f) :
+                        GlobalRandom.NextFloat(0.1f, 0.2f));
+                }
+                else
+                {
+                    this.nextBlinkToggle = this.game.Time + 
+                        (GlobalRandom.NextBool(0.2f) ? GlobalRandom.NextFloat(0.2f, 0.4f) : 
+                        GlobalRandom.NextFloat(1, 10));
+                }
+            }
+            #endregion
 
             if (toPlayerDSquared < Settings.Game.Enemy.ContributeToTensionDistanceSquared)
             {
@@ -154,8 +186,14 @@ namespace yatl.Environment
 
         public override void Draw(SpriteManager sprites)
         {
-            base.Draw(sprites);
+            //base.Draw(sprites);
 
+            if (!this.blinking)
+            {
+                var eyes = sprites.Eyes;
+                eyes.Color = Color.Red;
+                eyes.DrawSprite(this.position.WithZ(1), 0, 1.2f);
+            }
 
             if (this.game.DrawDebug && this.chasing)
             {

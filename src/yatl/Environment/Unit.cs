@@ -119,7 +119,7 @@ namespace yatl.Environment
         public override void Draw(SpriteManager sprites)
         {
             sprites.Bloob.Color = Color.DeepPink;
-            sprites.Bloob.DrawSprite(this.position, 0, 1);
+            sprites.Bloob.DrawSprite(this.position, 0, 2);
         }
     }
 }

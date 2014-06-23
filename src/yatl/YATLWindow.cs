@@ -20,6 +20,7 @@ namespace yatl
         private GameState gamestate;
         private MusicManager musicManager;
         private Thread musicThread;
+        private WindowState previousWindowState = WindowState.Fullscreen;
 
         public YATLWindow(int glMajor, int glMinor)
             : base(Settings.General.DefaultWindowWidth,
@@ -85,6 +86,14 @@ namespace yatl
             if(InputManager.IsKeyHit(Key.F12))
                 this.MakeScreenshot();
 
+            if (InputManager.IsKeyHit(Key.F11))
+            {
+                var tempState = this.previousWindowState;
+                this.previousWindowState = this.WindowState;
+                this.WindowState = tempState;
+
+            }
+            
 
             if (InputManager.IsKeyHit(Key.F5))
                 this.restartGame();

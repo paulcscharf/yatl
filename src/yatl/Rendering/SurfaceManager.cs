@@ -39,7 +39,9 @@ namespace yatl.Rendering
 
         #region Sprites
 
-        public SpriteSet<UVColorVertexData> Particles { get; private set; }
+        public SpriteSet<SimpleSpriteVertexData> Sprites { get; private set; }
+
+        public SpriteSet<SimpleSpriteVertexData> Particles { get; private set; }
 
         public SpriteSet<UVColorVertexData> Hexagons { get; private set; }
 
@@ -80,6 +82,9 @@ namespace yatl.Rendering
 
             this.initFonts(shaders);
             this.initParticles(shaders);
+
+            this.initSprites(shaders);
+
             this.initHexagons(shaders);
             this.initHud(shaders);
 
@@ -127,7 +132,12 @@ namespace yatl.Rendering
 
         private void initParticles(ShaderManager shaders)
         {
-            this.Particles = this.loadGameSpriteSet(shaders, "particles");
+            this.Particles = this.load3DGameSpriteSet(shaders, "particles");
+        }
+
+        private void initSprites(ShaderManager shaders)
+        {
+            this.Sprites = this.load3DGameSpriteSet(shaders, "sprites");
         }
 
         private void initHexagons(ShaderManager shaders)
@@ -171,6 +181,13 @@ namespace yatl.Rendering
             return SpriteSet<UVColorVertexData>.FromJsonFile(
                 "data/gfx/sprites/" + filename + ".json", s => new Sprite2DGeometry(s),
                 shaders.UVColor, this.gameSpriteSettings, SurfaceManager.premultiplyTexture, true);
+        }
+
+        private SpriteSet<SimpleSpriteVertexData> load3DGameSpriteSet(ShaderManager shaders, string filename)
+        {
+            return SpriteSet<SimpleSpriteVertexData>.FromJsonFile(
+                "data/gfx/sprites/" + filename + ".json", s => new Sprite3DGeometry(s),
+                shaders.Sprite3D, this.gameSpriteSettings, SurfaceManager.premultiplyTexture, true);
         }
 
         private void makeGameProjectionMatrix()

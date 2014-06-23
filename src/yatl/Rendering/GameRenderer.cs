@@ -70,7 +70,7 @@ namespace yatl.Rendering
 
             #region Set and clear deferred buffer
 
-            this.deferredBuffer.Bind();
+            this.deferredBuffer.BindDeferred();
 
             GL.Viewport(0, 0, this.scissorW, this.scissorH);
             GL.ClearColor(0, 0, 0, 0);
@@ -132,6 +132,8 @@ namespace yatl.Rendering
             #region Draw particles
 
             this.surfaces.Particles.Surface.Render();
+
+            this.surfaces.Sprites.Surface.Render();
             
             #endregion
 

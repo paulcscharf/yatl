@@ -1,0 +1,9 @@
+{
+	"textures" : [
+		{ "name" : "diffuseTexture", "filename" : "sprites.png" }
+	],
+	"uvSize" : [1, 1],
+	"sprites" : [
+		{ "name" : "eyes", "uv" : [ {"lt" : [0, 0], "size" : [1, 1]} ] },
+	]
+}

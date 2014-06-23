@@ -15,12 +15,14 @@ namespace yatl.Rendering
 
         #region Particles
 
-        public Sprite2DGeometry Bloob { get; private set; }
-        public Sprite2DGeometry Blink { get; private set; }
-        public Sprite2DGeometry Splash { get; private set; }
-        public Sprite2DGeometry Fadering { get; private set; }
-        public Sprite2DGeometry Sparkly { get; private set; }
-        public Sprite2DGeometry Orb { get; private set; }
+        public Sprite3DGeometry Eyes { get; private set; }
+
+        public Sprite3DGeometry Bloob { get; private set; }
+        public Sprite3DGeometry Blink { get; private set; }
+        public Sprite3DGeometry Splash { get; private set; }
+        public Sprite3DGeometry Fadering { get; private set; }
+        public Sprite3DGeometry Sparkly { get; private set; }
+        public Sprite3DGeometry Orb { get; private set; }
 
         #endregion
 
@@ -45,12 +47,14 @@ namespace yatl.Rendering
             this.GameText = new FontGeometry(surfaces.GameFontSurface, surfaces.Font)
             {SizeCoefficient = new Vector2(1, -1)};
 
-            this.Bloob = (Sprite2DGeometry) surfaces.Particles["bloob"].Geometry;
-            this.Blink = (Sprite2DGeometry) surfaces.Particles["blink"].Geometry;
-            this.Splash = (Sprite2DGeometry) surfaces.Particles["splash"].Geometry;
-            this.Fadering = (Sprite2DGeometry) surfaces.Particles["fadering"].Geometry;
-            this.Sparkly = (Sprite2DGeometry) surfaces.Particles["sparkly"].Geometry;
-            this.Orb = (Sprite2DGeometry) surfaces.Particles["orb"].Geometry;
+            this.Bloob = (Sprite3DGeometry)surfaces.Particles["bloob"].Geometry;
+            this.Blink = (Sprite3DGeometry)surfaces.Particles["blink"].Geometry;
+            this.Splash = (Sprite3DGeometry)surfaces.Particles["splash"].Geometry;
+            this.Fadering = (Sprite3DGeometry)surfaces.Particles["fadering"].Geometry;
+            this.Sparkly = (Sprite3DGeometry)surfaces.Particles["sparkly"].Geometry;
+            this.Orb = (Sprite3DGeometry)surfaces.Particles["orb"].Geometry;
+
+            this.Eyes = (Sprite3DGeometry)surfaces.Sprites["eyes"].Geometry;
 
             this.FilledHexagon = (Sprite2DGeometry)surfaces.Hexagons["filled"].Geometry;
             this.EmptyHexagon = (Sprite2DGeometry)surfaces.Hexagons["empty"].Geometry;

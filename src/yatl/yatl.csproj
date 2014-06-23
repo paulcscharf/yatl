@@ -142,6 +142,9 @@
     <Content Include="data\gfx\sprites\particles.png">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="data\gfx\sprites\sprites.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="data\music\ambient1.ogg">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -233,6 +236,9 @@
     <None Include="data\gfx\sprites\particles.json">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <Content Include="data\gfx\sprites\sprites.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <None Include="data\music\DarkAndLight.bmc">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
