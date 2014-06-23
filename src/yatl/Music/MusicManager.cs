@@ -10,7 +10,7 @@ using yatl.Utilities;
  * SHOULD HAVE
  * Musicparameters should change smoothly
  * Make transition to dark faster
- * Make tension go up when reaching finish
+ * Make tension go up when reaching win
  * Wav files
  * Use higher octaves when light, either hardcoded or procedural
  * 
@@ -37,7 +37,7 @@ namespace yatl
         LinkedList<SoundEvent> eventSchedule = new LinkedList<SoundEvent>();
         BranchingMusicalComposition composition;
         Motif currentMotif;
-        public bool Finishing = true;
+        public bool Winning = false;
 
         public static Random Random = new Random();
         public static List<Sound> SustainSet = new List<Sound>();
@@ -46,6 +46,7 @@ namespace yatl
         public static double MinSpeed = 1;
         public static double Acceleration = 1;
         public static double Volume = 1;
+        public static double OutOfTune = 0;
 
         public Instrument Piano;
         public Instrument Violin;
@@ -96,10 +97,10 @@ namespace yatl
             if (this.currentMotif == null)
                 this.currentMotif = this.composition.Motifs["light1a"];
             else {
-                if (this.Finishing) {
-                    var finish = this.currentMotif.Successors.Where(o => o.Name.Contains("finish")).ToList();
-                    if (finish.Count() != 0)
-                        this.currentMotif = finish[0];
+                if (this.Winning) {
+                    var win = this.currentMotif.Successors.Where(o => o.Name.Contains("win")).ToList();
+                    if (win.Count() != 0)
+                        this.currentMotif = win[0];
                 }
 
                 string tag = this.Parameters.Lightness > .5 ? "light" : "dark";
@@ -121,8 +122,10 @@ namespace yatl
 
             double lightness = this.Parameters.Lightness;
             double tension = 0;
-            if (this.currentMotif != null && !this.currentMotif.Name.Contains("light"))
+            if (this.currentMotif != null && (this.currentMotif.Name.Contains("dark") || this.currentMotif.Name.Contains("win")))
                 tension = this.Parameters.Tension;
+
+            //OutOfTune = tension * 5;
 
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;
@@ -141,7 +144,7 @@ namespace yatl
             }
 
             // Schedule soundevents
-            if (this.currentMotif == null || this.currentMotif.Name != "finish") {
+            if (this.currentMotif == null || this.currentMotif.Name != "win") {
                 if (this.eventSchedule.Count == 0)
                     this.scheduleNextMotif();
                 else {

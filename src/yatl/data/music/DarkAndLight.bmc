@@ -7,29 +7,29 @@
 ### LIGHT SUBGRAPH ###
 
 light1a > light1b, goto_dark1a: {
-2b4 a4 2fis4 a4,
-3g2    3d2,
-3d3    3a3,
-2b5 a5 2fis5 a5
+2b5 a5 2fis5 a5,
+3g3    3d3,
+3d4    3a4,
+2b6 a6 2fis6 a6
 }
 light1b > light1c, goto_dark1b: {
-2g4 fis4 3d4,
-3e2      3b2,
-3b3      3fis3,
-2g5 fis5 3d5
+2g5 fis5 3d5,
+3e4      3b3,
+3b4      3fis4,
+2g6 fis6 3d6
 }
 light1c > light1d : {
-2b3 d3 2g4 fis4,
-3e2    3g2,
-3g3    3d3,
-3_     3b3,
-2b4 d4 2g5 fis5
+2b4 d5 2g5 fis5,
+3e4    3g3,
+3g4    3d4,
+3_     3b4,
+2b5 d6 2g6 fis6
 }
-light1d > light2a, dark1a, finish : {
-3e4   3e4,
-3a3   3a3,
-3cis3 3cis3,
-3e5   3e5
+light1d > light2a, dark1a, win : {
+3e5   3a4,
+3a4   3a4,
+3cis4 3cis4,
+3e6   3e6
 }
 
 goto_dark1a > goto_dark1b, light2a : {
@@ -53,51 +53,55 @@ goto_dark1c > dark1a : {
 }
 
 light2a > light2b, goto_dark1a : {
-2b4 cis5 2a4 d3,
+2b4 cis5 2a4 d4,
 3g2      3d2,
-3d3      3fis3   
+3d3      3fis3,
+2b5 cis6 2a5 d4
 }
 light2b > light2c, goto_dark1b: {
 2g4 a4 3d4,
 3e2    3b2,
-3b3    3fis3
+3b3    3fis3,
+2g5 a5 3d5
 }
 light2c > light2d : {
-2b3 d3 2g4 fis4,
-3e2    3g2,
-3g3    3d3,
-3_     3b3
+2g3 fis3 2d4 b4,
+3e3      3g2,
+3g3      3d3,
+3_       3b3,
+2b4 d4   2g5 fis5
 }
-light2d > light1a, dark1a, finish : {
+light2d > light1a, dark1a, win : {
 3e4   3e4,
 3a3   3a3,
-3cis3 3cis3
+3cis3 3cis3,
+3e5   3e5
 }
 
 
 ### DARK SUBGRAPH ###
 
-dark1a > dark1b, goto_light1b : { 3fis4, 3b2, 3b3, 3d3 }
-dark1b > dark1c, goto_light1a : { 3fis4, 3fis2, 3ais3, 3d3 }
-dark1c > dark1d, goto_light1b : { 3fis4, 3b2, 3b3, 3d3 }
-dark1d > dark2a, goto_light1a : { 3fis4, 3fis2, 3ais3, 3d3 }
+dark1a > dark1b, goto_light1b, lose : { 3fis4, 3b2, 3b3, 3d3 }
+dark1b > dark1c, goto_light1a, lose : { 3fis4, 3fis2, 3ais3, 3d3 }
+dark1c > dark1d, goto_light1b, lose : { 3fis4, 3b2, 3b3, 3d3 }
+dark1d > dark2a, goto_light1a, lose : { 3fis4, 3fis2, 3ais3, 3d3 }
 
-goto_light1a > goto_light1b, dark1a: { 3fis3, 3b2, 3d3 }
-goto_light1b > light1a, dark1a, finish: {
+goto_light1a > goto_light1b, dark1a : { 3fis3, 3b2, 3d3 }
+goto_light1b > light1a, dark1a, win : {
 3fis3, 3b2, 3d3,
 1.5_ .25b3 .25cis4 .25d4 .25e4 .25fis4 .25a4,
 1.5_ .25b3 .25cis6 .25d6 .25e6 .25fis6 .25a6
 }
 
-dark2a > dark2b_light              : { 3fis4, 3d3, 3b3, 3g2 }
-dark2b_light > dark2c, goto_light2 : { 3fis4, 3d3, 3b3, 3gis2 }
-dark2c > dark2d                    : { 3cis4, 3e3, 3ais3, 3g2 }
-dark2d > dark1a, dark3a, light1a   : { 3cis4, 3d3, 3fis3, 3b2 }
+dark2a > dark2b_light                    : { 3fis4, 3d3, 3b3, 3g2 }
+dark2b_light > dark2c, goto_light2, lose : { 3fis4, 3d3, 3b3, 3gis2 }
+dark2c > dark2d, lose                    : { 3cis4, 3e3, 3ais3, 3g2 }
+dark2d > dark1a, dark3a, light1a, lose   : { 3cis4, 3d3, 3fis3, 3b2 }
 
-goto_light2 > dark1a, light1a, finish : { 3fis4 3fis4, 3a3 3a3, 3d2 3d2 }
+goto_light2 > dark1a, light1a, win : { 3fis4 3fis4, 3a3 3a3, 3d2 3d2 }
 
 dark3a > dark3b : { 3fis4, 3a2, 3d3 }
-dark3b > dark3c, goto_light3 : { 
+dark3b > dark3c, goto_light3, lose : { 
 2f4 cis4 3e4,
 3cis2 3b2,
 3gis3 3g3
@@ -109,15 +113,16 @@ goto_light3 > dark1a, goto_light2 : {
 3b3    3b3 3e3
 }
 
-dark3c > dark1a, dark3a, light1a, finish : {
+dark3c > dark1a, dark3a, light1a, win, lose : {
 2dis4 b3 3d4   2cis4 ais3, #3b3 3b3
 3fis3    3fis3 3e3,        #3d3 3d3
 3b3      3a3   3ais3       #3b3 3b3
 }
 
-finish > finish : {
+win > win : {
 2b4 cis5 2a4 d3 2g4 a4 3dis4   2g4 a4 2ais4 a4 3g4 3g4 3f4   3e4 3d4,
 3g2      3d2    3e2    3b2     3e2    3g2      3g2 3g2 3ais2 3c2 3d2,
 3d3      3fis3  3b3    3fis3   3b3    3d3      3c3 3b3 3d3   3g3 3fis3,
 2b5 cis6 2a5 d4 2g5 a5 3dis5   2g5 a5 2ais5 a5 3g5 3g5 3f5   3e5 3d5
 }
+lose > lose : { 3fis4, 3b2, 3ais3, 3d3 }

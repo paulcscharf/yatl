@@ -16,23 +16,25 @@ namespace yatl
 
     class Piano : Instrument
     {
-        SoundFile[] samples = new SoundFile[6];
-        double[] baseFrequencies = new double[6];
+        SoundFile[] samples = new SoundFile[7];
+        double[] baseFrequencies = new double[7];
 
         public Piano()
         {
-            this.samples[0] = SoundFile.FromOgg("data/music/piano/Piano.mf.Gb1.ogg");
-            this.samples[1] = SoundFile.FromOgg("data/music/piano/Piano.mf.Gb2.ogg");
-            this.samples[2] = SoundFile.FromOgg("data/music/piano/Piano.mf.Gb3.ogg");
-            this.samples[3] = SoundFile.FromOgg("data/music/piano/Piano.mf.Gb4.ogg");
-            this.samples[4] = SoundFile.FromOgg("data/music/piano/Piano.mf.Gb5.ogg");
-            this.samples[5] = SoundFile.FromOgg("data/music/piano/Piano.mf.Gb6.ogg");
+            this.samples[0] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb1.wav");
+            this.samples[1] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb2.wav");
+            this.samples[2] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb3.wav");
+            this.samples[3] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb4.wav");
+            this.samples[4] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb5.wav");
+            this.samples[5] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb6.wav");
+            this.samples[6] = SoundFile.FromWav("data/music/piano/Piano.mf.Gb7.wav");
             this.baseFrequencies[0] = Pitch.NameFrequencyTable["fis1"];
             this.baseFrequencies[1] = Pitch.NameFrequencyTable["fis2"];
             this.baseFrequencies[2] = Pitch.NameFrequencyTable["fis3"];
             this.baseFrequencies[3] = Pitch.NameFrequencyTable["fis4"];
             this.baseFrequencies[4] = Pitch.NameFrequencyTable["fis5"];
             this.baseFrequencies[5] = Pitch.NameFrequencyTable["fis6"];
+            this.baseFrequencies[6] = Pitch.NameFrequencyTable["fis7"];
         }
 
         public override Sound CreateSound(double volume, double frequency)
