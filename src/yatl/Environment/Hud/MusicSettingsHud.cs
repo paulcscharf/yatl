@@ -56,7 +56,9 @@ namespace yatl.Environment.Hud
             {
                 this.Parameters = new MusicParameters(
                     this.lightnessBar.Value,
-                    this.tensionBar.Value);
+                    this.tensionBar.Value,
+                    this.game.Player.HealthPercentage,
+                    this.game.State);
                 this.changed = false;
             }
         }
