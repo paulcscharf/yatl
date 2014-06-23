@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Runtime.InteropServices;
 using amulware.Graphics;
 using OpenTK;
@@ -13,8 +13,7 @@ namespace yatl.Environment.Hud
         private readonly GameState game;
         private readonly Scrollbar lightnessBar;
         private readonly Scrollbar tensionBar;
-
-        private bool changed;
+        private readonly Scrollbar healthBar;
 
         public MusicParameters Parameters { get; private set; }
 
@@ -27,46 +26,42 @@ namespace yatl.Environment.Hud
             this.tensionBar = new Scrollbar(new Vector3(-16, 4.5f, 0), 0.8f, this.change,
                 KeyboardKeyAction.FromKey(Key.Number3), KeyboardKeyAction.FromKey(Key.Number4));
 
-            this.changed = true;
+            this.healthBar = new Scrollbar(new Vector3(-16, 7f, 0), 0.8f, this.change,
+                KeyboardKeyAction.FromKey(Key.Number5), KeyboardKeyAction.FromKey(Key.Number6));
+
         }
 
         private void change(float f)
         {
-            this.changed = true;
         }
 
         public void Update(GameUpdateEventArgs e)
         {
             this.lightnessBar.Update(e);
             this.tensionBar.Update(e);
+            this.healthBar.Update(e);
 
-            var light = this.game.Player.Tile.Info.Lightness * 2;
-            if (light != this.lightnessBar.Value)
-                this.changed = true;
-            this.lightnessBar.Value = light;
+            this.lightnessBar.Value = this.game.Player.Tile.Info.Lightness * 2;
 
             var chasingCount = this.game.ChasingEnemies.Count;
             var nearCount = this.game.MonstersCloseToPlayer;
             var tension = 1 - (float)Math.Pow(1.2, -nearCount) * (float)Math.Pow(1.5, -chasingCount);
-            if (tension != this.tensionBar.Value)
-                this.changed = true;
             this.tensionBar.Value = tension;
 
-            if (this.changed)
-            {
-                this.Parameters = new MusicParameters(
-                    this.lightnessBar.Value,
-                    this.tensionBar.Value,
-                    this.game.Player.HealthPercentage,
-                    this.game.State);
-                this.changed = false;
-            }
+            this.healthBar.Value = this.game.Player.HealthPercentage;
+
+            this.Parameters = new MusicParameters(
+                this.lightnessBar.Value,
+                this.tensionBar.Value,
+                this.game.Player.HealthPercentage,
+                this.game.State);
         }
 
         public void Draw(SpriteManager sprites)
         {
             this.lightnessBar.Draw(sprites);
             this.tensionBar.Draw(sprites);
+            this.healthBar.Draw(sprites);
 
             var font = sprites.ScreenText;
 
@@ -74,6 +69,7 @@ namespace yatl.Environment.Hud
             font.Height = 1;
             font.DrawString(new Vector3(-16, 1, 0), "Lightness (1 - 2)");
             font.DrawString(new Vector3(-16, 3.5f, 0), "Tension (3 - 4)");
+            font.DrawString(new Vector3(-16, 6f, 0), "Health (5 - 6)");
         }
     }
 }

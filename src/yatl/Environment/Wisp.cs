@@ -17,7 +17,7 @@ namespace yatl.Environment
             : base(game, position, Settings.Game.Wisp.FrictionCoefficient)
         {
             this.controls = new ControlScheme();
-            this.health = Settings.Game.Wisp.MaxHealth * 0.1f;
+            this.health = Settings.Game.Wisp.MaxHealth;
             this.healStartTime = -1000;
         }
 
