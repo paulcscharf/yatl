@@ -25,6 +25,8 @@ namespace yatl.Rendering
         private DeferredBuffer deferredBuffer;
         private PostProcessSurface debugDeferred;
 
+        private PostProcessSurface copyLightToScreen;
+
         public GameRenderer()
         {
             this.deferredBuffer = new DeferredBuffer();
@@ -36,6 +38,10 @@ namespace yatl.Rendering
             this.debugDeferred = new PostProcessSurface();
             this.debugDeferred.AddSettings(this.deferredBuffer);
             this.shaders.DebugDeferred.UseOnSurface(this.debugDeferred);
+
+            this.copyLightToScreen = new PostProcessSurface();
+            this.copyLightToScreen.AddSetting(this.deferredBuffer.LightAccumulationTexture);
+            this.shaders.PostCopy.UseOnSurface(this.copyLightToScreen);
 
             this.shaderReloadTimer = Stopwatch.StartNew();
         }
@@ -80,6 +86,8 @@ namespace yatl.Rendering
 
             #region Draw deferred geometry
 
+            GL.DepthMask(true);
+
             GL.Enable(EnableCap.DepthTest);
             GL.DepthFunc(DepthFunction.Less);
 
@@ -87,29 +95,18 @@ namespace yatl.Rendering
             foreach (var surface in this.surfaces.LevelGeometryQueue)
                 surface.Render();
 
-            GL.Disable(EnableCap.DepthTest);
+            GL.DepthMask(false);
+
 
             #endregion
 
-            #region Set and clear backbuffer
+            #region Set and clear light accumulation buffer
 
-            this.deferredBuffer.Unbind();
+            this.deferredBuffer.BindLightAccumulation();
 
-            GL.BindFramebuffer(FramebufferTarget.DrawFramebuffer, 0);
-
-            GL.Viewport(0, 0, this.screenWidth, this.screenHeight);
-
-            GL.ClearColor(Color.Black);
-            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
-
-
-            GL.Viewport(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
-            GL.Scissor(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
-
-            GL.Enable(EnableCap.ScissorTest);
-            GL.ClearColor(Color.Black);
+            GL.ClearColor(0, 0, 0, 0);
             GL.Clear(ClearBufferMask.ColorBufferBit);
-            GL.Disable(EnableCap.ScissorTest);
+
 
             #endregion
 
@@ -128,13 +125,44 @@ namespace yatl.Rendering
             GL.Disable(EnableCap.CullFace);
 
             #endregion
-
+            
             #region Draw particles
 
             this.surfaces.Particles.Surface.Render();
 
             this.surfaces.Sprites.Surface.Render();
             
+            #endregion
+
+            #region set and clear backbuffer
+
+            GL.DepthMask(true);
+
+            GL.Disable(EnableCap.DepthTest);
+
+            this.deferredBuffer.Unbind();
+
+
+            GL.Viewport(0, 0, this.screenWidth, this.screenHeight);
+
+            GL.ClearColor(Color.Black);
+            GL.Clear(ClearBufferMask.ColorBufferBit | ClearBufferMask.DepthBufferBit);
+
+
+            GL.Viewport(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
+            GL.Scissor(this.scissorX, this.scissorY, this.scissorW, this.scissorH);
+
+            GL.Enable(EnableCap.ScissorTest);
+            GL.ClearColor(Color.Black);
+            GL.Clear(ClearBufferMask.ColorBufferBit);
+            GL.Disable(EnableCap.ScissorTest);
+
+            #endregion
+
+            #region copy light to backbuffer
+
+            this.copyLightToScreen.Render();
+
             #endregion
 
             #region Draw Debug

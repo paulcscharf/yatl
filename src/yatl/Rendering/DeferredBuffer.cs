@@ -19,6 +19,8 @@ namespace yatl.Rendering
         private readonly TextureUniform lightAccumUniform;
         private readonly RenderTarget lightAccumTarget;
 
+        public TextureUniform LightAccumulationTexture { get { return this.lightAccumUniform; } }
+
         public DeferredBuffer()
         {
             this.positionUniform = new TextureUniform("positionTexture", null, TextureUnit.Texture0);
