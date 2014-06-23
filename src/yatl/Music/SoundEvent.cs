@@ -51,8 +51,8 @@ namespace yatl
 
         public override void Execute()
         {
-            double outOfTune = this.Frequency > 0 ? MusicManager.OutOfTune : 0;
-            this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency + outOfTune);
+            double outOfTune = this.Frequency > 0  ? MusicManager.OutOfTune : 0;
+            this.Sound = this.Instrument.CreateSound(MusicManager.Volume, this.Frequency + MusicManager.Random.NextDouble() * outOfTune);
             this.Sound.Play();
         }
 
@@ -104,6 +104,33 @@ namespace yatl
         public override void Execute()
         {
             MusicManager.Speed = MusicManager.MinSpeed;
+        }
+    }
+
+    class BiteOpportunity : SoundEvent
+    {
+        public BiteOpportunity(double startTime)
+            : base(startTime)
+        {
+        }
+
+        public override void Execute()
+        {
+            if (MusicManager.TryPlayOutOfTune())
+                MusicManager.OutOfTune = 20;
+        }
+    }
+
+    class BiteOpportunityEnd : SoundEvent
+    {
+        public BiteOpportunityEnd(double startTime)
+            : base(startTime)
+        {
+        }
+
+        public override void Execute()
+        {
+            //MusicManager.OutOfTune = 0;
         }
     }
 }

@@ -35,6 +35,8 @@ namespace yatl
             foreach (var basenote in this.voices.Content[1].Content) {
                 double end = start + basenote.Duration;
                 yield return new LiftSustain(start); // Lift sustain before each chord
+                yield return new BiteOpportunity(start); // Have a bit opportunity for each chord
+                yield return new BiteOpportunityEnd(start + 0.1);
 
                 // Gather arpeggio set
                 var arpeggioSpace = new List<Pitch>();

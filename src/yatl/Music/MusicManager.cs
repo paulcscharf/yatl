@@ -134,7 +134,7 @@ namespace yatl
 
             //OutOfTune = tension * 5;
             //OutOfTune = (1 - this.Parameters.Health) * 5;
-            OutOfTune = this.Parameters.Health == 1 ? 0 : 3;
+            OutOfTune *= Math.Pow(0.3, elapsedTime);
 
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;
@@ -177,7 +177,7 @@ namespace yatl
             }
         }
 
-        private bool tryPlayOutOfTune()
+        public static bool TryPlayOutOfTune()
         {
             List<Func<bool>> events;
             lock (outOfTuneEventListLock)
