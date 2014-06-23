@@ -72,7 +72,7 @@ namespace yatl
             this.ambient.IsLooped = true;
             this.ambient.Prepare();
 
-            this.Parameters = new MusicParameters(1f, 0f);
+            this.Parameters = new MusicParameters(1f, 0f, 1f, GameState.GameOverState.Undetermined);
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)

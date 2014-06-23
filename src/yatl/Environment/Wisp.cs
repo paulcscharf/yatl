@@ -21,6 +21,11 @@ namespace yatl.Environment
             this.healStartTime = -1000;
         }
 
+        public float HealthPercentage
+        {
+            get { return this.health / Settings.Game.Wisp.MaxHealth; }
+        }
+
         public override void Update(GameUpdateEventArgs e)
         {
             var acceleration = new Vector2(
@@ -70,7 +75,7 @@ namespace yatl.Environment
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
 
-            var healthPercentage = this.health / Settings.Game.Wisp.MaxHealth;
+            var healthPercentage = this.HealthPercentage;
 
             var light = GlobalRandom.NextFloat(healthPercentage * healthPercentage, healthPercentage);
 
