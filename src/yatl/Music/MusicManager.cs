@@ -143,10 +143,10 @@ namespace yatl
             MaxSpeed = 1 + 0.5 * tension;
             MinSpeed = 0.4;// +0.2 * tension;
             Volume = 0.5 + tension;
-            this.ambient.Volume = (float)(0.25 * (tension + 1 - lightness));
+            this.ambient.Volume = (float)(0.05 * (1 - lightness) + 0.01);
 
-            //if (this.ambient.Ready)
-            //this.ambient.Play();
+            if (this.ambient.Ready)
+                this.ambient.Play();
 
             // Play soundevents
             while (this.eventSchedule.Count != 0 && this.eventSchedule.First.Value.StartTime <= this.time) {
