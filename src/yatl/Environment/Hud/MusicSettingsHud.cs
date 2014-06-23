@@ -59,17 +59,20 @@ namespace yatl.Environment.Hud
 
         public void Draw(SpriteManager sprites)
         {
-            this.lightnessBar.Draw(sprites);
-            this.tensionBar.Draw(sprites);
-            this.healthBar.Draw(sprites);
+            if (this.game.DrawDebug)
+            {
+                this.lightnessBar.Draw(sprites);
+                this.tensionBar.Draw(sprites);
+                this.healthBar.Draw(sprites);
 
-            var font = sprites.ScreenText;
+                var font = sprites.ScreenText;
 
-            font.Color = Color.Gray;
-            font.Height = 1;
-            font.DrawString(new Vector3(-16, 1, 0), "Lightness (1 - 2)");
-            font.DrawString(new Vector3(-16, 3.5f, 0), "Tension (3 - 4)");
-            font.DrawString(new Vector3(-16, 6f, 0), "Health (5 - 6)");
+                font.Color = Color.Gray;
+                font.Height = 1;
+                font.DrawString(new Vector3(-16, 1, 0), "Lightness (1 - 2)");
+                font.DrawString(new Vector3(-16, 3.5f, 0), "Tension (3 - 4)");
+                font.DrawString(new Vector3(-16, 6f, 0), "Health (5 - 6)");
+            }
         }
     }
 }

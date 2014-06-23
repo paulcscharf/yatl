@@ -59,7 +59,7 @@ namespace yatl.Environment
 
             foreach (var tile in this.Level.Tilemap)
             {
-                if (tile.Radius > 2 && tile.Info.Lightness < 0.2f && GlobalRandom.NextBool(0.3))
+                if (tile.Radius > 2 && tile.Info.Lightness < 0.2f && GlobalRandom.NextBool(0.15))
                 {
                     foreach(var i in Enumerable.Range(0, GlobalRandom.Next(1, 3)))
                         new Monster(this, this.Level.GetPosition(tile));
