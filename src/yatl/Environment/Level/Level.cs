@@ -72,15 +72,14 @@ namespace yatl.Environment.Level
 
             foreach (var tile in ambientTiles)
             {
-                float z = 0;
                 var argb = Color.White;
                 if (this.tilemap.IsValidTile(tile))
                 {
-                    z = Settings.Game.Level.WallHeight;
                     argb = this.tilemap[tile].AmbientColor;
                 }
 
-                vertices[index] = new DeferredAmbientLightVertex(this.GetPosition(tile).WithZ(z), argb);
+                vertices[index] = new DeferredAmbientLightVertex(
+                    this.GetPosition(tile).WithZ(Settings.Game.Level.WallHeight), argb);
                 ambientTiles[tile] = index;
 
                 index++;

@@ -148,6 +148,10 @@ namespace yatl.Environment
                 if (this.biteNextFrame)
                 {
                     this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
+
+                    this.velocity *= 0.1f;
+                    this.velocity += toPlayer.Normalized() * 5;
+
                     this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
                     this.biteNextFrame = false;
                     this.waitingToBite = false;

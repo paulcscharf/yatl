@@ -42,7 +42,10 @@ namespace yatl.Environment
 
             if (this.game.State != GameState.GameOverState.Lost && this.healStartTime <= this.game.Time)
             {
-                this.health = Math.Min(Settings.Game.Wisp.MaxHealth, this.health + e.ElapsedTimeF * Settings.Game.Wisp.HealSpeed);
+                var healSpeed = this.Tile.Info.Lightness > Settings.Game.Level.LightnessThreshold
+                    ? Settings.Game.Wisp.LightHealSpeed
+                    : Settings.Game.Wisp.HealSpeed;
+                this.health = Math.Min(Settings.Game.Wisp.MaxHealth, this.health + e.ElapsedTimeF * healSpeed);
             }
 
             if (this.game.State != GameState.GameOverState.Undetermined)
@@ -61,7 +64,7 @@ namespace yatl.Environment
         public void Damage(float damage)
         {
             this.health = Math.Max(0, this.health - damage);
-            this.healStartTime = this.game.Time + 1;
+            this.healStartTime = this.game.Time + Settings.Game.Wisp.HealDelay;
         }
 
         public override void Draw(SpriteManager sprites)

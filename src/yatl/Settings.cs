@@ -21,7 +21,8 @@ namespace yatl
                 public const float Acceleration = 25f;
 
                 public const float HealSpeed = 10;
-                public const float HealDelay = 2.5f;
+                public const float LightHealSpeed = 20;
+                public const float HealDelay = 1.5f;
                 public const float MaxHealth = 100;
             }
 
@@ -85,6 +86,8 @@ namespace yatl
                 public const float OverlayHeight = 2;
 
                 public const float WallHeight = 2;
+
+                public const float LightnessThreshold = 0.2f;
             }
         }
 
