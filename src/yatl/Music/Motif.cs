@@ -99,7 +99,7 @@ namespace yatl
                     int remainingArpeggioSpace = direction == 1 ? arpeggioSpace.Count - index : index;
                     int slack = remainingArpeggioSpace - tonesToGenerate;
                     double pSkip = (double)slack / (double)remainingArpeggioSpace;
-                    if (MusicManager.Random.NextDouble() < pSkip)
+                    if (MusicManager.Random.NextDouble() < 2 * pSkip)
                         index += direction;
                 }
             }

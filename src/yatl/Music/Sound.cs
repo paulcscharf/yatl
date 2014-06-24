@@ -31,7 +31,7 @@ namespace yatl
             : base(sampleFrequency, volume, frequency)
         {
             this.source = sample.GenerateSource();
-            this.source.Volume = (float) volume; // No jitter
+            this.source.Volume = (float) volume * 2; // No jitter
             this.source.Pitch = (float)(frequency / this.sampleFrequency);
         }
 
