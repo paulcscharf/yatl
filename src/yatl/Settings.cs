@@ -15,6 +15,9 @@ namespace yatl
 
         public static class Game
         {
+            public const bool SaveStatistics = true;
+            public const bool DynamicMusic = true;
+
             public const float ResetDelay = 7f;
 
             public static class Wisp

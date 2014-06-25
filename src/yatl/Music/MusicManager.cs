@@ -72,7 +72,7 @@ namespace yatl
             this.ambient.IsLooped = true;
             this.ambient.Prepare();
 
-            this.Parameters = new MusicParameters(1f, 0f, 1f, GameState.GameOverState.Undetermined);
+            this.Parameters = MusicParameters.Default;
         }
 
         public void Schedule(IEnumerable<SoundEvent> soundEvents)
@@ -185,7 +185,7 @@ namespace yatl
                 events = outOfTuneEvents;
                 outOfTuneEvents = new List<Func<bool>>();
             }
-            return events.Aggregate(false, (current, e) => current || e());
+            return events.Aggregate(false, (current, e) => current || e()) && Settings.Game.DynamicMusic;
         }
     }
 }

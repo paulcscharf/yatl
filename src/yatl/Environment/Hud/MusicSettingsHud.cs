@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Runtime.InteropServices;
 using amulware.Graphics;
 using OpenTK;
@@ -29,6 +29,7 @@ namespace yatl.Environment.Hud
             this.healthBar = new Scrollbar(new Vector3(-16, 7f, 0), 0.8f, f => { },
                 KeyboardKeyAction.FromKey(Key.Number5), KeyboardKeyAction.FromKey(Key.Number6));
 
+            this.Parameters = MusicParameters.Default;
         }
 
         public void Update(GameUpdateEventArgs e)
@@ -41,7 +42,7 @@ namespace yatl.Environment.Hud
 
             var chasingCount = this.game.ChasingEnemies.Count;
             var nearCount = this.game.MonstersCloseToPlayer;
-            var tension = 1 - (float)Math.Pow(1.2, -nearCount) * (float)Math.Pow(1.5, -chasingCount);
+            var tension = 1 - (float)Math.Pow(1.2, -nearCount) * (float)Math.Pow(1.7, -chasingCount);
 
             if (this.game.State == GameState.GameOverState.Won)
                 tension = 1;
@@ -50,11 +51,12 @@ namespace yatl.Environment.Hud
 
             this.healthBar.Value = this.game.Player.HealthPercentage;
 
-            this.Parameters = new MusicParameters(
-                this.lightnessBar.Value,
-                this.tensionBar.Value,
-                this.game.Player.HealthPercentage,
-                this.game.State);
+            if(Settings.Game.DynamicMusic)
+                this.Parameters = new MusicParameters(
+                    this.lightnessBar.Value,
+                    this.tensionBar.Value,
+                    this.game.Player.HealthPercentage,
+                    this.game.State);
         }
 
         public void Draw(SpriteManager sprites)

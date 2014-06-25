@@ -50,8 +50,12 @@ namespace yatl.Environment
         private static float overlayBrightness = 1;
         private static float overlayPercentage = 1;
 
+        public GameStatistics Statistics { get; private set; }
+
         public GameState()
         {
+            this.Statistics = new GameStatistics();
+
             this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
             this.Level.GrowCrystals();
 
@@ -118,6 +122,16 @@ namespace yatl.Environment
             this.musicSettings.Update(newArgs);
 
             this.updateOverlay(newArgs);
+
+            this.updateStats(newArgs);
+        }
+
+        private void updateStats(GameUpdateEventArgs e)
+        {
+            if (this.Player.Tile.Info.Lightness >= Settings.Game.Level.LightnessThreshold)
+                this.Statistics.TimeInLight += e.ElapsedTime;
+            else
+                this.Statistics.TimeInDarkness += e.ElapsedTime;
         }
 
         private void updateOverlay(GameUpdateEventArgs e)
@@ -173,6 +187,8 @@ namespace yatl.Environment
 
         public void Dispose()
         {
+            if(Settings.Game.SaveStatistics)
+                this.Statistics.Save();
             this.Level.DisposeGeometry();
         }
 
@@ -182,6 +198,8 @@ namespace yatl.Environment
                 return;
 
             this.gameOverState = won ? GameOverState.Won : GameOverState.Lost;
+
+            this.Statistics.GameOverState = this.gameOverState;
 
             this.resetTime = this.Time + Settings.Game.ResetDelay;
         }

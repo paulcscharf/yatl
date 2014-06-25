@@ -82,6 +82,8 @@ namespace yatl.Environment
 
             if (healthPercentageDifference > 0.2f)
                 this.particles.Explode(healthPercentageDifference, direction.WithZ(0) * 5, 5);
+
+            this.game.Statistics.TotalDamageTaken += healthPercentageDifference;
         }
 
         public override void Draw(SpriteManager sprites)

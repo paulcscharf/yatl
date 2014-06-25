@@ -61,6 +61,7 @@
     <Compile Include="Environment\ControlScheme.cs" />
     <Compile Include="Environment\GameObject.cs" />
     <Compile Include="Environment\GameState.cs" />
+    <Compile Include="Environment\GameStatistics.cs" />
     <Compile Include="Environment\GameUpdateEventArgs.cs" />
     <Compile Include="Environment\Hud\MusicSettingsHud.cs" />
     <Compile Include="Environment\interfaces\IPositionable.cs" />
