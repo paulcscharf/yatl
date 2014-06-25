@@ -76,6 +76,8 @@
     <Compile Include="Environment\Level\Wall.cs" />
     <Compile Include="Environment\Monster.cs" />
     <Compile Include="Environment\MusicParameters.cs" />
+    <Compile Include="Environment\Particle.cs" />
+    <Compile Include="Environment\ParticleCloud.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Direction.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Extensions.cs" />
     <Compile Include="Environment\Tilemap\Hexagon\Tilemap.cs" />

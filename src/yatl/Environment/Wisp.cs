@@ -9,6 +9,7 @@ namespace yatl.Environment
     sealed class Wisp : Unit
     {
         private readonly ControlScheme controls;
+        private readonly ParticleCloud particles;
 
         private float health;
         private float healStartTime;
@@ -17,8 +18,12 @@ namespace yatl.Environment
             : base(game, position, Settings.Game.Wisp.FrictionCoefficient)
         {
             this.controls = new ControlScheme();
+
             this.health = Settings.Game.Wisp.MaxHealth;
             this.healStartTime = -1000;
+
+            this.particles = new ParticleCloud(game, 50, this,
+                Color.LightYellow.WithAlpha(0.5f) * GlobalRandom.NextFloat(0.03f, 0.1f), 10, 0.6f);
         }
 
         public float HealthPercentage
@@ -28,10 +33,13 @@ namespace yatl.Environment
 
         public override void Update(GameUpdateEventArgs e)
         {
-            var acceleration = new Vector2(
+            var acceleration = this.game.State == GameState.GameOverState.Undetermined
+                ? new Vector2(
                 this.controls.Right.AnalogAmount - this.controls.Left.AnalogAmount,
                 this.controls.Up.AnalogAmount - this.controls.Down.AnalogAmount
-                );
+                )
+                : Vector2.Zero;
+
             var a = acceleration.Length;
             if (a > 0)
                 acceleration /= a;
@@ -39,6 +47,8 @@ namespace yatl.Environment
             this.velocity += acceleration * Settings.Game.Wisp.Acceleration * e.ElapsedTimeF;
 
             base.Update(e);
+
+            this.particles.Update(e);
 
             if (this.game.State != GameState.GameOverState.Lost && this.healStartTime <= this.game.Time)
             {
@@ -61,10 +71,17 @@ namespace yatl.Environment
             }
         }
 
-        public void Damage(float damage)
+        public void Damage(float damage, Vector2 direction)
         {
+            var healthPercentageBefore = this.HealthPercentage;
+
             this.health = Math.Max(0, this.health - damage);
             this.healStartTime = this.game.Time + Settings.Game.Wisp.HealDelay;
+
+            var healthPercentageDifference = healthPercentageBefore - this.HealthPercentage;
+
+            if (healthPercentageDifference > 0.2f)
+                this.particles.Explode(healthPercentageDifference, direction.WithZ(0) * 5, 5);
         }
 
         public override void Draw(SpriteManager sprites)
@@ -77,6 +94,8 @@ namespace yatl.Environment
                 geo.Color = new Color(Color.Green, 0);
                 geo.DrawSprite(v, 0, Settings.Game.Level.HexagonDiameter);
             }
+
+            this.particles.Draw(sprites);
 
             var healthPercentage = this.HealthPercentage;
 

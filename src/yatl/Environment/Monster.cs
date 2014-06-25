@@ -24,10 +24,12 @@ namespace yatl.Environment
         private float nextBlinkToggle;
         private bool blinking;
 
+        private readonly ParticleCloud particles;
+
         public Monster(GameState game, Vector2 position)
             : base(game, position, Settings.Game.Enemy.FrictionCoefficient)
         {
-
+            this.particles = new ParticleCloud(game, 50, this, Color.Black * 0.3f, 5, 1.5f);
         }
 
         public override void Update(GameUpdateEventArgs e)
@@ -147,10 +149,14 @@ namespace yatl.Environment
             {
                 if (this.biteNextFrame)
                 {
-                    this.game.Player.Damage(Settings.Game.Enemy.HitDamage);
+                    var toPlayerNormal = toPlayer.Normalized();
+
+                    this.game.Player.Damage(Settings.Game.Enemy.HitDamage, toPlayerNormal);
 
                     this.velocity *= 0.1f;
-                    this.velocity += toPlayer.Normalized() * 5;
+                    this.velocity += toPlayerNormal * 5;
+                    this.particles.Explode(0.6f, toPlayerNormal.WithZ(0) * 10, 1);
+
 
                     this.nextHitTime = this.game.Time + Settings.Game.Enemy.HitInterval;
                     this.biteNextFrame = false;
@@ -198,6 +204,8 @@ namespace yatl.Environment
             }
 
             base.Update(e);
+
+            this.particles.Update(e);
         }
 
         private void scheduleBite()
@@ -234,7 +242,7 @@ namespace yatl.Environment
             {
                 var eyes = sprites.Eyes;
                 eyes.Color = Color.Red;
-                eyes.DrawSprite(this.position.WithZ(1), 0, 1.2f);
+                eyes.DrawSprite(this.position.WithZ(1), 0, 1f);
             }
 
             if (this.game.DrawDebug && this.chasing)
