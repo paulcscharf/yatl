@@ -17,6 +17,8 @@ namespace yatl.Rendering
 
         public ISurfaceShader PostCopy { get; private set; }
 
+        public ISurfaceShader Overlay { get; private set; }
+
         public ShaderManager()
         {
             this.initialise();
@@ -35,6 +37,8 @@ namespace yatl.Rendering
             this.AmbientLight = GraphicsHelper.LoadShaderProgram("data/shaders/deferred/ambient");
 
             this.PostCopy = GraphicsHelper.LoadShaderProgram("data/shaders/post.vs", "data/shaders/post/copy.fs");
+
+            this.Overlay = GraphicsHelper.LoadShaderProgram("data/shaders/post.vs", "data/shaders/post/overlayFade.fs");
         }
     }
 }

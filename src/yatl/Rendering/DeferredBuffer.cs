@@ -43,7 +43,7 @@ namespace yatl.Rendering
 
             this.positionTexture = makeTexture(w, h, PixelInternalFormat.Rgba32f);
             this.normalTexture = makeTexture(w, h, PixelInternalFormat.Rgb);
-            this.lightAccumTexture = makeTexture(w, h, PixelInternalFormat.Rgb);
+            this.lightAccumTexture = makeTexture(w, h, PixelInternalFormat.Rgb16f);
 
             this.positionUniform.Texture = this.positionTexture;
             this.normalUniform.Texture = this.normalTexture;

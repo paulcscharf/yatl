@@ -134,6 +134,8 @@ namespace yatl.Rendering
             
             #endregion
 
+            this.surfaces.Overlay.Render();
+
             #region set and clear backbuffer
 
             GL.DepthMask(true);
@@ -162,6 +164,7 @@ namespace yatl.Rendering
             #region copy light to backbuffer
 
             this.copyLightToScreen.Render();
+
 
             #endregion
 

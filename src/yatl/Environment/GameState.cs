@@ -44,6 +44,9 @@ namespace yatl.Environment
 
         public int MonstersCloseToPlayer { get; set; }
 
+        private static float overlayBrightness = 1;
+        private static float overlayPercentage = 1;
+
         public GameState()
         {
             this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
@@ -110,10 +113,33 @@ namespace yatl.Environment
             this.Camera.Update(newArgs);
 
             this.musicSettings.Update(newArgs);
+
+            this.updateOverlay(newArgs);
+        }
+
+        private void updateOverlay(GameUpdateEventArgs e)
+        {
+            var bGoal = this.State == GameState.GameOverState.Won ? 1 : 0;
+
+            GameState.overlayBrightness += (bGoal - GameState.overlayBrightness) * 2 * e.ElapsedTimeF;
+
+            var pGoal = this.State == GameState.GameOverState.Undetermined
+                ? 1 - this.Player.HealthPercentage
+                : 1;
+
+            pGoal *= pGoal;
+
+            GameState.overlayPercentage += (pGoal - GameState.overlayPercentage) * 2 * e.ElapsedTimeF;
         }
 
         public void Draw(SpriteManager sprites)
         {
+            var surfaceMan = SurfaceManager.Instance;
+
+            surfaceMan.OverlayColor = new Vector4(GameState.overlayBrightness,
+                GameState.overlayBrightness, GameState.overlayBrightness, 1);
+            surfaceMan.OverlayFadePercentage = GameState.overlayPercentage;
+
             this.Level.Draw(sprites);
 
             foreach (var gameObject in this.gameObjects)

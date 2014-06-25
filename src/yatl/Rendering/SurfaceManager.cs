@@ -61,6 +61,13 @@ namespace yatl.Rendering
         
         #endregion
 
+        public PostProcessSurface Overlay { get; private set; }
+
+        private FloatUniform overlayFadePercentage;
+        public float OverlayFadePercentage { set { this.overlayFadePercentage.Float = value; } }
+        private Vector4Uniform overlayColor;
+        public Vector4 OverlayColor { set { this.overlayColor.Vector = value; } }
+
         public SurfaceManager(ShaderManager shaders, DeferredBuffer deferredBuffer)
         {
             this.shaders = shaders;
@@ -91,6 +98,8 @@ namespace yatl.Rendering
             this.initWalls(shaders);
 
             this.initDeferred(shaders, deferredBuffer);
+
+            this.initOverlay(shaders);
         }
 
         private void initMatrices()
@@ -175,6 +184,19 @@ namespace yatl.Rendering
                 );
             shaders.PointLights.UseOnSurface(this.PointLights);
         }
+
+        private void initOverlay(ShaderManager shaders)
+        {
+            this.Overlay = new PostProcessSurface();
+            this.Overlay.AddSettings(
+                SurfaceBlendSetting.PremultipliedAlpha,
+                this.overlayFadePercentage = new FloatUniform("fadePercentage"),
+                this.overlayColor = new Vector4Uniform("color")
+                );
+            shaders.Overlay.UseOnSurface(this.Overlay);
+        }
+
+
 
         private SpriteSet<UVColorVertexData> loadGameSpriteSet(ShaderManager shaders, string filename)
         {
