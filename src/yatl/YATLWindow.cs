@@ -95,7 +95,7 @@ namespace yatl
             }
             
 
-            if (InputManager.IsKeyHit(Key.F5))
+            if (this.gamestate.WaitingForReset || InputManager.IsKeyHit(Key.F5))
                 this.restartGame();
 
             this.gamestate.Update(e);

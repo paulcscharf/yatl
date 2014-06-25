@@ -39,6 +39,9 @@ namespace yatl.Environment
         public Camera Camera { get; private set; }
 
         private GameOverState gameOverState;
+        private float resetTime;
+
+        public bool WaitingForReset { get { return this.resetTime != 0 && this.Time >= this.resetTime; } }
 
         public GameOverState State { get { return this.gameOverState; } }
 
@@ -119,9 +122,11 @@ namespace yatl.Environment
 
         private void updateOverlay(GameUpdateEventArgs e)
         {
+            var fadeSpeed = (this.State == GameState.GameOverState.Undetermined ? 2 : 0.3f) * e.ElapsedTimeF;
+
             var bGoal = this.State == GameState.GameOverState.Won ? 1 : 0;
 
-            GameState.overlayBrightness += (bGoal - GameState.overlayBrightness) * 2 * e.ElapsedTimeF;
+            GameState.overlayBrightness += (bGoal - GameState.overlayBrightness) * fadeSpeed;
 
             var pGoal = this.State == GameState.GameOverState.Undetermined
                 ? 1 - this.Player.HealthPercentage
@@ -129,7 +134,7 @@ namespace yatl.Environment
 
             pGoal *= pGoal;
 
-            GameState.overlayPercentage += (pGoal - GameState.overlayPercentage) * 2 * e.ElapsedTimeF;
+            GameState.overlayPercentage += (pGoal - GameState.overlayPercentage) * fadeSpeed;
         }
 
         public void Draw(SpriteManager sprites)
@@ -173,7 +178,12 @@ namespace yatl.Environment
 
         public void GameOver(bool won)
         {
+            if (this.State != GameOverState.Undetermined)
+                return;
+
             this.gameOverState = won ? GameOverState.Won : GameOverState.Lost;
+
+            this.resetTime = this.Time + Settings.Game.ResetDelay;
         }
     }
 }

@@ -15,6 +15,8 @@ namespace yatl
 
         public static class Game
         {
+            public const float ResetDelay = 7f;
+
             public static class Wisp
             {
                 public const float FrictionCoefficient = 3f;
