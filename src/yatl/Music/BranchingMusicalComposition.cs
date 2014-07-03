@@ -19,7 +19,7 @@ namespace yatl
                 var parser = new BranchingMusicalCompositionParser(reader);
                 this.Motifs = parser.ParseFile();
             }
-            Console.WriteLine("Succesfully parsed " + filename);
+            //Console.WriteLine("Succesfully parsed " + filename);
         }
     }
 }

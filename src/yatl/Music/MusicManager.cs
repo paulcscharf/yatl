@@ -61,12 +61,12 @@ namespace yatl
             this.ambient = new OggStream("data/music/ambient1.ogg");
             //this.Piano = new SimpleInstrument("data/music/Piano.pp.C4_2.ogg", 261.6);
             this.Piano = new Piano();
-            this.Violin = new SRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-decay.ogg", 207.7);
+            //this.Violin = new SRInstrument("data/music/ViolinGis3-loop.ogg", "data/music/ViolinGis3-decay.ogg", 207.7);
             //this.Strings = new SimpleInstrument("data/music/StringsC5.ogg", 523.3);
-            this.Strings = new SRInstrument("data/music/StringsC5-sustain.ogg", "data/music/StringsC5-decay.ogg", 523.3);
+            //this.Strings = new SRInstrument("data/music/StringsC5-sustain.ogg", "data/music/StringsC5-decay.ogg", 523.3);
 
             string filename = "data/music/DarkAndLight.bmc";
-            Console.WriteLine("Parsing " + filename);
+            //Console.WriteLine("Parsing " + filename);
             this.composition = new BranchingMusicalComposition(filename);
 
             this.ambient.IsLooped = true;

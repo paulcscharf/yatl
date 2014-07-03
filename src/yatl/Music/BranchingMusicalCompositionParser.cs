@@ -43,10 +43,10 @@ namespace yatl
                 motif.Successors = motif.successorNames.Select(key => motifs[key]).ToArray();
             }
 
-            dump(motifs.Values);
-            foreach (Motif motif in motifs.Values) {
-                Console.WriteLine(motif.ToString());
-            }
+            //dump(motifs.Values);
+            //foreach (Motif motif in motifs.Values) {
+            //    Console.WriteLine(motif.ToString());
+            //}
 
             return motifs;
         }
