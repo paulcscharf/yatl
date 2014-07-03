@@ -233,8 +233,13 @@ namespace yatl.Environment
 
                 font.Height = 2f;
                 font.Color = argb;
-                font.DrawString(new Vector2(0, 0.2f), "You Are The Light", 0.5f);
+                font.DrawString(new Vector2(0, 0), "You Are The Light", 0.5f);
 
+                font.Height = 0.7f;
+                font.Color = Color.Silver * a;
+                font.DrawString(new Vector2(0, 1.7f), "an experiment in adaptive music", 0.5f);
+
+                font.Color = argb;
                 font.Height = 1.3f;
                 font.DrawString(new Vector2(-8, 3f), "This is you", 0.5f);
                 font.DrawString(new Vector2(8, 3f), "This is a monster", 0.5f);
