@@ -182,6 +182,8 @@ namespace yatl.Rendering
 
             this.surfaces.Hud.Surface.Render();
 
+            this.surfaces.Tutorial.Surface.Render();
+
             this.surfaces.ScreenFontSurface.Render();
 
             #endregion

@@ -70,8 +70,8 @@ namespace yatl
                 int tonesPerStroke = tonesPerChord / pattern.Count();
                 double duration = basenote.Duration / (double)(tonesPerChord);
 
-                Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o => o.ToString())));
-                Console.WriteLine("duration: " + duration.ToString());
+                //Console.WriteLine("pattern: " + string.Join(", ", pattern.Select(o => o.ToString())));
+                //Console.WriteLine("duration: " + duration.ToString());
 
                 // Select tones
                 IEnumerable<Note> arpeggio = this.SelectArpeggioSequence(arpeggioSpace, pattern, tonesPerStroke, duration);

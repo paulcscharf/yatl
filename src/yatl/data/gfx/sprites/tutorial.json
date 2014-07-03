@@ -1,0 +1,10 @@
+{
+	"textures" : [ 
+		{ "name" : "diffuseTexture", "filename" : "tutorial.png" }
+	],
+	"uvSize": [8, 4],
+	"sprites" : [
+		{ "name" : "wisp",    "uv" : [ {"lt" : [0, 0], "size" : [6, 4]} ], "size" : [6, 4] },
+		{ "name" : "monster", "uv" : [ {"lt" : [6, 0], "size" : [1, 1]} ], "size" : [1, 1] },
+	]
+}

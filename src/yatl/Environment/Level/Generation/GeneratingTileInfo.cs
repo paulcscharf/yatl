@@ -115,7 +115,7 @@ namespace yatl.Environment.Level.Generation
             if (totalAngle.Radians < 0)
                 totalAngle += 360f.Degrees();
 
-            var steps = Math.Max(3, (int)(totalAngle.MagnitudeInDegrees / 30));
+            var steps = Math.Max(3, (int)(totalAngle.MagnitudeInDegrees / 20));
 
             var radiusStart = start.Length;
             var radiusEnd = end.Length;

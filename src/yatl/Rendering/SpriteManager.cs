@@ -31,6 +31,9 @@ namespace yatl.Rendering
         public Sprite2DGeometry Lines { get; private set; }
         public HudGeometry Hud { get; private set; }
 
+        public Sprite2DGeometry TutorialWisp { get; private set; }
+        public Sprite2DGeometry TutorialMonster { get; private set; }
+
         public WallGeometry Wall { get; private set; }
 
         public DeferredPointLightGeometry PointLight { get; private set; }
@@ -60,6 +63,9 @@ namespace yatl.Rendering
             this.EmptyHexagon = (Sprite2DGeometry)surfaces.Hexagons["empty"].Geometry;
             this.Lines = (Sprite2DGeometry)surfaces.Hexagons["line"].Geometry;
             this.Hud = new HudGeometry(surfaces.Hud);
+
+            this.TutorialWisp = (Sprite2DGeometry)surfaces.Tutorial["wisp"].Geometry;
+            this.TutorialMonster = (Sprite2DGeometry)surfaces.Tutorial["monster"].Geometry;
 
             this.Wall = new WallGeometry(surfaces.Walls);
 

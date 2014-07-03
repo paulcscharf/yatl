@@ -45,7 +45,7 @@ namespace yatl
 
             this.musicThread = new Thread(this.updateMusic);
 
-            this.gamestate = new GameState();
+            this.gamestate = new GameState(true);
 
             this.musicThread.Start();
         }

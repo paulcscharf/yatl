@@ -1,5 +1,7 @@
 
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using amulware.Graphics;
 using OpenTK;
@@ -50,13 +52,19 @@ namespace yatl.Environment
         private static float overlayBrightness = 1;
         private static float overlayPercentage = 1;
 
+        private float titleEndTime;
+
+        private bool tutorialVisible;
+        private float tutorialAlpha;
+        private bool hideTitle;
+
         public GameStatistics Statistics { get; private set; }
 
-        public GameState()
+        public GameState(bool isFirst = false)
         {
             this.Statistics = new GameStatistics();
 
-            this.Level = new Level.Level(this, LevelGenerator.NewDefault.Verbose);
+            this.Level = new Level.Level(this, LevelGenerator.NewDefault.Silent);
             this.Level.GrowCrystals();
 
             this.Player = new Wisp(this, Vector2.Zero);
@@ -76,6 +84,8 @@ namespace yatl.Environment
                             + new Vector2(GlobalRandom.NextFloat(), GlobalRandom.NextFloat()) * 0.1f);
                 }
             }
+
+            this.titleEndTime = isFirst ? 3 : 0;
         }
 
         public void Update(UpdateEventArgs args)
@@ -89,6 +99,22 @@ namespace yatl.Environment
 
             if (InputManager.IsKeyHit(Key.F3))
                 this.DrawDebug = !this.DrawDebug;
+
+            if (InputManager.IsKeyHit(Key.F1))
+                this.tutorialVisible = !tutorialVisible;
+
+            if (this.tutorialVisible)
+            {
+                this.tutorialAlpha = Math.Min(1, this.tutorialAlpha + newArgs.ElapsedTimeF * 2);
+
+                if (InputManager.IsKeyHit(Key.F8))
+                    Process.Start("http://bit.ly/youarethelight");
+            }
+            else
+                this.tutorialAlpha = Math.Max(0, this.tutorialAlpha - newArgs.ElapsedTimeF * 2);
+
+            if (this.tutorialAlpha == 1)
+                this.hideTitle = true;
 
             this.MonstersCloseToPlayer = 0;
 
@@ -113,7 +139,7 @@ namespace yatl.Environment
 
             #endregion
 
-            if (InputManager.IsKeyHit(Key.ControlLeft))
+            if (InputManager.IsKeyHit(Key.F4))
             {
                 this.Camera.Zoom = !this.Camera.Zoom;
             }
@@ -155,9 +181,93 @@ namespace yatl.Environment
         {
             var surfaceMan = SurfaceManager.Instance;
 
-            surfaceMan.OverlayColor = new Vector4(GameState.overlayBrightness,
+            var overlayColor = new Vector4(GameState.overlayBrightness,
                 GameState.overlayBrightness, GameState.overlayBrightness, 1);
-            surfaceMan.OverlayFadePercentage = GameState.overlayPercentage;
+            var overlayPercentage = GameState.overlayPercentage;
+
+            var font = sprites.ScreenText;
+
+            if (!this.hideTitle && this.titleEndTime > this.time)
+            {
+                var alpha = (float)Math.Min(1, this.titleEndTime - this.time) * (1 - this.tutorialAlpha);
+
+                var black = 1 - alpha;
+
+                overlayColor.Xyz *= black;
+                overlayPercentage = 1 - (1 - overlayPercentage) * black;
+
+                var textAlpha = alpha * GameMath.Clamp(this.timeF * 0.5f - 0.2f, 0, 1);
+
+                font.Color = Color.White * textAlpha;
+                font.Height = 2.4f;
+                font.DrawString(new Vector2(0, 9), "You Are The Light", 0.5f, 0.5f);
+            }
+
+            if (!this.hideTitle && this.time > 1 && this.titleEndTime > 0)
+            {
+                var time = (this.timeF - 1) * 0.15f;
+
+                if (time < 1)
+                {
+                    var a = (float)(0.1 - 0.1 * Math.Cos(2 * Math.PI * time) + 0.4 - 0.4 * Math.Cos(8 * Math.PI * time))
+                        * (1 - this.tutorialAlpha);
+
+                    font.Height = 1.2f;
+                    font.Color = Color.Black * a;
+                    font.DrawString(new Vector2(0.02f, 18.02f), "F1: Help", 0.5f, 1);
+                    font.Color = Color.White * a;
+                    font.DrawString(new Vector2(0, 18), "F1: Help", 0.5f, 1);
+                }
+            }
+
+            if (this.tutorialAlpha > 0)
+            {
+                var black = 1 - this.tutorialAlpha;
+
+                overlayColor.Xyz *= black;
+                overlayPercentage = 1 - (1 - overlayPercentage) * black;
+
+                var a = this.tutorialAlpha * this.tutorialAlpha;
+
+                var argb = Color.White * a;
+
+                font.Height = 2f;
+                font.Color = argb;
+                font.DrawString(new Vector2(0, 0.2f), "You Are The Light", 0.5f);
+
+                font.Height = 1.3f;
+                font.DrawString(new Vector2(-8, 3f), "This is you", 0.5f);
+                font.DrawString(new Vector2(8, 3f), "This is a monster", 0.5f);
+
+                sprites.TutorialWisp.Color = argb;
+                sprites.TutorialMonster.Color = argb;
+                sprites.TutorialWisp.DrawSprite(new Vector2(-8, 6));
+                sprites.TutorialMonster.DrawSprite(new Vector2(8, 6));
+
+                font.Height = 1f;
+                font.DrawString(new Vector2(-8, 8f), "You are lost in a maze.", 0.5f);
+                font.DrawString(new Vector2(-8, 9f), "Your goal is to get out.", 0.5f);
+
+                font.DrawString(new Vector2(8, 8f), "They will hunt you, but", 0.5f);
+                font.DrawString(new Vector2(8, 9f), "they are scared of light.", 0.5f);
+
+                font.Height = 1.3f;
+                font.DrawString(new Vector2(0, 11f), "Controls", 0.5f);
+
+                font.Height = 1f;
+                font.DrawString(new Vector2(0, 12.5f), "Move with arrow keys/WASD", 0.5f);
+                font.DrawString(new Vector2(0, 13.5f), "Show/hide this screen with F1", 0.5f);
+                font.DrawString(new Vector2(0, 14.5f), "Toggle fullscreen with F11", 0.5f);
+                font.DrawString(new Vector2(0, 15.5f), "Exit with ESC", 0.5f);
+
+                font.Height = 0.5f;
+                font.Color = Color.Gray * a;
+                font.DrawString(new Vector2(0, 17.5f), "Made by Chiel ten Brinke & Paul Scharf", 0.5f, 1f);
+                font.DrawString(new Vector2(0, 18f), "More info at: paulscharf.com/stuff/games/youarethelight (press F8 to open)", 0.5f, 1f);
+            }
+
+            surfaceMan.OverlayColor = overlayColor;
+            surfaceMan.OverlayFadePercentage = overlayPercentage;
 
             this.Level.Draw(sprites);
 
